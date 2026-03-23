@@ -8,19 +8,19 @@ export function ModernTemplate() {
   const color = settings.color;
 
   return (
-    <div className="w-full h-full bg-white text-slate-900 leading-relaxed" style={{ fontFamily: settings.font }}>
+    <div className="w-full h-full bg-white text-zinc-900 leading-relaxed" style={{ fontFamily: settings.font }}>
       {/* Header */}
       <header className="flex items-center gap-8 pb-8 border-b-2" style={{ borderColor: color }}>
         {personalInfo.photoUrl && (
-          <img src={personalInfo.photoUrl} alt="Profile" className="w-28 h-28 rounded-full object-cover shadow-sm border-2 border-white ring-2 ring-slate-100" />
+          <img src={personalInfo.photoUrl} alt="Profile" className="w-28 h-28 rounded-full object-cover shadow-sm border-2 border-white ring-2 ring-zinc-100" />
         )}
         <div className="flex-1">
           <h1 className="text-4xl font-extrabold uppercase tracking-tight" style={{ color }}>
             {personalInfo.firstName} {personalInfo.lastName}
           </h1>
-          <h2 className="text-xl font-medium text-slate-600 mt-1.5">{personalInfo.title}</h2>
+          <h2 className="text-xl font-medium text-zinc-600 mt-1.5">{personalInfo.title}</h2>
           
-          <div className="flex flex-wrap gap-x-5 gap-y-2 mt-4 text-sm text-slate-500">
+          <div className="flex flex-wrap gap-x-5 gap-y-2 mt-4 text-sm text-zinc-500">
             {personalInfo.email && (
               <span className="flex items-center gap-1.5"><Mail className="w-4 h-4" /> {personalInfo.email}</span>
             )}
@@ -34,7 +34,7 @@ export function ModernTemplate() {
             )}
             {personalInfo.links.map(link => (
               <span key={link.id} className="flex items-center gap-1.5">
-                <LinkIcon className="w-4 h-4" /> <a href={`https://${link.url.replace(/^https?:\/\//, '')}`} className="hover:underline hover:text-slate-800 transition-colors">{link.label}</a>
+                <LinkIcon className="w-4 h-4" /> <a href={`https://${link.url.replace(/^https?:\/\//, '')}`} className="hover:underline hover:text-zinc-800 transition-colors">{link.label}</a>
               </span>
             ))}
           </div>
@@ -44,7 +44,7 @@ export function ModernTemplate() {
       {/* Summary */}
       {personalInfo.summary && (
         <section className="mt-8">
-          <p className="text-[15px] leading-relaxed text-slate-700">{personalInfo.summary}</p>
+          <p className="text-[15px] leading-relaxed text-zinc-700">{personalInfo.summary}</p>
         </section>
       )}
 
@@ -61,13 +61,13 @@ export function ModernTemplate() {
                 {experience.map(exp => (
                   <div key={exp.id} className="relative pl-4 before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-current" style={{ color }}>
                     <div className="flex justify-between items-baseline mb-1">
-                      <h4 className="font-semibold text-slate-900 text-[15px]">{exp.position}</h4>
-                      <span className="text-sm text-slate-500 font-medium whitespace-nowrap ml-4">
+                      <h4 className="font-semibold text-zinc-900 text-[15px]">{exp.position}</h4>
+                      <span className="text-sm text-zinc-500 font-medium whitespace-nowrap ml-4">
                         {exp.startDate} – {exp.current ? 'Present' : exp.endDate}
                       </span>
                     </div>
-                    <div className="text-sm text-slate-600 font-medium mb-2.5">{exp.company}</div>
-                    <div className="text-[14px] text-slate-700 whitespace-pre-line leading-relaxed">
+                    <div className="text-sm text-zinc-600 font-medium mb-2.5">{exp.company}</div>
+                    <div className="text-[14px] text-zinc-700 whitespace-pre-line leading-relaxed">
                       {exp.description}
                     </div>
                   </div>
@@ -86,14 +86,14 @@ export function ModernTemplate() {
                 {projects.map(proj => (
                   <div key={proj.id} className="relative pl-4 before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-current" style={{ color }}>
                     <div className="flex justify-between items-baseline mb-1">
-                      <h4 className="font-semibold text-slate-900 text-[15px]">
-                        {proj.name} {proj.url && <span className="text-sm font-normal text-slate-500 ml-2">| {proj.url}</span>}
+                      <h4 className="font-semibold text-zinc-900 text-[15px]">
+                        {proj.name} {proj.url && <span className="text-sm font-normal text-zinc-500 ml-2">| {proj.url}</span>}
                       </h4>
-                      <span className="text-sm text-slate-500 font-medium whitespace-nowrap ml-4">
+                      <span className="text-sm text-zinc-500 font-medium whitespace-nowrap ml-4">
                         {proj.startDate} – {proj.endDate}
                       </span>
                     </div>
-                    <div className="text-[14px] text-slate-700 whitespace-pre-line leading-relaxed mt-2">
+                    <div className="text-[14px] text-zinc-700 whitespace-pre-line leading-relaxed mt-2">
                       {proj.description}
                     </div>
                   </div>
@@ -115,7 +115,7 @@ export function ModernTemplate() {
                 {skills.map(skill => (
                   <span 
                     key={skill.id} 
-                    className="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-50 text-slate-700 border border-slate-200/60"
+                    className="px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-50 text-zinc-700 border border-zinc-200/60"
                   >
                     {skill.name}
                   </span>
@@ -133,13 +133,13 @@ export function ModernTemplate() {
               <div className="space-y-5">
                 {education.map(edu => (
                   <div key={edu.id} className="relative pl-4 before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-current" style={{ color }}>
-                    <h4 className="font-semibold text-slate-900 text-[15px]">{edu.degree} in {edu.field}</h4>
-                    <div className="text-sm text-slate-600 mb-1 mt-0.5">{edu.school}</div>
-                    <div className="text-xs text-slate-500 font-medium mb-2">
+                    <h4 className="font-semibold text-zinc-900 text-[15px]">{edu.degree} in {edu.field}</h4>
+                    <div className="text-sm text-zinc-600 mb-1 mt-0.5">{edu.school}</div>
+                    <div className="text-xs text-zinc-500 font-medium mb-2">
                       {edu.startDate} – {edu.current ? 'Present' : edu.endDate}
                     </div>
                     {edu.description && (
-                      <div className="text-[13px] text-slate-700 leading-relaxed">{edu.description}</div>
+                      <div className="text-[13px] text-zinc-700 leading-relaxed">{edu.description}</div>
                     )}
                   </div>
                 ))}
@@ -156,8 +156,8 @@ export function ModernTemplate() {
               <div className="space-y-4">
                 {certifications.map(cert => (
                   <div key={cert.id} className="relative pl-4 before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-current" style={{ color }}>
-                    <h4 className="font-semibold text-slate-900 text-[14px]">{cert.name}</h4>
-                    <div className="text-[13px] text-slate-600 mt-0.5">{cert.issuer} | {cert.date}</div>
+                    <h4 className="font-semibold text-zinc-900 text-[14px]">{cert.name}</h4>
+                    <div className="text-[13px] text-zinc-600 mt-0.5">{cert.issuer} | {cert.date}</div>
                   </div>
                 ))}
               </div>

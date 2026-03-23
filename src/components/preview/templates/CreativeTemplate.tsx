@@ -8,7 +8,7 @@ export function CreativeTemplate() {
   const color = settings.color;
 
   return (
-    <div className="w-full h-full bg-white text-slate-900 leading-relaxed flex" style={{ fontFamily: settings.font }}>
+    <div className="w-full h-full bg-white text-zinc-900 leading-relaxed flex" style={{ fontFamily: settings.font }}>
       {/* Left Sidebar */}
       <div className="w-1/3 p-8 text-white h-full min-h-[297mm]" style={{ backgroundColor: color }}>
         <div className="flex flex-col items-center text-center mb-10">
@@ -95,14 +95,14 @@ export function CreativeTemplate() {
       </div>
 
       {/* Right Content Area */}
-      <div className="w-2/3 p-10 bg-slate-50">
+      <div className="w-2/3 p-10 bg-zinc-50">
         {/* Summary */}
         {personalInfo.summary && (
           <section className="mb-10">
             <h3 className="text-lg font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color }}>
               Profile
             </h3>
-            <p className="text-[15px] leading-relaxed text-slate-700 text-justify">
+            <p className="text-[15px] leading-relaxed text-zinc-700 text-justify">
               {personalInfo.summary}
             </p>
           </section>
@@ -118,13 +118,13 @@ export function CreativeTemplate() {
               {experience.map(exp => (
                 <div key={exp.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-current" style={{ color }}>
                   <div className="flex justify-between items-baseline mb-1">
-                    <h4 className="font-bold text-slate-900 text-[16px]">{exp.position}</h4>
-                    <span className="text-xs font-bold text-slate-500 tracking-wider uppercase whitespace-nowrap ml-4">
+                    <h4 className="font-bold text-zinc-900 text-[16px]">{exp.position}</h4>
+                    <span className="text-xs font-bold text-zinc-500 tracking-wider uppercase whitespace-nowrap ml-4">
                       {exp.startDate} – {exp.current ? 'Present' : exp.endDate}
                     </span>
                   </div>
-                  <div className="text-[15px] font-medium text-slate-600 mb-3">{exp.company}</div>
-                  <div className="text-[14px] text-slate-700 whitespace-pre-line leading-relaxed">
+                  <div className="text-[15px] font-medium text-zinc-600 mb-3">{exp.company}</div>
+                  <div className="text-[14px] text-zinc-700 whitespace-pre-line leading-relaxed">
                     {exp.description}
                   </div>
                 </div>
@@ -143,15 +143,15 @@ export function CreativeTemplate() {
               {projects.map(proj => (
                 <div key={proj.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-current" style={{ color }}>
                   <div className="flex justify-between items-baseline mb-1">
-                    <h4 className="font-bold text-slate-900 text-[16px]">
+                    <h4 className="font-bold text-zinc-900 text-[16px]">
                       {proj.name}
                     </h4>
-                    <span className="text-xs font-bold text-slate-500 tracking-wider uppercase whitespace-nowrap ml-4">
+                    <span className="text-xs font-bold text-zinc-500 tracking-wider uppercase whitespace-nowrap ml-4">
                       {proj.startDate} – {proj.endDate}
                     </span>
                   </div>
-                  {proj.url && <div className="text-[14px] text-slate-500 mb-2 italic">{proj.url}</div>}
-                  <div className="text-[14px] text-slate-700 whitespace-pre-line leading-relaxed mt-2">
+                  {proj.url && <div className="text-[14px] text-zinc-500 mb-2 italic">{proj.url}</div>}
+                  <div className="text-[14px] text-zinc-700 whitespace-pre-line leading-relaxed mt-2">
                     {proj.description}
                   </div>
                 </div>
@@ -168,10 +168,10 @@ export function CreativeTemplate() {
             </h3>
             <div className="grid grid-cols-2 gap-6">
               {certifications.map(cert => (
-                <div key={cert.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60">
-                  <h4 className="font-bold text-slate-900 text-[14px] mb-1">{cert.name}</h4>
-                  <div className="text-[13px] text-slate-600">{cert.issuer}</div>
-                  <div className="text-[12px] font-medium text-slate-500 mt-2 tracking-wider uppercase">{cert.date}</div>
+                <div key={cert.id} className="bg-white p-4 rounded-xl shadow-sm border border-zinc-200/60">
+                  <h4 className="font-bold text-zinc-900 text-[14px] mb-1">{cert.name}</h4>
+                  <div className="text-[13px] text-zinc-600">{cert.issuer}</div>
+                  <div className="text-[12px] font-medium text-zinc-500 mt-2 tracking-wider uppercase">{cert.date}</div>
                 </div>
               ))}
             </div>

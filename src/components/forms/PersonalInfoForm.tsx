@@ -64,19 +64,19 @@ export function PersonalInfoForm() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center gap-6 pb-6 border-b border-slate-200/60">
-        <div className="relative w-28 h-28 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 group hover:border-indigo-400 hover:bg-indigo-50/50 transition-all">
+      <div className="flex items-center gap-6 pb-6 border-b border-zinc-200/60">
+        <div className="relative w-28 h-28 rounded-2xl bg-zinc-50 border-2 border-dashed border-zinc-300 flex items-center justify-center overflow-hidden shrink-0 group hover:border-zinc-400 hover:bg-zinc-50/50 transition-all">
           {personalInfo.photoUrl ? (
             <>
               <img src={personalInfo.photoUrl} alt="Profile" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+              <div className="absolute inset-0 bg-zinc-900/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
                 <button onClick={removePhoto} className="text-white p-2 hover:bg-white/20 rounded-full transition-colors z-10 relative">
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </>
           ) : (
-            <div className="text-slate-400 flex flex-col items-center group-hover:text-indigo-500 transition-colors pointer-events-none">
+            <div className="text-zinc-400 flex flex-col items-center group-hover:text-zinc-500 transition-colors pointer-events-none">
               <Upload className="w-6 h-6 mb-2" />
               <span className="text-[11px] uppercase tracking-wider font-semibold">Upload</span>
             </div>
@@ -93,8 +93,8 @@ export function PersonalInfoForm() {
           )}
         </div>
         <div className="flex-1">
-          <h3 className="text-base font-semibold text-slate-900">Profile Photo</h3>
-          <p className="text-sm text-slate-500 mt-1.5 leading-relaxed">Upload a professional headshot. Recommended size: 400x400px. A clean background works best.</p>
+          <h3 className="text-base font-semibold text-zinc-900">Profile Photo</h3>
+          <p className="text-sm text-zinc-500 mt-1.5 leading-relaxed">Upload a professional headshot. Recommended size: 400x400px. A clean background works best.</p>
         </div>
       </div>
 
@@ -173,7 +173,7 @@ export function PersonalInfoForm() {
             size="sm" 
             onClick={handleGenerateSummary}
             isLoading={isGenerating}
-            className="text-indigo-600 border-indigo-200 hover:bg-indigo-50 h-9 rounded-lg"
+            className="text-zinc-600 border-zinc-200 hover:bg-zinc-50 h-9 rounded-lg"
           >
             <Wand2 className="w-4 h-4 mr-2" />
             AI Generate
@@ -188,11 +188,11 @@ export function PersonalInfoForm() {
         />
       </div>
 
-      <div className="space-y-4 pt-4 border-t border-slate-200/60">
+      <div className="space-y-4 pt-4 border-t border-zinc-200/60">
         <div className="flex items-center justify-between">
           <div>
             <Label>Social Links & Portfolio</Label>
-            <p className="text-xs text-slate-500 mt-1">Add links to your LinkedIn, GitHub, or personal website.</p>
+            <p className="text-xs text-zinc-500 mt-1">Add links to your LinkedIn, GitHub, or personal website.</p>
           </div>
           <Button variant="outline" size="sm" onClick={addLink} className="h-9 rounded-lg">
             <Plus className="w-4 h-4 mr-2" />
@@ -202,7 +202,7 @@ export function PersonalInfoForm() {
         
         <div className="space-y-3">
           {personalInfo.links.map((link) => (
-            <div key={link.id} className="flex items-center gap-3 bg-slate-50/50 p-2 rounded-xl border border-slate-200/60">
+            <div key={link.id} className="flex items-center gap-3 bg-zinc-50/50 p-2 rounded-xl border border-zinc-200/60">
               <Input 
                 placeholder="Label (e.g. LinkedIn)" 
                 value={link.label}

@@ -91,7 +91,7 @@ export function ExperienceForm() {
         </SortableContext>
       </DndContext>
 
-      <Button variant="outline" className="w-full border-dashed border-2 hover:border-indigo-300 hover:bg-indigo-50/50 text-slate-600 hover:text-indigo-600 transition-all" onClick={handleAdd}>
+      <Button variant="outline" className="w-full border-dashed border-2 hover:border-zinc-300 hover:bg-zinc-50/50 text-zinc-600 hover:text-zinc-600 transition-all" onClick={handleAdd}>
         <Plus className="w-4 h-4 mr-2" />
         Add Experience
       </Button>
@@ -101,9 +101,9 @@ export function ExperienceForm() {
 
 function ExperienceCard({ exp, updateExperience, removeExperience, handleEnhance, enhancingId, dragHandleProps, isDragging }: any) {
   return (
-    <Card className={`p-5 relative group border-slate-200/60 bg-white/40 hover:bg-white/60 transition-colors mb-6 ${isDragging ? 'opacity-50' : ''}`}>
+    <Card className={`p-5 relative group border-zinc-200/60 bg-white/40 hover:bg-white/60 transition-colors mb-6 ${isDragging ? 'opacity-50' : ''}`}>
       <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <div {...dragHandleProps} className="p-2 text-slate-400 hover:text-slate-600 cursor-grab active:cursor-grabbing rounded-lg hover:bg-slate-100">
+        <div {...dragHandleProps} className="p-2 text-zinc-400 hover:text-zinc-600 cursor-grab active:cursor-grabbing rounded-lg hover:bg-zinc-100">
           <GripVertical className="w-4 h-4" />
         </div>
         <Button variant="ghost" size="icon" onClick={() => removeExperience(exp.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8 w-8 rounded-lg">
@@ -146,12 +146,12 @@ function ExperienceCard({ exp, updateExperience, removeExperience, handleEnhance
               onChange={(e) => updateExperience(exp.id, { endDate: e.target.value })} 
               className="flex-1"
             />
-            <label className="flex items-center gap-2 text-sm font-medium text-slate-700 whitespace-nowrap cursor-pointer select-none">
+            <label className="flex items-center gap-2 text-sm font-medium text-zinc-700 whitespace-nowrap cursor-pointer select-none">
               <input 
                 type="checkbox" 
                 checked={exp.current}
                 onChange={(e) => updateExperience(exp.id, { current: e.target.checked, endDate: '' })}
-                className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500/50 transition-all"
+                className="w-4 h-4 rounded border-zinc-300 text-zinc-600 focus:ring-zinc-500/50 transition-all"
               />
               Current
             </label>
@@ -167,7 +167,7 @@ function ExperienceCard({ exp, updateExperience, removeExperience, handleEnhance
             size="sm" 
             onClick={() => handleEnhance(exp.id, exp.description, exp.position)}
             isLoading={enhancingId === exp.id}
-            className="text-indigo-600 border-indigo-200 hover:bg-indigo-50 h-8 text-xs rounded-lg"
+            className="text-zinc-600 border-zinc-200 hover:bg-zinc-50 h-8 text-xs rounded-lg"
           >
             <Wand2 className="w-3 h-3 mr-2" />
             AI Enhance

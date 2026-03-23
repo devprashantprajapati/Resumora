@@ -75,7 +75,7 @@ export function CertificationsForm() {
         </SortableContext>
       </DndContext>
 
-      <Button variant="outline" className="w-full border-dashed border-2 hover:border-indigo-300 hover:bg-indigo-50/50 text-slate-600 hover:text-indigo-600 transition-all" onClick={handleAdd}>
+      <Button variant="outline" className="w-full border-dashed border-2 hover:border-zinc-300 hover:bg-zinc-50/50 text-zinc-600 hover:text-zinc-600 transition-all" onClick={handleAdd}>
         <Plus className="w-4 h-4 mr-2" />
         Add Certification
       </Button>
@@ -85,9 +85,9 @@ export function CertificationsForm() {
 
 function CertificationCard({ cert, updateCertification, removeCertification, dragHandleProps, isDragging }: any) {
   return (
-    <Card className={`p-5 relative group border-slate-200/60 bg-white/40 hover:bg-white/60 transition-colors mb-6 ${isDragging ? 'opacity-50' : ''}`}>
+    <Card className={`p-5 relative group border-zinc-200/60 bg-white/40 hover:bg-white/60 transition-colors mb-6 ${isDragging ? 'opacity-50' : ''}`}>
       <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <div {...dragHandleProps} className="p-2 text-slate-400 hover:text-slate-600 cursor-grab active:cursor-grabbing rounded-lg hover:bg-slate-100">
+        <div {...dragHandleProps} className="p-2 text-zinc-400 hover:text-zinc-600 cursor-grab active:cursor-grabbing rounded-lg hover:bg-zinc-100">
           <GripVertical className="w-4 h-4" />
         </div>
         <Button variant="ghost" size="icon" onClick={() => removeCertification(cert.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8 w-8 rounded-lg">
