@@ -1,0 +1,227 @@
+import { useResumeStore } from '@/store/useResumeStore';
+import { Input } from '../ui/Input';
+import { Label } from '../ui/Label';
+import { Textarea } from '../ui/Textarea';
+import { Button } from '../ui/Button';
+import { generateSummary } from '@/services/ai';
+import React, { useState, useRef } from 'react';
+import { Wand2, Plus, Trash2, Upload, X } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
+
+export function PersonalInfoForm() {
+  const { data, updatePersonalInfo } = useResumeStore();
+  const { personalInfo } = data;
+  const [isGenerating, setIsGenerating] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleGenerateSummary = async () => {
+    setIsGenerating(true);
+    const experienceText = data.experience.map(e => `${e.position} at ${e.company}`).join(', ');
+    const skillsText = data.skills.map(s => s.name).join(', ');
+    
+    const summary = await generateSummary(personalInfo.title, experienceText, skillsText);
+    updatePersonalInfo({ summary });
+    setIsGenerating(false);
+  };
+
+  const addLink = () => {
+    updatePersonalInfo({
+      links: [...personalInfo.links, { id: uuidv4(), label: '', url: '' }]
+    });
+  };
+
+  const updateLink = (id: string, field: 'label' | 'url', value: string) => {
+    updatePersonalInfo({
+      links: personalInfo.links.map(link => 
+        link.id === id ? { ...link, [field]: value } : link
+      )
+    });
+  };
+
+  const removeLink = (id: string) => {
+    updatePersonalInfo({
+      links: personalInfo.links.filter(link => link.id !== id)
+    });
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updatePersonalInfo({ photoUrl: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removePhoto = () => {
+    updatePersonalInfo({ photoUrl: '' });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center gap-6 pb-6 border-b border-slate-200/60">
+        <div className="relative w-28 h-28 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 group hover:border-indigo-400 hover:bg-indigo-50/50 transition-all">
+          {personalInfo.photoUrl ? (
+            <>
+              <img src={personalInfo.photoUrl} alt="Profile" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+                <button onClick={removePhoto} className="text-white p-2 hover:bg-white/20 rounded-full transition-colors z-10 relative">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="text-slate-400 flex flex-col items-center group-hover:text-indigo-500 transition-colors pointer-events-none">
+              <Upload className="w-6 h-6 mb-2" />
+              <span className="text-[11px] uppercase tracking-wider font-semibold">Upload</span>
+            </div>
+          )}
+          {!personalInfo.photoUrl && (
+            <input 
+              type="file" 
+              ref={fileInputRef}
+              onChange={handlePhotoUpload} 
+              accept="image/*" 
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              title="Upload profile photo"
+            />
+          )}
+        </div>
+        <div className="flex-1">
+          <h3 className="text-base font-semibold text-slate-900">Profile Photo</h3>
+          <p className="text-sm text-slate-500 mt-1.5 leading-relaxed">Upload a professional headshot. Recommended size: 400x400px. A clean background works best.</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="space-y-2">
+          <Label htmlFor="firstName">First Name</Label>
+          <Input 
+            id="firstName" 
+            value={personalInfo.firstName} 
+            onChange={(e) => updatePersonalInfo({ firstName: e.target.value })} 
+            placeholder="John"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="lastName">Last Name</Label>
+          <Input 
+            id="lastName" 
+            value={personalInfo.lastName} 
+            onChange={(e) => updatePersonalInfo({ lastName: e.target.value })} 
+            placeholder="Doe"
+          />
+        </div>
+        <div className="space-y-2 md:col-span-2">
+          <Label htmlFor="title">Professional Title</Label>
+          <Input 
+            id="title" 
+            value={personalInfo.title} 
+            onChange={(e) => updatePersonalInfo({ title: e.target.value })} 
+            placeholder="e.g. Senior Software Engineer"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input 
+            id="email" 
+            type="email"
+            value={personalInfo.email} 
+            onChange={(e) => updatePersonalInfo({ email: e.target.value })} 
+            placeholder="john@example.com"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="phone">Phone</Label>
+          <Input 
+            id="phone" 
+            value={personalInfo.phone} 
+            onChange={(e) => updatePersonalInfo({ phone: e.target.value })} 
+            placeholder="+1 (234) 567-8900"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="city">City</Label>
+          <Input 
+            id="city" 
+            value={personalInfo.city} 
+            onChange={(e) => updatePersonalInfo({ city: e.target.value })} 
+            placeholder="San Francisco"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="country">Country</Label>
+          <Input 
+            id="country" 
+            value={personalInfo.country} 
+            onChange={(e) => updatePersonalInfo({ country: e.target.value })} 
+            placeholder="USA"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="summary">Professional Summary</Label>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleGenerateSummary}
+            isLoading={isGenerating}
+            className="text-indigo-600 border-indigo-200 hover:bg-indigo-50 h-9 rounded-lg"
+          >
+            <Wand2 className="w-4 h-4 mr-2" />
+            AI Generate
+          </Button>
+        </div>
+        <Textarea 
+          id="summary" 
+          value={personalInfo.summary} 
+          onChange={(e) => updatePersonalInfo({ summary: e.target.value })} 
+          placeholder="Briefly describe your professional background, key achievements, and career goals..."
+          className="h-36 leading-relaxed"
+        />
+      </div>
+
+      <div className="space-y-4 pt-4 border-t border-slate-200/60">
+        <div className="flex items-center justify-between">
+          <div>
+            <Label>Social Links & Portfolio</Label>
+            <p className="text-xs text-slate-500 mt-1">Add links to your LinkedIn, GitHub, or personal website.</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={addLink} className="h-9 rounded-lg">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Link
+          </Button>
+        </div>
+        
+        <div className="space-y-3">
+          {personalInfo.links.map((link) => (
+            <div key={link.id} className="flex items-center gap-3 bg-slate-50/50 p-2 rounded-xl border border-slate-200/60">
+              <Input 
+                placeholder="Label (e.g. LinkedIn)" 
+                value={link.label}
+                onChange={(e) => updateLink(link.id, 'label', e.target.value)}
+                className="w-1/3 bg-white"
+              />
+              <Input 
+                placeholder="URL (e.g. linkedin.com/in/johndoe)" 
+                value={link.url}
+                onChange={(e) => updateLink(link.id, 'url', e.target.value)}
+                className="flex-1 bg-white"
+              />
+              <Button variant="ghost" size="icon" onClick={() => removeLink(link.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 h-11 w-11 rounded-lg shrink-0">
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
