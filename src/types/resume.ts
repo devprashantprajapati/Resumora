@@ -56,6 +56,12 @@ export type ResumeData = {
     color: string;
     font: string;
     fontSize: 'small' | 'medium' | 'large';
+    spacing: 'compact' | 'normal' | 'relaxed';
+    borderRadius: 'sharp' | 'rounded' | 'pill';
+    showPhoto: boolean;
+    paperSize: 'a4' | 'letter';
+    headerAlignment: 'left' | 'center' | 'right';
+    bodyAlignment: 'left' | 'justify';
   };
 };
 
@@ -138,5 +144,11 @@ export const initialResumeData: ResumeData = {
     color: '#3b82f6', // blue-500
     font: 'Inter',
     fontSize: 'medium',
+    spacing: 'normal',
+    borderRadius: 'rounded',
+    showPhoto: true,
+    paperSize: 'a4',
+    headerAlignment: 'left',
+    bodyAlignment: 'left',
   }
 };

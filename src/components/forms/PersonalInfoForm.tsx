@@ -3,10 +3,11 @@ import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
 import { Textarea } from '../ui/Textarea';
 import { Button } from '../ui/Button';
-import { generateSummary } from '@/services/ai';
+import { generateSummaryStream } from '@/services/ai';
 import React, { useState, useRef } from 'react';
 import { Wand2, Plus, Trash2, Upload, X } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'sonner';
 
 export function PersonalInfoForm() {
   const { data, updatePersonalInfo } = useResumeStore();
@@ -19,9 +20,28 @@ export function PersonalInfoForm() {
     const experienceText = data.experience.map(e => `${e.position} at ${e.company}`).join(', ');
     const skillsText = data.skills.map(s => s.name).join(', ');
     
-    const summary = await generateSummary(personalInfo.title, experienceText, skillsText);
-    updatePersonalInfo({ summary });
-    setIsGenerating(false);
+    try {
+      updatePersonalInfo({ summary: '' });
+      let fullText = '';
+      const stream = generateSummaryStream(personalInfo.title, experienceText, skillsText);
+      for await (const chunk of stream) {
+        fullText += chunk;
+        updatePersonalInfo({ summary: fullText });
+      }
+    } catch (error: any) {
+      console.error("Failed to generate summary:", error);
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', {
+          description: 'Please wait a moment before trying again.',
+        });
+      } else {
+        toast.error('Failed to generate summary', {
+          description: 'An unexpected error occurred. Please try again.',
+        });
+      }
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const addLink = () => {

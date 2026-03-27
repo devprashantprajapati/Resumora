@@ -7,33 +7,70 @@ export function ModernTemplate() {
 
   const color = settings.color;
 
+  const getSpacing = () => {
+    switch (settings.spacing) {
+      case 'compact': return { gap: 'gap-6', spaceY: 'space-y-4', mt: 'mt-6' };
+      case 'relaxed': return { gap: 'gap-14', spaceY: 'space-y-12', mt: 'mt-14' };
+      default: return { gap: 'gap-10', spaceY: 'space-y-8', mt: 'mt-10' };
+    }
+  };
+
+  const getBorderRadius = (element: 'photo' | 'badge') => {
+    switch (settings.borderRadius) {
+      case 'sharp': return 'rounded-none';
+      case 'pill': return 'rounded-full';
+      default: return element === 'photo' ? 'rounded-2xl' : 'rounded-lg';
+    }
+  };
+
+  const getAlignment = () => {
+    switch (settings.headerAlignment) {
+      case 'center': return 'text-center items-center';
+      case 'right': return 'text-right items-end';
+      default: return 'text-left items-start';
+    }
+  };
+
+  const getFlexAlignment = () => {
+    switch (settings.headerAlignment) {
+      case 'center': return 'justify-center';
+      case 'right': return 'justify-end';
+      default: return 'justify-start';
+    }
+  };
+
+  const spacing = getSpacing();
+  const alignment = getAlignment();
+  const flexAlignment = getFlexAlignment();
+  const bodyAlignClass = settings.bodyAlignment === 'justify' ? 'text-justify' : 'text-left';
+
   return (
     <div className="w-full h-full bg-white text-zinc-900 leading-relaxed" style={{ fontFamily: settings.font }}>
       {/* Header */}
-      <header className="flex items-center gap-8 pb-8 border-b-2" style={{ borderColor: color }}>
-        {personalInfo.photoUrl && (
-          <img src={personalInfo.photoUrl} alt="Profile" className="w-28 h-28 rounded-full object-cover shadow-sm border-2 border-white ring-2 ring-zinc-100" />
+      <header className={`flex ${settings.headerAlignment === 'center' ? 'flex-col text-center' : settings.headerAlignment === 'right' ? 'flex-row-reverse text-right' : 'flex-row text-left'} items-center gap-8 pb-10 border-b-2`} style={{ borderColor: color }}>
+        {settings.showPhoto && personalInfo.photoUrl && (
+          <img src={personalInfo.photoUrl} alt="Profile" className={`w-32 h-32 object-cover shadow-md border-2 border-white ring-2 ring-zinc-100 ${getBorderRadius('photo')}`} />
         )}
-        <div className="flex-1">
+        <div className={`flex-1 flex flex-col ${alignment}`}>
           <h1 className="text-4xl font-extrabold uppercase tracking-tight" style={{ color }}>
             {personalInfo.firstName} {personalInfo.lastName}
           </h1>
-          <h2 className="text-xl font-medium text-zinc-600 mt-1.5">{personalInfo.title}</h2>
+          <h2 className="text-xl font-medium text-zinc-600 mt-2">{personalInfo.title}</h2>
           
-          <div className="flex flex-wrap gap-x-5 gap-y-2 mt-4 text-sm text-zinc-500">
+          <div className={`flex flex-wrap ${flexAlignment} gap-x-6 gap-y-2 mt-6 text-sm text-zinc-500`}>
             {personalInfo.email && (
-              <span className="flex items-center gap-1.5"><Mail className="w-4 h-4" /> {personalInfo.email}</span>
+              <span className="flex items-center gap-2"><Mail className="w-4 h-4" /> {personalInfo.email}</span>
             )}
             {personalInfo.phone && (
-              <span className="flex items-center gap-1.5"><Phone className="w-4 h-4" /> {personalInfo.phone}</span>
+              <span className="flex items-center gap-2"><Phone className="w-4 h-4" /> {personalInfo.phone}</span>
             )}
             {(personalInfo.city || personalInfo.country) && (
-              <span className="flex items-center gap-1.5">
+              <span className="flex items-center gap-2">
                 <MapPin className="w-4 h-4" /> {personalInfo.city}{personalInfo.city && personalInfo.country ? ', ' : ''}{personalInfo.country}
               </span>
             )}
             {personalInfo.links.map(link => (
-              <span key={link.id} className="flex items-center gap-1.5">
+              <span key={link.id} className="flex items-center gap-2">
                 <LinkIcon className="w-4 h-4" /> <a href={`https://${link.url.replace(/^https?:\/\//, '')}`} className="hover:underline hover:text-zinc-800 transition-colors">{link.label}</a>
               </span>
             ))}
@@ -44,30 +81,30 @@ export function ModernTemplate() {
       {/* Summary */}
       {personalInfo.summary && (
         <section className="mt-8">
-          <p className="text-[15px] leading-relaxed text-zinc-700">{personalInfo.summary}</p>
+          <p className={`text-[15px] leading-relaxed text-zinc-700 ${bodyAlignClass}`}>{personalInfo.summary}</p>
         </section>
       )}
 
-      <div className="grid grid-cols-3 gap-10 mt-8">
+      <div className={`grid grid-cols-3 ${spacing.gap} ${spacing.mt}`}>
         {/* Left Column */}
-        <div className="col-span-2 space-y-8">
+        <div className={`col-span-2 ${spacing.spaceY}`}>
           {/* Experience */}
           {experience.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-5 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
                 Experience
               </h3>
-              <div className="space-y-6">
+              <div className={spacing.spaceY}>
                 {experience.map(exp => (
-                  <div key={exp.id} className="relative pl-4 before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-current" style={{ color }}>
+                  <div key={exp.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-current" style={{ color }}>
                     <div className="flex justify-between items-baseline mb-1">
-                      <h4 className="font-semibold text-zinc-900 text-[15px]">{exp.position}</h4>
+                      <h4 className="font-semibold text-zinc-900 text-[17px]">{exp.position}</h4>
                       <span className="text-sm text-zinc-500 font-medium whitespace-nowrap ml-4">
                         {exp.startDate} – {exp.current ? 'Present' : exp.endDate}
                       </span>
                     </div>
-                    <div className="text-sm text-zinc-600 font-medium mb-2.5">{exp.company}</div>
-                    <div className="text-[14px] text-zinc-700 whitespace-pre-line leading-relaxed">
+                    <div className="text-sm text-zinc-600 font-medium mb-4">{exp.company}</div>
+                    <div className={`text-[14px] text-zinc-700 whitespace-pre-line leading-relaxed ${bodyAlignClass}`}>
                       {exp.description}
                     </div>
                   </div>
@@ -79,21 +116,21 @@ export function ModernTemplate() {
           {/* Projects */}
           {projects.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-5 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
                 Projects
               </h3>
-              <div className="space-y-6">
+              <div className={spacing.spaceY}>
                 {projects.map(proj => (
-                  <div key={proj.id} className="relative pl-4 before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-current" style={{ color }}>
+                  <div key={proj.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-current" style={{ color }}>
                     <div className="flex justify-between items-baseline mb-1">
-                      <h4 className="font-semibold text-zinc-900 text-[15px]">
+                      <h4 className="font-semibold text-zinc-900 text-[17px]">
                         {proj.name} {proj.url && <span className="text-sm font-normal text-zinc-500 ml-2">| {proj.url}</span>}
                       </h4>
                       <span className="text-sm text-zinc-500 font-medium whitespace-nowrap ml-4">
                         {proj.startDate} – {proj.endDate}
                       </span>
                     </div>
-                    <div className="text-[14px] text-zinc-700 whitespace-pre-line leading-relaxed mt-2">
+                    <div className={`text-[14px] text-zinc-700 whitespace-pre-line leading-relaxed mt-2 ${bodyAlignClass}`}>
                       {proj.description}
                     </div>
                   </div>
@@ -104,18 +141,18 @@ export function ModernTemplate() {
         </div>
 
         {/* Right Column */}
-        <div className="space-y-8">
+        <div className={spacing.spaceY}>
           {/* Skills */}
           {skills.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-5 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
                 Skills
               </h3>
               <div className="flex flex-wrap gap-2">
                 {skills.map(skill => (
                   <span 
                     key={skill.id} 
-                    className="px-3 py-1.5 text-xs font-medium rounded-lg bg-zinc-50 text-zinc-700 border border-zinc-200/60"
+                    className={`px-3 py-1.5 text-sm font-medium bg-zinc-50 text-zinc-700 border border-zinc-200/60 ${getBorderRadius('badge')}`}
                   >
                     {skill.name}
                   </span>
@@ -127,19 +164,19 @@ export function ModernTemplate() {
           {/* Education */}
           {education.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-5 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
                 Education
               </h3>
-              <div className="space-y-5">
+              <div className={spacing.spaceY}>
                 {education.map(edu => (
-                  <div key={edu.id} className="relative pl-4 before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-current" style={{ color }}>
-                    <h4 className="font-semibold text-zinc-900 text-[15px]">{edu.degree} in {edu.field}</h4>
-                    <div className="text-sm text-zinc-600 mb-1 mt-0.5">{edu.school}</div>
+                  <div key={edu.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-current" style={{ color }}>
+                    <h4 className="font-semibold text-zinc-900 text-[16px]">{edu.degree} in {edu.field}</h4>
+                    <div className="text-sm text-zinc-600 mb-1 mt-1">{edu.school}</div>
                     <div className="text-xs text-zinc-500 font-medium mb-2">
                       {edu.startDate} – {edu.current ? 'Present' : edu.endDate}
                     </div>
                     {edu.description && (
-                      <div className="text-[13px] text-zinc-700 leading-relaxed">{edu.description}</div>
+                      <div className={`text-sm text-zinc-700 leading-relaxed ${bodyAlignClass}`}>{edu.description}</div>
                     )}
                   </div>
                 ))}
@@ -150,14 +187,14 @@ export function ModernTemplate() {
           {/* Certifications */}
           {certifications.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-5 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
                 Certifications
               </h3>
-              <div className="space-y-4">
+              <div className={spacing.spaceY}>
                 {certifications.map(cert => (
-                  <div key={cert.id} className="relative pl-4 before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-current" style={{ color }}>
-                    <h4 className="font-semibold text-zinc-900 text-[14px]">{cert.name}</h4>
-                    <div className="text-[13px] text-zinc-600 mt-0.5">{cert.issuer} | {cert.date}</div>
+                  <div key={cert.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-current" style={{ color }}>
+                    <h4 className="font-semibold text-zinc-900 text-[15px]">{cert.name}</h4>
+                    <div className="text-sm text-zinc-600 mt-1">{cert.issuer} | {cert.date}</div>
                   </div>
                 ))}
               </div>

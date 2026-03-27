@@ -5,40 +5,54 @@
 
 import { EditorSidebar } from './components/forms/EditorSidebar';
 import { ResumePreview } from './components/preview/ResumePreview';
-import { Eye, Edit2, Sparkles, LayoutTemplate } from 'lucide-react';
+import { Eye, Edit2, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Logo } from './components/Logo';
+import { Toaster } from 'sonner';
 
 export default function App() {
   const [showPreview, setShowPreview] = useState(false);
 
   return (
     <div className="flex flex-col h-[100dvh] bg-zinc-50 overflow-hidden font-sans selection:bg-zinc-200 selection:text-zinc-900">
+      <Toaster position="top-center" />
       {/* Top Navigation Bar */}
-      <header className="h-16 glass-panel flex items-center px-4 sm:px-6 shrink-0 z-30 relative">
-        <div className="flex items-center gap-3 text-zinc-900">
-          <div className="bg-zinc-900 p-2 rounded-xl shadow-lg shadow-zinc-900/20">
-            <LayoutTemplate className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-zinc-900">Resumora</span>
-        </div>
+      <header className="h-16 glass-panel flex items-center px-4 sm:px-8 shrink-0 z-40 relative shadow-[0_1px_2px_rgba(0,0,0,0.02),0_4px_16px_rgba(0,0,0,0.02)]">
+        <Logo />
         
-        <div className="ml-auto flex items-center gap-4 text-sm text-zinc-500 font-medium">
-          <span className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[11px] uppercase tracking-wider font-bold border border-emerald-100/50 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" /> Auto-saving
-          </span>
+        <div className="ml-auto flex items-center gap-6 text-sm text-zinc-500 font-medium">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-emerald-50/50 text-emerald-600 rounded-full text-[10px] uppercase tracking-[0.15em] font-black border border-emerald-100/50 shadow-sm"
+          >
+            <motion.div 
+              animate={{ opacity: [1, 0.4, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+            </motion.div>
+            Auto-saving
+          </motion.div>
           
           {/* Mobile Toggle */}
-          <div className="flex bg-zinc-100/80 p-1 rounded-xl lg:hidden border border-zinc-200/50 backdrop-blur-sm shadow-inner">
+          <div className="flex bg-zinc-100/80 p-1 rounded-2xl lg:hidden border border-zinc-200/50 backdrop-blur-md shadow-inner">
             <button 
-              className={cn("flex items-center gap-2 px-4 py-1.5 rounded-lg transition-all duration-300", !showPreview ? "bg-white text-zinc-900 shadow-sm font-semibold scale-100" : "text-zinc-500 hover:text-zinc-900 scale-95")}
+              className={cn(
+                "flex items-center gap-2 px-5 py-2 rounded-xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]", 
+                !showPreview ? "bg-white text-zinc-900 shadow-lg shadow-zinc-200/50 font-bold scale-100 ring-1 ring-black/5" : "text-zinc-500 hover:text-zinc-900 scale-95"
+              )}
               onClick={() => setShowPreview(false)}
             >
               <Edit2 className="w-4 h-4" /> <span className="hidden xs:inline">Edit</span>
             </button>
             <button 
-              className={cn("flex items-center gap-2 px-4 py-1.5 rounded-lg transition-all duration-300", showPreview ? "bg-white text-zinc-900 shadow-sm font-semibold scale-100" : "text-zinc-500 hover:text-zinc-900 scale-95")}
+              className={cn(
+                "flex items-center gap-2 px-5 py-2 rounded-xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]", 
+                showPreview ? "bg-white text-zinc-900 shadow-lg shadow-zinc-200/50 font-bold scale-100 ring-1 ring-black/5" : "text-zinc-500 hover:text-zinc-900 scale-95"
+              )}
               onClick={() => setShowPreview(true)}
             >
               <Eye className="w-4 h-4" /> <span className="hidden xs:inline">Preview</span>
@@ -59,8 +73,9 @@ export default function App() {
 
         {/* Right Panel: Live Preview */}
         <div className={cn(
-          "flex-1 relative absolute inset-0 lg:relative transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-10 bg-zinc-50/50",
-          showPreview ? "translate-x-0" : "translate-x-full lg:translate-x-0"
+          "flex-1 relative lg:relative transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-10 bg-zinc-50/50",
+          showPreview ? "translate-x-0" : "translate-x-full lg:translate-x-0",
+          !showPreview && "absolute inset-0 lg:relative"
         )}>
           <ResumePreview />
         </div>

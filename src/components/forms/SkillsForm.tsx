@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Wand2, Plus, Trash2, GripVertical } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Card } from '../ui/Card';
+import { toast } from 'sonner';
 import {
   DndContext,
   closestCenter,
@@ -46,20 +47,34 @@ export function SkillsForm() {
   const handleSuggest = async () => {
     if (!data.personalInfo.title) return;
     setIsGenerating(true);
-    const suggestions = await suggestSkills(data.personalInfo.title);
-    
-    // Add new skills that don't already exist
-    const existingNames = new Set(data.skills.map(s => s.name.toLowerCase()));
-    suggestions.forEach(skillName => {
-      if (!existingNames.has(skillName.toLowerCase())) {
-        addSkill({
-          id: uuidv4(),
-          name: skillName,
-          level: 'Intermediate',
+    try {
+      const suggestions = await suggestSkills(data.personalInfo.title);
+      
+      // Add new skills that don't already exist
+      const existingNames = new Set(data.skills.map(s => s.name.toLowerCase()));
+      suggestions.forEach(skillName => {
+        if (!existingNames.has(skillName.toLowerCase())) {
+          addSkill({
+            id: uuidv4(),
+            name: skillName,
+            level: 'Intermediate',
+          });
+        }
+      });
+    } catch (error: any) {
+      console.error("Failed to suggest skills:", error);
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', {
+          description: 'Please wait a moment before trying again.',
+        });
+      } else {
+        toast.error('Failed to suggest skills', {
+          description: 'An unexpected error occurred. Please try again.',
         });
       }
-    });
-    setIsGenerating(false);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -130,9 +145,10 @@ function SkillCard({ skill, updateSkill, removeSkill, dragHandleProps, isDraggin
       </div>
       <div className="flex-1 space-y-1">
         <Input 
+          required
           value={skill.name} 
           onChange={(e) => updateSkill(skill.id, { name: e.target.value })} 
-          placeholder="Skill name (e.g. React)"
+          placeholder="Skill name (e.g. React) *"
           className="h-10 text-sm bg-white"
         />
       </div>

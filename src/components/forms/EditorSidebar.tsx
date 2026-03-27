@@ -37,8 +37,8 @@ export function EditorSidebar() {
   return (
     <div className="flex flex-col-reverse md:flex-row h-full bg-transparent relative">
       {/* Navigation */}
-      <div className="w-full md:w-24 lg:w-64 border-t md:border-t-0 md:border-r border-zinc-200/60 bg-white/80 backdrop-blur-xl flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto shrink-0 scrollbar-hide z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] md:shadow-none">
-        <div className="flex flex-row md:flex-col flex-1 p-2 md:p-4 gap-1 md:gap-2 min-w-max md:min-w-0">
+      <div className="w-full md:w-24 lg:w-72 border-t md:border-t-0 md:border-r border-zinc-200/60 bg-white/80 backdrop-blur-2xl flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto shrink-0 scrollbar-hide z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] md:shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+        <div className="flex flex-row md:flex-col md:flex-1 p-2 md:p-6 gap-1 md:gap-3 min-w-max md:min-w-0 items-center md:items-stretch">
           {SECTIONS.map((section) => {
             const Icon = section.icon;
             const isActive = activeSection === section.id;
@@ -47,58 +47,102 @@ export function EditorSidebar() {
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
                 className={cn(
-                  "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-3 px-3 md:px-4 py-2 md:py-3 rounded-xl transition-all duration-300 group relative",
+                  "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0",
                   isActive 
-                    ? "text-zinc-900 md:bg-zinc-100/80 md:text-zinc-900" 
-                    : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
+                    ? "text-zinc-900 md:bg-zinc-900 md:text-white shadow-md md:shadow-xl shadow-zinc-200/50" 
+                    : "text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50"
                 )}
               >
                 {isActive && (
                   <motion.div 
-                    layoutId="active-nav"
-                    className="absolute inset-0 bg-zinc-100/80 rounded-xl md:hidden -z-10" 
+                    layoutId="active-nav-mobile"
+                    className="absolute inset-0 bg-zinc-100 rounded-xl md:rounded-[1.25rem] md:hidden -z-10" 
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
                 <Icon className={cn(
-                  "w-5 h-5 shrink-0 transition-all duration-300", 
-                  isActive ? "text-zinc-900 scale-110" : "text-zinc-400 group-hover:text-zinc-600"
+                  "w-4 h-4 md:w-5 md:h-5 shrink-0 transition-all duration-500", 
+                  isActive ? "scale-110" : "group-hover:scale-110"
                 )} />
                 <span className={cn(
-                  "text-[10px] md:text-sm font-semibold transition-colors tracking-wide",
-                  isActive ? "text-zinc-900" : "text-zinc-500",
+                  "text-[10px] md:text-[13px] font-bold transition-colors tracking-tight",
+                  isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100",
                   "md:block",
                   !isActive && "hidden md:block lg:block"
                 )}>
                   {section.label}
                 </span>
+                {isActive && (
+                  <motion.div 
+                    layoutId="active-nav-indicator"
+                    className="hidden lg:block absolute right-4 w-1.5 h-1.5 rounded-full bg-white/40"
+                  />
+                )}
               </button>
             );
           })}
+          
+          {/* Mobile Clear Button */}
+          <div className="w-px h-6 bg-zinc-200/60 md:hidden mx-0.5 shrink-0" />
+          <Button 
+            variant="ghost" 
+            onClick={handleReset} 
+            className="md:hidden text-red-500 hover:text-white hover:bg-red-500 justify-center px-3 rounded-xl h-10 transition-all duration-500 group shrink-0"
+            title="Clear All Data"
+          >
+            <RotateCcw className="w-4 h-4 shrink-0 group-hover:rotate-[-120deg] transition-transform duration-500" />
+          </Button>
+          
+          {/* Spacer for mobile scrolling right padding issue */}
+          <div className="w-1 md:hidden shrink-0" />
         </div>
-        <div className="p-2 md:p-4 mt-auto border-l md:border-l-0 md:border-t border-zinc-200/60 flex items-center justify-center lg:justify-start">
-          <Button variant="ghost" onClick={handleReset} className="w-full text-red-500 hover:text-red-700 hover:bg-red-50 justify-center lg:justify-start px-3 rounded-xl h-10 md:h-11">
-            <RotateCcw className="w-4 h-4 md:w-5 md:h-5 shrink-0 lg:mr-3" />
-            <span className="hidden lg:block text-sm font-medium">Clear All Data</span>
+
+        {/* Desktop Clear Button */}
+        <div className="hidden md:flex p-3 md:p-6 mt-auto border-t border-zinc-200/60 items-center justify-center lg:justify-start">
+          <Button 
+            variant="ghost" 
+            onClick={handleReset} 
+            className="w-full text-red-500 hover:text-white hover:bg-red-500 justify-center lg:justify-start px-4 rounded-2xl h-12 md:h-14 transition-all duration-500 group"
+          >
+            <RotateCcw className="w-4 h-4 md:w-5 md:h-5 shrink-0 lg:mr-3 group-hover:rotate-[-120deg] transition-transform duration-500" />
+            <span className="hidden lg:block text-sm font-bold tracking-tight">Clear All Data</span>
           </Button>
         </div>
       </div>
 
       {/* Form Area */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 bg-transparent">
+      <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 bg-transparent scroll-smooth">
         <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 bg-white text-zinc-900 rounded-2xl shadow-sm border border-zinc-200/60">
+          <div className="flex items-center gap-6 mb-12">
+            <motion.div 
+              key={activeSection + 'icon'}
+              initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              className="p-4 bg-zinc-900 text-white rounded-[2rem] shadow-2xl shadow-zinc-200 ring-4 ring-zinc-50"
+            >
               {(() => {
                 const ActiveIcon = SECTIONS.find(s => s.id === activeSection)?.icon || User;
-                return <ActiveIcon className="w-6 h-6" />;
+                return <ActiveIcon className="w-7 h-7" />;
               })()}
-            </div>
+            </motion.div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 tracking-tight">
+              <motion.h2 
+                key={activeSection + 'title'}
+                initial={{ x: -10, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tighter"
+              >
                 {SECTIONS.find(s => s.id === activeSection)?.label}
-              </h2>
-              <p className="text-sm text-zinc-500 mt-1">Fill in your details to update the resume.</p>
+              </motion.h2>
+              <motion.p 
+                key={activeSection + 'desc'}
+                initial={{ x: -10, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.1 }}
+                className="text-sm md:text-base font-medium text-zinc-500 mt-1.5"
+              >
+                Update your details to refine your professional profile.
+              </motion.p>
             </div>
           </div>
           <div className="pb-24 md:pb-10">

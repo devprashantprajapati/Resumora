@@ -7,27 +7,58 @@ export function CreativeTemplate() {
 
   const color = settings.color;
 
+  const getSpacing = () => {
+    switch (settings.spacing) {
+      case 'compact': return { mb: 'mb-4', spaceY: 'space-y-4', p: 'p-4' };
+      case 'relaxed': return { mb: 'mb-10', spaceY: 'space-y-8', p: 'p-10' };
+      default: return { mb: 'mb-8', spaceY: 'space-y-6', p: 'p-8' };
+    }
+  };
+
+  const getBorderRadius = (element: 'photo' | 'badge' | 'card') => {
+    switch (settings.borderRadius) {
+      case 'sharp': return 'rounded-none';
+      case 'pill': return 'rounded-full';
+      default: 
+        if (element === 'photo') return 'rounded-2xl';
+        if (element === 'card') return 'rounded-xl';
+        return 'rounded-lg';
+    }
+  };
+
+  const getAlignment = () => {
+    switch (settings.headerAlignment) {
+      case 'left': return 'items-start text-left';
+      case 'right': return 'items-end text-right';
+      default: return 'items-center text-center';
+    }
+  };
+
+  const spacing = getSpacing();
+  const alignment = getAlignment();
+  const bodyAlignClass = settings.bodyAlignment === 'justify' ? 'text-justify' : 'text-left';
+
   return (
     <div className="w-full h-full bg-white text-zinc-900 leading-relaxed flex" style={{ fontFamily: settings.font }}>
       {/* Left Sidebar */}
-      <div className="w-1/3 p-8 text-white h-full min-h-[297mm]" style={{ backgroundColor: color }}>
-        <div className="flex flex-col items-center text-center mb-10">
-          {personalInfo.photoUrl && (
-            <img src={personalInfo.photoUrl} alt="Profile" className="w-32 h-32 rounded-full object-cover border-4 border-white/20 mb-6 shadow-lg" />
+      <div className={`w-1/3 p-6 text-white h-full min-h-[297mm]`} style={{ backgroundColor: color }}>
+        <div className={`flex flex-col ${alignment} mb-8`}>
+          {settings.showPhoto && personalInfo.photoUrl && (
+            <img src={personalInfo.photoUrl} alt="Profile" className={`w-28 h-28 object-cover border-4 border-white/20 mb-4 shadow-lg ${getBorderRadius('photo')}`} />
           )}
-          <h1 className="text-3xl font-bold uppercase tracking-wider mb-2">
+          <h1 className="text-2xl font-bold uppercase tracking-wider mb-1.5">
             {personalInfo.firstName} <br /> {personalInfo.lastName}
           </h1>
-          <h2 className="text-sm font-medium tracking-widest uppercase text-white/80">{personalInfo.title}</h2>
+          <h2 className="text-xs font-medium tracking-widest uppercase text-white/80">{personalInfo.title}</h2>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-6">
           {/* Contact Info */}
           <section>
-            <h3 className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4 border-b border-white/20 pb-2">
+            <h3 className="text-[11px] font-bold uppercase tracking-widest text-white/60 mb-3 border-b border-white/20 pb-1.5">
               Contact
             </h3>
-            <div className="space-y-3 text-sm text-white/90">
+            <div className="space-y-2 text-xs text-white/90">
               {personalInfo.email && (
                 <div className="flex items-center gap-3">
                   <Mail className="w-4 h-4 shrink-0 text-white/70" />
@@ -58,16 +89,16 @@ export function CreativeTemplate() {
           {/* Education */}
           {education.length > 0 && (
             <section>
-              <h3 className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4 border-b border-white/20 pb-2">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-white/60 mb-3 border-b border-white/20 pb-1.5">
                 Education
               </h3>
-              <div className="space-y-5">
+              <div className={spacing.spaceY}>
                 {education.map(edu => (
                   <div key={edu.id}>
-                    <h4 className="font-bold text-sm text-white">{edu.degree}</h4>
-                    <div className="text-sm text-white/80 mt-0.5">{edu.field}</div>
-                    <div className="text-sm text-white/70 mt-1">{edu.school}</div>
-                    <div className="text-xs font-medium text-white/60 mt-1.5">
+                    <h4 className="font-bold text-xs text-white">{edu.degree}</h4>
+                    <div className="text-xs text-white/80 mt-0.5">{edu.field}</div>
+                    <div className="text-xs text-white/70 mt-1">{edu.school}</div>
+                    <div className="text-[11px] font-medium text-white/60 mt-1">
                       {edu.startDate} – {edu.current ? 'Present' : edu.endDate}
                     </div>
                   </div>
@@ -79,12 +110,12 @@ export function CreativeTemplate() {
           {/* Skills */}
           {skills.length > 0 && (
             <section>
-              <h3 className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4 border-b border-white/20 pb-2">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-white/60 mb-3 border-b border-white/20 pb-1.5">
                 Skills
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {skills.map(skill => (
-                  <span key={skill.id} className="px-3 py-1.5 text-xs font-medium rounded-lg bg-white/10 text-white border border-white/20">
+                  <span key={skill.id} className={`px-2.5 py-1 text-[11px] font-medium bg-white/10 text-white border border-white/20 ${getBorderRadius('badge')}`}>
                     {skill.name}
                   </span>
                 ))}
@@ -95,14 +126,14 @@ export function CreativeTemplate() {
       </div>
 
       {/* Right Content Area */}
-      <div className="w-2/3 p-10 bg-zinc-50">
+      <div className={`w-2/3 ${spacing.p} bg-zinc-50`}>
         {/* Summary */}
         {personalInfo.summary && (
-          <section className="mb-10">
-            <h3 className="text-lg font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color }}>
+          <section className={spacing.mb}>
+            <h3 className="text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color }}>
               Profile
             </h3>
-            <p className="text-[15px] leading-relaxed text-zinc-700 text-justify">
+            <p className={`text-xs leading-relaxed text-zinc-700 ${bodyAlignClass}`}>
               {personalInfo.summary}
             </p>
           </section>
@@ -110,21 +141,21 @@ export function CreativeTemplate() {
 
         {/* Experience */}
         {experience.length > 0 && (
-          <section className="mb-10">
-            <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+          <section className={spacing.mb}>
+            <h3 className="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color }}>
               Experience
             </h3>
-            <div className="space-y-8">
+            <div className={spacing.spaceY}>
               {experience.map(exp => (
-                <div key={exp.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-current" style={{ color }}>
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h4 className="font-bold text-zinc-900 text-[16px]">{exp.position}</h4>
-                    <span className="text-xs font-bold text-zinc-500 tracking-wider uppercase whitespace-nowrap ml-4">
+                <div key={exp.id} className="relative pl-5 before:absolute before:left-0 before:top-1.5 before:w-1.5 before:h-1.5 before:rounded-full before:bg-current" style={{ color }}>
+                  <div className="flex justify-between items-baseline mb-0.5">
+                    <h4 className="font-bold text-zinc-900 text-sm">{exp.position}</h4>
+                    <span className="text-[10px] font-bold text-zinc-500 tracking-wider uppercase whitespace-nowrap ml-3">
                       {exp.startDate} – {exp.current ? 'Present' : exp.endDate}
                     </span>
                   </div>
-                  <div className="text-[15px] font-medium text-zinc-600 mb-3">{exp.company}</div>
-                  <div className="text-[14px] text-zinc-700 whitespace-pre-line leading-relaxed">
+                  <div className="text-xs font-medium text-zinc-600 mb-2">{exp.company}</div>
+                  <div className={`text-xs text-zinc-700 whitespace-pre-line leading-relaxed ${bodyAlignClass}`}>
                     {exp.description}
                   </div>
                 </div>
@@ -135,23 +166,23 @@ export function CreativeTemplate() {
 
         {/* Projects */}
         {projects.length > 0 && (
-          <section className="mb-10">
-            <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+          <section className={spacing.mb}>
+            <h3 className="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color }}>
               Projects
             </h3>
-            <div className="space-y-8">
+            <div className={spacing.spaceY}>
               {projects.map(proj => (
-                <div key={proj.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-current" style={{ color }}>
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h4 className="font-bold text-zinc-900 text-[16px]">
+                <div key={proj.id} className="relative pl-5 before:absolute before:left-0 before:top-1.5 before:w-1.5 before:h-1.5 before:rounded-full before:bg-current" style={{ color }}>
+                  <div className="flex justify-between items-baseline mb-0.5">
+                    <h4 className="font-bold text-zinc-900 text-sm">
                       {proj.name}
                     </h4>
-                    <span className="text-xs font-bold text-zinc-500 tracking-wider uppercase whitespace-nowrap ml-4">
+                    <span className="text-[10px] font-bold text-zinc-500 tracking-wider uppercase whitespace-nowrap ml-3">
                       {proj.startDate} – {proj.endDate}
                     </span>
                   </div>
-                  {proj.url && <div className="text-[14px] text-zinc-500 mb-2 italic">{proj.url}</div>}
-                  <div className="text-[14px] text-zinc-700 whitespace-pre-line leading-relaxed mt-2">
+                  {proj.url && <div className="text-[11px] text-zinc-500 mb-1.5 italic">{proj.url}</div>}
+                  <div className={`text-xs text-zinc-700 whitespace-pre-line leading-relaxed mt-1.5 ${bodyAlignClass}`}>
                     {proj.description}
                   </div>
                 </div>
@@ -163,15 +194,15 @@ export function CreativeTemplate() {
         {/* Certifications */}
         {certifications.length > 0 && (
           <section>
-            <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+            <h3 className="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color }}>
               Certifications
             </h3>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-4">
               {certifications.map(cert => (
-                <div key={cert.id} className="bg-white p-4 rounded-xl shadow-sm border border-zinc-200/60">
-                  <h4 className="font-bold text-zinc-900 text-[14px] mb-1">{cert.name}</h4>
-                  <div className="text-[13px] text-zinc-600">{cert.issuer}</div>
-                  <div className="text-[12px] font-medium text-zinc-500 mt-2 tracking-wider uppercase">{cert.date}</div>
+                <div key={cert.id} className={`bg-white p-3 shadow-sm border border-zinc-200/60 ${getBorderRadius('card')}`}>
+                  <h4 className="font-bold text-zinc-900 text-xs mb-0.5">{cert.name}</h4>
+                  <div className="text-[11px] text-zinc-600">{cert.issuer}</div>
+                  <div className="text-[10px] font-medium text-zinc-500 mt-1.5 tracking-wider uppercase">{cert.date}</div>
                 </div>
               ))}
             </div>
