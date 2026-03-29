@@ -1,6 +1,8 @@
 import { useResumeStore } from '@/store/useResumeStore';
 import { Label } from '../ui/Label';
 import { Card } from '../ui/Card';
+import { Button } from '../ui/Button';
+import { RotateCcw } from 'lucide-react';
 
 const COLORS = [
   { name: 'Blue', value: '#3b82f6' },
@@ -24,8 +26,14 @@ const FONTS = [
 ];
 
 export function SettingsForm() {
-  const { data, updateSettings } = useResumeStore();
+  const { data, updateSettings, resetData } = useResumeStore();
   const { settings } = data;
+
+  const handleReset = () => {
+    if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+      resetData();
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -224,6 +232,23 @@ export function SettingsForm() {
             >
               Hide
             </button>
+          </div>
+        </div>
+
+        <div className="pt-8 border-t border-zinc-200/60">
+          <div className="space-y-4">
+            <Label className="text-base font-semibold text-red-600">Danger Zone</Label>
+            <p className="text-sm text-zinc-500">
+              This action will permanently delete all your resume data. This cannot be undone.
+            </p>
+            <Button 
+              variant="outline" 
+              onClick={handleReset} 
+              className="w-full sm:w-auto text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all duration-200"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Clear All Data
+            </Button>
           </div>
         </div>
       </div>

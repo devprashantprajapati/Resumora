@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Link as LinkIcon } from 'lucide-react';
 
 export function ModernTemplate() {
   const { data } = useResumeStore();
-  const { personalInfo, experience, education, skills, projects, certifications, settings } = data;
+  const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
 
   const color = settings.color;
 
@@ -69,7 +69,7 @@ export function ModernTemplate() {
                 <MapPin className="w-4 h-4" /> {personalInfo.city}{personalInfo.city && personalInfo.country ? ', ' : ''}{personalInfo.country}
               </span>
             )}
-            {personalInfo.links.map(link => (
+            {(personalInfo.links || []).map(link => (
               <span key={link.id} className="flex items-center gap-2">
                 <LinkIcon className="w-4 h-4" /> <a href={`https://${link.url.replace(/^https?:\/\//, '')}`} className="hover:underline hover:text-zinc-800 transition-colors">{link.label}</a>
               </span>
@@ -195,6 +195,67 @@ export function ModernTemplate() {
                   <div key={cert.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-current" style={{ color }}>
                     <h4 className="font-semibold text-zinc-900 text-[15px]">{cert.name}</h4>
                     <div className="text-sm text-zinc-600 mt-1">{cert.issuer} | {cert.date}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Languages */}
+          {languages?.length > 0 && (
+            <section>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+                Languages
+              </h3>
+              <div className={spacing.spaceY}>
+                {languages.map(lang => (
+                  <div key={lang.id} className="flex justify-between items-center">
+                    <span className="font-medium text-zinc-900 text-[15px]">{lang.name}</span>
+                    <span className="text-sm text-zinc-500">{lang.proficiency}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Interests */}
+          {interests?.length > 0 && (
+            <section>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+                Interests
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {interests.map(interest => (
+                  <span 
+                    key={interest.id} 
+                    className={`px-3 py-1.5 text-sm font-medium bg-zinc-50 text-zinc-700 border border-zinc-200/60 ${getBorderRadius('badge')}`}
+                  >
+                    {interest.name}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* References */}
+          {references?.length > 0 && (
+            <section>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+                References
+              </h3>
+              <div className={spacing.spaceY}>
+                {references.map(ref => (
+                  <div key={ref.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-current" style={{ color }}>
+                    <h4 className="font-semibold text-zinc-900 text-[15px]">{ref.name}</h4>
+                    {ref.position && ref.company && (
+                      <div className="text-sm text-zinc-600 mt-1">{ref.position}, {ref.company}</div>
+                    )}
+                    {(ref.email || ref.phone) && (
+                      <div className="text-xs text-zinc-500 mt-1">
+                        {ref.email && <div>{ref.email}</div>}
+                        {ref.phone && <div>{ref.phone}</div>}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

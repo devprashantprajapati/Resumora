@@ -2,7 +2,7 @@ import { useResumeStore } from '@/store/useResumeStore';
 
 export function MinimalTemplate() {
   const { data } = useResumeStore();
-  const { personalInfo, experience, education, skills, projects, certifications, settings } = data;
+  const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
 
   const getSpacing = () => {
     switch (settings.spacing) {
@@ -63,7 +63,7 @@ export function MinimalTemplate() {
           {(personalInfo.city || personalInfo.country) && (
             <span>• {personalInfo.city}{personalInfo.city && personalInfo.country ? ', ' : ''}{personalInfo.country}</span>
           )}
-          {personalInfo.links.map(link => (
+          {(personalInfo.links || []).map(link => (
             <span key={link.id}>• <a href={`https://${link.url.replace(/^https?:\/\//, '')}`} className="hover:underline">{link.label}</a></span>
           ))}
         </div>
@@ -153,7 +153,7 @@ export function MinimalTemplate() {
           )}
 
           {certifications.length > 0 && (
-            <section>
+            <section className={spacing.mb}>
               <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
                 Certifications
               </h3>
@@ -167,12 +167,38 @@ export function MinimalTemplate() {
               </div>
             </section>
           )}
+
+          {/* References */}
+          {references?.length > 0 && (
+            <section>
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+                References
+              </h3>
+              <div className="space-y-3">
+                {references.map(ref => (
+                  <div key={ref.id}>
+                    <h4 className="font-bold text-zinc-900 text-xs">{ref.name}</h4>
+                    {ref.position && ref.company && (
+                      <div className="text-[11px] text-zinc-600 italic">{ref.position}, {ref.company}</div>
+                    )}
+                    {(ref.email || ref.phone) && (
+                      <div className="text-[11px] text-zinc-500 mt-0.5">
+                        {ref.email && <span>{ref.email}</span>}
+                        {ref.email && ref.phone && <span className="mx-1">•</span>}
+                        {ref.phone && <span>{ref.phone}</span>}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
-        {/* Skills */}
+        {/* Skills & Others */}
         <div>
           {skills.length > 0 && (
-            <section>
+            <section className={spacing.mb}>
               <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
                 Skills
               </h3>
@@ -180,6 +206,39 @@ export function MinimalTemplate() {
                 {skills.map(skill => (
                   <span key={skill.id} className="text-xs text-zinc-700">
                     {skill.name}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Languages */}
+          {languages?.length > 0 && (
+            <section className={spacing.mb}>
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+                Languages
+              </h3>
+              <div className="space-y-1.5">
+                {languages.map(lang => (
+                  <div key={lang.id} className="flex justify-between text-xs">
+                    <span className="font-bold text-zinc-900">{lang.name}</span>
+                    <span className="text-zinc-500">{lang.proficiency}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Interests */}
+          {interests?.length > 0 && (
+            <section>
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+                Interests
+              </h3>
+              <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+                {interests.map(interest => (
+                  <span key={interest.id} className="text-xs text-zinc-700">
+                    {interest.name}
                   </span>
                 ))}
               </div>

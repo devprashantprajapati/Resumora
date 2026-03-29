@@ -26,7 +26,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export function CertificationsForm() {
   const { data, addCertification, updateCertification, removeCertification, reorderItems } = useResumeStore();
-  const [expandedId, setExpandedId] = useState<string | null>(data.certifications[0]?.id || null);
+  const [expandedId, setExpandedId] = useState<string | null>((data.certifications || [])[0]?.id || null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -65,10 +65,10 @@ export function CertificationsForm() {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={data.certifications.map(c => c.id)}
+          items={(data.certifications || []).map(c => c.id)}
           strategy={verticalListSortingStrategy}
         >
-          {data.certifications.map((cert) => (
+          {(data.certifications || []).map((cert) => (
             <SortableItem key={cert.id} id={cert.id}>
               <CertificationCard 
                 cert={cert} 

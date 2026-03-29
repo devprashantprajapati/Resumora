@@ -1,32 +1,53 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { PersonalInfoForm } from './PersonalInfoForm';
 import { ExperienceForm } from './ExperienceForm';
 import { EducationForm } from './EducationForm';
 import { SkillsForm } from './SkillsForm';
 import { ProjectsForm } from './ProjectsForm';
 import { CertificationsForm } from './CertificationsForm';
+import { LanguagesForm } from './LanguagesForm';
+import { InterestsForm } from './InterestsForm';
+import { ReferencesForm } from './ReferencesForm';
 import { SettingsForm } from './SettingsForm';
-import { User, Briefcase, GraduationCap, Wrench, FolderGit2, Award, Palette, RotateCcw } from 'lucide-react';
+import { User, Briefcase, GraduationCap, Wrench, FolderGit2, Award, Palette, RotateCcw, Languages, Heart, Users } from 'lucide-react';
 import { useResumeStore } from '@/store/useResumeStore';
 import { Button } from '../ui/Button';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const SECTIONS = [
+const CONTENT_SECTIONS = [
   { id: 'personal', label: 'Personal Info', icon: User, component: PersonalInfoForm },
   { id: 'experience', label: 'Experience', icon: Briefcase, component: ExperienceForm },
   { id: 'education', label: 'Education', icon: GraduationCap, component: EducationForm },
   { id: 'skills', label: 'Skills', icon: Wrench, component: SkillsForm },
   { id: 'projects', label: 'Projects', icon: FolderGit2, component: ProjectsForm },
   { id: 'certifications', label: 'Certifications', icon: Award, component: CertificationsForm },
-  { id: 'settings', label: 'Design & Settings', icon: Palette, component: SettingsForm },
+  { id: 'languages', label: 'Languages', icon: Languages, component: LanguagesForm },
+  { id: 'interests', label: 'Interests', icon: Heart, component: InterestsForm },
+  { id: 'references', label: 'References', icon: Users, component: ReferencesForm },
 ];
 
-export function EditorSidebar() {
-  const [activeSection, setActiveSection] = useState(SECTIONS[0].id);
-  const { resetData } = useResumeStore();
+const SETTINGS_SECTION = { id: 'settings', label: 'Design & Settings', icon: Palette, component: SettingsForm };
 
-  const ActiveComponent = SECTIONS.find(s => s.id === activeSection)?.component || PersonalInfoForm;
+const ALL_SECTIONS = [...CONTENT_SECTIONS, SETTINGS_SECTION];
+
+export function EditorSidebar() {
+  const [activeSection, setActiveSection] = useState(CONTENT_SECTIONS[0].id);
+  const { resetData } = useResumeStore();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const activeItemRef = useRef<HTMLButtonElement>(null);
+
+  const ActiveComponent = ALL_SECTIONS.find(s => s.id === activeSection)?.component || PersonalInfoForm;
+
+  useEffect(() => {
+    if (activeItemRef.current) {
+      activeItemRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      });
+    }
+  }, [activeSection]);
 
   const handleReset = () => {
     if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
@@ -37,76 +58,110 @@ export function EditorSidebar() {
   return (
     <div className="flex flex-col-reverse md:flex-row h-full bg-transparent relative">
       {/* Navigation */}
-      <div className="w-full md:w-24 lg:w-72 border-t md:border-t-0 md:border-r border-zinc-200/60 bg-white/80 backdrop-blur-2xl flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto shrink-0 scrollbar-hide z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] md:shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-        <div className="flex flex-row md:flex-col md:flex-1 p-2 md:p-6 gap-1 md:gap-3 min-w-max md:min-w-0 items-center md:items-stretch">
-          {SECTIONS.map((section) => {
-            const Icon = section.icon;
-            const isActive = activeSection === section.id;
-            return (
-              <button
-                key={section.id}
-                onClick={() => setActiveSection(section.id)}
-                className={cn(
-                  "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0",
-                  isActive 
-                    ? "text-zinc-900 md:bg-zinc-900 md:text-white shadow-md md:shadow-xl shadow-zinc-200/50" 
-                    : "text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50"
-                )}
-              >
-                {isActive && (
-                  <motion.div 
-                    layoutId="active-nav-mobile"
-                    className="absolute inset-0 bg-zinc-100 rounded-xl md:rounded-[1.25rem] md:hidden -z-10" 
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <Icon className={cn(
-                  "w-4 h-4 md:w-5 md:h-5 shrink-0 transition-all duration-500", 
-                  isActive ? "scale-110" : "group-hover:scale-110"
-                )} />
-                <span className={cn(
-                  "text-[10px] md:text-[13px] font-bold transition-colors tracking-tight",
-                  isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100",
-                  "md:block",
-                  !isActive && "hidden md:block lg:block"
-                )}>
-                  {section.label}
-                </span>
-                {isActive && (
-                  <motion.div 
-                    layoutId="active-nav-indicator"
-                    className="hidden lg:block absolute right-4 w-1.5 h-1.5 rounded-full bg-white/40"
-                  />
-                )}
-              </button>
-            );
-          })}
-          
-          {/* Mobile Clear Button */}
-          <div className="w-px h-6 bg-zinc-200/60 md:hidden mx-0.5 shrink-0" />
-          <Button 
-            variant="ghost" 
-            onClick={handleReset} 
-            className="md:hidden text-red-500 hover:text-white hover:bg-red-500 justify-center px-3 rounded-xl h-10 transition-all duration-500 group shrink-0"
-            title="Clear All Data"
-          >
-            <RotateCcw className="w-4 h-4 shrink-0 group-hover:rotate-[-120deg] transition-transform duration-500" />
-          </Button>
-          
-          {/* Spacer for mobile scrolling right padding issue */}
-          <div className="w-1 md:hidden shrink-0" />
+      <div className="w-full md:w-24 lg:w-72 border-t md:border-t-0 md:border-r border-zinc-200/60 bg-white/80 backdrop-blur-2xl flex flex-row md:flex-col shrink-0 z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] md:shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+        
+        {/* Scrollable Content Sections */}
+        <div 
+          ref={scrollContainerRef}
+          className="flex flex-row md:flex-col flex-1 p-2 md:p-6 gap-1 md:gap-3 min-w-0 md:min-h-0 items-center md:items-stretch overflow-x-auto md:overflow-y-auto scrollbar-hide"
+        >
+          <div className="flex flex-row md:flex-col gap-1 md:gap-3 min-w-max md:min-w-0 h-full">
+            {CONTENT_SECTIONS.map((section) => {
+              const Icon = section.icon;
+              const isActive = activeSection === section.id;
+              return (
+                <button
+                  key={section.id}
+                  ref={isActive ? activeItemRef : null}
+                  onClick={() => setActiveSection(section.id)}
+                  className={cn(
+                    "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0",
+                    isActive 
+                      ? "text-zinc-900 md:bg-zinc-900 md:text-white shadow-md md:shadow-xl shadow-zinc-200/50" 
+                      : "text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50"
+                  )}
+                >
+                  {isActive && (
+                    <motion.div 
+                      layoutId="active-nav-mobile"
+                      className="absolute inset-0 bg-zinc-100 rounded-xl md:rounded-[1.25rem] md:hidden -z-10" 
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                  <Icon className={cn(
+                    "w-4 h-4 md:w-5 md:h-5 shrink-0 transition-all duration-500", 
+                    isActive ? "scale-110" : "group-hover:scale-110"
+                  )} />
+                  <span className={cn(
+                    "text-[10px] md:text-[13px] font-bold transition-colors tracking-tight",
+                    isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100",
+                    "md:block",
+                    !isActive && "hidden md:block lg:block"
+                  )}>
+                    {section.label}
+                  </span>
+                  {isActive && (
+                    <motion.div 
+                      layoutId="active-nav-indicator"
+                      className="hidden lg:block absolute right-4 w-1.5 h-1.5 rounded-full bg-white/40"
+                    />
+                  )}
+                </button>
+              );
+            })}
+            {/* Spacer for mobile scrolling right padding issue */}
+            <div className="w-2 md:hidden shrink-0" />
+            <div className="h-2 hidden md:block lg:hidden shrink-0" />
+          </div>
         </div>
 
-        {/* Desktop Clear Button */}
-        <div className="hidden md:flex p-3 md:p-6 mt-auto border-t border-zinc-200/60 items-center justify-center lg:justify-start">
-          <Button 
-            variant="ghost" 
-            onClick={handleReset} 
-            className="w-full text-red-500 hover:text-white hover:bg-red-500 justify-center lg:justify-start px-4 rounded-2xl h-12 md:h-14 transition-all duration-500 group"
+        {/* Mobile Fixed Right Area (Design & Settings) */}
+        <div className="flex md:hidden items-center p-2 border-l border-zinc-200/60 bg-white/95 shrink-0 z-30 shadow-[-8px_0_16px_rgba(0,0,0,0.03)]">
+          <button
+            onClick={() => setActiveSection(SETTINGS_SECTION.id)}
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative",
+              activeSection === SETTINGS_SECTION.id 
+                ? "text-white bg-zinc-900 shadow-md shadow-zinc-200/50" 
+                : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+            )}
           >
-            <RotateCcw className="w-4 h-4 md:w-5 md:h-5 shrink-0 lg:mr-3 group-hover:rotate-[-120deg] transition-transform duration-500" />
-            <span className="hidden lg:block text-sm font-bold tracking-tight">Clear All Data</span>
-          </Button>
+            {activeSection === SETTINGS_SECTION.id && (
+              <motion.div 
+                layoutId="active-nav-mobile"
+                className="absolute inset-0 bg-zinc-900 rounded-xl -z-10" 
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              />
+            )}
+            <Palette className={cn("w-5 h-5 shrink-0 transition-all duration-500", activeSection === SETTINGS_SECTION.id ? "scale-110 text-white" : "group-hover:scale-110")} />
+            <span className={cn("text-[10px] font-bold transition-colors tracking-tight", activeSection === SETTINGS_SECTION.id ? "text-white" : "")}>
+              Design
+            </span>
+          </button>
+        </div>
+
+        {/* Desktop Fixed Bottom Area */}
+        <div className="hidden md:flex flex-col p-3 md:p-6 mt-auto border-t border-zinc-200/60 gap-3 bg-zinc-50/50">
+          <button
+            onClick={() => setActiveSection(SETTINGS_SECTION.id)}
+            className={cn(
+              "flex flex-col md:flex-row items-center justify-center lg:justify-start gap-1 lg:gap-4 px-3 lg:px-5 py-2 lg:py-4 rounded-xl lg:rounded-[1.25rem] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0",
+              activeSection === SETTINGS_SECTION.id 
+                ? "text-white bg-zinc-900 shadow-xl shadow-zinc-200/50" 
+                : "text-zinc-600 hover:text-zinc-900 hover:bg-white border border-transparent hover:border-zinc-200/60 shadow-sm"
+            )}
+          >
+            <Palette className={cn("w-4 h-4 md:w-5 md:h-5 shrink-0 transition-all duration-500", activeSection === SETTINGS_SECTION.id ? "scale-110" : "group-hover:scale-110")} />
+            <span className={cn("text-[10px] lg:text-[13px] font-bold transition-colors tracking-tight hidden lg:block", activeSection === SETTINGS_SECTION.id ? "opacity-100" : "opacity-70 group-hover:opacity-100")}>
+              Design & Settings
+            </span>
+            {activeSection === SETTINGS_SECTION.id && (
+              <motion.div 
+                layoutId="active-nav-indicator"
+                className="hidden lg:block absolute right-4 w-1.5 h-1.5 rounded-full bg-white/40"
+              />
+            )}
+          </button>
         </div>
       </div>
 
@@ -121,7 +176,7 @@ export function EditorSidebar() {
               className="p-4 bg-zinc-900 text-white rounded-[2rem] shadow-2xl shadow-zinc-200 ring-4 ring-zinc-50"
             >
               {(() => {
-                const ActiveIcon = SECTIONS.find(s => s.id === activeSection)?.icon || User;
+                const ActiveIcon = ALL_SECTIONS.find(s => s.id === activeSection)?.icon || User;
                 return <ActiveIcon className="w-7 h-7" />;
               })()}
             </motion.div>
@@ -132,7 +187,7 @@ export function EditorSidebar() {
                 animate={{ x: 0, opacity: 1 }}
                 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tighter"
               >
-                {SECTIONS.find(s => s.id === activeSection)?.label}
+                {ALL_SECTIONS.find(s => s.id === activeSection)?.label}
               </motion.h2>
               <motion.p 
                 key={activeSection + 'desc'}
@@ -163,3 +218,4 @@ export function EditorSidebar() {
     </div>
   );
 }
+

@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Link as LinkIcon } from 'lucide-react';
 
 export function CreativeTemplate() {
   const { data } = useResumeStore();
-  const { personalInfo, experience, education, skills, projects, certifications, settings } = data;
+  const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
 
   const color = settings.color;
 
@@ -77,7 +77,7 @@ export function CreativeTemplate() {
                   <span>{personalInfo.city}{personalInfo.city && personalInfo.country ? ', ' : ''}{personalInfo.country}</span>
                 </div>
               )}
-              {personalInfo.links.map(link => (
+              {(personalInfo.links || []).map(link => (
                 <div key={link.id} className="flex items-center gap-3">
                   <LinkIcon className="w-4 h-4 shrink-0 text-white/70" />
                   <a href={`https://${link.url.replace(/^https?:\/\//, '')}`} className="hover:underline hover:text-white transition-colors break-all">{link.label}</a>
@@ -117,6 +117,39 @@ export function CreativeTemplate() {
                 {skills.map(skill => (
                   <span key={skill.id} className={`px-2.5 py-1 text-[11px] font-medium bg-white/10 text-white border border-white/20 ${getBorderRadius('badge')}`}>
                     {skill.name}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Languages */}
+          {languages?.length > 0 && (
+            <section>
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-white/60 mb-3 border-b border-white/20 pb-1.5">
+                Languages
+              </h3>
+              <div className="space-y-1.5">
+                {languages.map(lang => (
+                  <div key={lang.id} className="flex justify-between text-xs text-white/90">
+                    <span className="font-bold">{lang.name}</span>
+                    <span className="text-white/70">{lang.proficiency}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Interests */}
+          {interests?.length > 0 && (
+            <section>
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-white/60 mb-3 border-b border-white/20 pb-1.5">
+                Interests
+              </h3>
+              <div className="flex flex-wrap gap-1.5">
+                {interests.map(interest => (
+                  <span key={interest.id} className={`px-2.5 py-1 text-[11px] font-medium bg-white/10 text-white border border-white/20 ${getBorderRadius('badge')}`}>
+                    {interest.name}
                   </span>
                 ))}
               </div>
@@ -193,7 +226,7 @@ export function CreativeTemplate() {
 
         {/* Certifications */}
         {certifications.length > 0 && (
-          <section>
+          <section className={spacing.mb}>
             <h3 className="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color }}>
               Certifications
             </h3>
@@ -203,6 +236,31 @@ export function CreativeTemplate() {
                   <h4 className="font-bold text-zinc-900 text-xs mb-0.5">{cert.name}</h4>
                   <div className="text-[11px] text-zinc-600">{cert.issuer}</div>
                   <div className="text-[10px] font-medium text-zinc-500 mt-1.5 tracking-wider uppercase">{cert.date}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* References */}
+        {references?.length > 0 && (
+          <section>
+            <h3 className="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color }}>
+              References
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              {references.map(ref => (
+                <div key={ref.id} className={`bg-white p-3 shadow-sm border border-zinc-200/60 ${getBorderRadius('card')}`}>
+                  <h4 className="font-bold text-zinc-900 text-xs mb-0.5">{ref.name}</h4>
+                  {ref.position && ref.company && (
+                    <div className="text-[11px] text-zinc-600">{ref.position}, {ref.company}</div>
+                  )}
+                  {(ref.email || ref.phone) && (
+                    <div className="text-[10px] font-medium text-zinc-500 mt-1.5">
+                      {ref.email && <div>{ref.email}</div>}
+                      {ref.phone && <div>{ref.phone}</div>}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

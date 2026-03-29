@@ -30,7 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export function ExperienceForm() {
   const { data, addExperience, updateExperience, removeExperience, reorderItems } = useResumeStore();
   const [enhancingId, setEnhancingId] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(data.experience[0]?.id || null);
+  const [expandedId, setExpandedId] = useState<string | null>((data.experience || [])[0]?.id || null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -99,10 +99,10 @@ export function ExperienceForm() {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={data.experience.map(e => e.id)}
+          items={(data.experience || []).map(e => e.id)}
           strategy={verticalListSortingStrategy}
         >
-          {data.experience.map((exp) => (
+          {(data.experience || []).map((exp) => (
             <SortableItem key={exp.id} id={exp.id}>
               <ExperienceCard 
                 exp={exp} 

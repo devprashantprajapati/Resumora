@@ -27,7 +27,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export function EducationForm() {
   const { data, addEducation, updateEducation, removeEducation, reorderItems } = useResumeStore();
-  const [expandedId, setExpandedId] = useState<string | null>(data.education[0]?.id || null);
+  const [expandedId, setExpandedId] = useState<string | null>((data.education || [])[0]?.id || null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -69,10 +69,10 @@ export function EducationForm() {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={data.education.map(e => e.id)}
+          items={(data.education || []).map(e => e.id)}
           strategy={verticalListSortingStrategy}
         >
-          {data.education.map((edu) => (
+          {(data.education || []).map((edu) => (
             <SortableItem key={edu.id} id={edu.id}>
               <EducationCard 
                 edu={edu} 

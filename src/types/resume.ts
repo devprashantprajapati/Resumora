@@ -51,6 +51,23 @@ export type ResumeData = {
     date: string;
     url: string;
   }[];
+  languages: {
+    id: string;
+    name: string;
+    proficiency: string;
+  }[];
+  interests: {
+    id: string;
+    name: string;
+  }[];
+  references: {
+    id: string;
+    name: string;
+    position: string;
+    company: string;
+    email: string;
+    phone: string;
+  }[];
   settings: {
     template: 'modern' | 'minimal' | 'corporate' | 'creative';
     color: string;
@@ -63,6 +80,41 @@ export type ResumeData = {
     headerAlignment: 'left' | 'center' | 'right';
     bodyAlignment: 'left' | 'justify';
   };
+};
+
+export const emptyResumeData: ResumeData = {
+  personalInfo: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    country: '',
+    title: '',
+    summary: '',
+    links: [],
+  },
+  experience: [],
+  education: [],
+  skills: [],
+  projects: [],
+  certifications: [],
+  languages: [],
+  interests: [],
+  references: [],
+  settings: {
+    template: 'modern',
+    color: '#3b82f6',
+    font: 'Inter',
+    fontSize: 'medium',
+    spacing: 'normal',
+    borderRadius: 'rounded',
+    showPhoto: true,
+    paperSize: 'a4',
+    headerAlignment: 'left',
+    bodyAlignment: 'left',
+  }
 };
 
 export const initialResumeData: ResumeData = {
@@ -137,6 +189,24 @@ export const initialResumeData: ResumeData = {
       issuer: 'Amazon Web Services',
       date: '2021-08',
       url: '',
+    }
+  ],
+  languages: [
+    { id: '1', name: 'English', proficiency: 'Native' },
+    { id: '2', name: 'Spanish', proficiency: 'Intermediate' }
+  ],
+  interests: [
+    { id: '1', name: 'Open Source Contribution' },
+    { id: '2', name: 'Photography' }
+  ],
+  references: [
+    {
+      id: '1',
+      name: 'Jane Smith',
+      position: 'CTO',
+      company: 'Tech Innovators Inc.',
+      email: 'jane.smith@example.com',
+      phone: '+1 (555) 987-6543'
     }
   ],
   settings: {

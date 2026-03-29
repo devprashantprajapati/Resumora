@@ -12,7 +12,29 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { exportTXT, exportJSON, exportDOCX, exportMarkdown, exportHTML } from '@/lib/exportUtils';
 import { ATSChecker } from './ATSChecker';
 import { Logo } from '../Logo';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { TransformWrapper, TransformComponent, useControls } from 'react-zoom-pan-pinch';
+
+// Create a component to handle centering
+const ZoomController = ({ initialScale }: { initialScale: number }) => {
+  const { centerView } = useControls();
+  
+  useEffect(() => {
+    const handleResize = () => {
+      // Small delay to let container resize
+      setTimeout(() => {
+        centerView(initialScale, 0);
+      }, 50);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    // Initial center
+    handleResize();
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, [centerView, initialScale]);
+
+  return null;
+};
 
 export function ResumePreview() {
   const { data } = useResumeStore();
@@ -122,8 +144,9 @@ export function ResumePreview() {
       onTransformed={(ref, state) => setCurrentScale(state.scale)}
       onInit={(ref) => setCurrentScale(ref.state.scale)}
     >
-      {({ zoomIn, zoomOut, resetTransform }) => (
+      {({ zoomIn, zoomOut, centerView }) => (
         <div className="flex flex-col h-full bg-transparent relative" ref={containerRef}>
+          <ZoomController initialScale={initialScale} />
           {/* Floating Toolbar */}
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
@@ -261,7 +284,7 @@ export function ResumePreview() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={() => resetTransform()}
+                onClick={() => centerView(initialScale, 500)}
                 className="hidden sm:flex h-8 w-8 md:h-9 md:w-9 rounded-full text-zinc-500 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all active:scale-90"
                 title="Fit to Screen"
               >
@@ -272,11 +295,14 @@ export function ResumePreview() {
 
           {/* Preview Area */}
           <div className="flex-1 overflow-hidden bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] cursor-grab active:cursor-grabbing">
-            <TransformComponent wrapperStyle={{ width: '100%', height: '100%' }} contentStyle={{ margin: 'auto' }}>
+            <TransformComponent 
+              wrapperStyle={{ width: '100%', height: '100%' }}
+              contentStyle={{ width: 'max-content', height: 'max-content' }}
+            >
               <div 
                 ref={componentRef}
                 className={cn(
-                  "bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] ring-1 ring-black/5 rounded-sm transition-all duration-500 group/paper hover:shadow-[0_50px_120px_-20px_rgba(0,0,0,0.25)] relative overflow-hidden shrink-0 my-8",
+                  "bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] ring-1 ring-black/5 rounded-sm transition-all duration-500 group/paper hover:shadow-[0_50px_120px_-20px_rgba(0,0,0,0.25)] relative overflow-hidden shrink-0",
                   getFontSizeClass()
                 )}
                 style={{ 

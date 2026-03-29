@@ -2,7 +2,7 @@ import { useResumeStore } from '@/store/useResumeStore';
 
 export function CorporateTemplate() {
   const { data } = useResumeStore();
-  const { personalInfo, experience, education, skills, projects, certifications, settings } = data;
+  const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
 
   const color = settings.color;
 
@@ -70,10 +70,10 @@ export function CorporateTemplate() {
           {personalInfo.email && <span>{personalInfo.email}</span>}
         </div>
         <div className={`flex flex-wrap ${flexAlignment} items-center gap-x-3 gap-y-1 text-xs text-zinc-700 mt-1`}>
-          {personalInfo.links.map((link, index) => (
+          {(personalInfo.links || []).map((link, index) => (
             <span key={link.id} className="flex items-center gap-3">
               <a href={`https://${link.url.replace(/^https?:\/\//, '')}`} className="hover:underline font-medium" style={{ color }}>{link.url}</a>
-              {index < personalInfo.links.length - 1 && <span className="text-zinc-400">•</span>}
+              {index < (personalInfo.links || []).length - 1 && <span className="text-zinc-400">•</span>}
             </span>
           ))}
         </div>
@@ -196,7 +196,66 @@ export function CorporateTemplate() {
             </div>
           </section>
         )}
+
+        {/* Languages */}
+        {languages?.length > 0 && (
+          <section>
+            <h3 className="text-sm font-bold uppercase tracking-widest mb-3 border-b-2 border-zinc-200 pb-1" style={{ color }}>
+              Languages
+            </h3>
+            <div className="space-y-1">
+              {languages.map(lang => (
+                <div key={lang.id} className="flex justify-between text-xs">
+                  <span className="font-bold text-zinc-900">{lang.name}</span>
+                  <span className="text-zinc-700">{lang.proficiency}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Interests */}
+        {interests?.length > 0 && (
+          <section>
+            <h3 className="text-sm font-bold uppercase tracking-widest mb-3 border-b-2 border-zinc-200 pb-1" style={{ color }}>
+              Interests
+            </h3>
+            <div className="flex flex-wrap gap-1.5">
+              {interests.map(interest => (
+                <span key={interest.id} className="text-xs text-zinc-700 bg-zinc-100 px-2 py-1 rounded">
+                  {interest.name}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
+
+      {/* References */}
+      {references?.length > 0 && (
+        <section className={`mt-6 ${spacing.mb}`}>
+          <h3 className="text-sm font-bold uppercase tracking-widest mb-3 border-b-2 border-zinc-200 pb-1" style={{ color }}>
+            References
+          </h3>
+          <div className="grid grid-cols-2 gap-4">
+            {references.map(ref => (
+              <div key={ref.id} className="text-xs">
+                <span className="font-bold text-zinc-900 block">{ref.name}</span>
+                {ref.position && ref.company && (
+                  <span className="text-zinc-700 block">{ref.position}, {ref.company}</span>
+                )}
+                {(ref.email || ref.phone) && (
+                  <span className="text-zinc-500 block mt-0.5">
+                    {ref.email && <span>{ref.email}</span>}
+                    {ref.email && ref.phone && <span className="mx-1">•</span>}
+                    {ref.phone && <span>{ref.phone}</span>}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

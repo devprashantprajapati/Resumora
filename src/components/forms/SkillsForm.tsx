@@ -51,7 +51,7 @@ export function SkillsForm() {
       const suggestions = await suggestSkills(data.personalInfo.title);
       
       // Add new skills that don't already exist
-      const existingNames = new Set(data.skills.map(s => s.name.toLowerCase()));
+      const existingNames = new Set((data.skills || []).map(s => s.name.toLowerCase()));
       suggestions.forEach(skillName => {
         if (!existingNames.has(skillName.toLowerCase())) {
           addSkill({
@@ -112,11 +112,11 @@ export function SkillsForm() {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={data.skills.map(s => s.id)}
+          items={(data.skills || []).map(s => s.id)}
           strategy={verticalListSortingStrategy}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {data.skills.map((skill) => (
+            {(data.skills || []).map((skill) => (
               <SortableItem key={skill.id} id={skill.id}>
                 <SkillCard 
                   skill={skill} 

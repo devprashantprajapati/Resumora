@@ -30,7 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export function ProjectsForm() {
   const { data, addProject, updateProject, removeProject, reorderItems } = useResumeStore();
   const [enhancingId, setEnhancingId] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(data.projects[0]?.id || null);
+  const [expandedId, setExpandedId] = useState<string | null>((data.projects || [])[0]?.id || null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -98,10 +98,10 @@ export function ProjectsForm() {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={data.projects.map(p => p.id)}
+          items={(data.projects || []).map(p => p.id)}
           strategy={verticalListSortingStrategy}
         >
-          {data.projects.map((project) => (
+          {(data.projects || []).map((project) => (
             <SortableItem key={project.id} id={project.id}>
               <ProjectCard 
                 project={project} 

@@ -46,13 +46,13 @@ export function PersonalInfoForm() {
 
   const addLink = () => {
     updatePersonalInfo({
-      links: [...personalInfo.links, { id: uuidv4(), label: '', url: '' }]
+      links: [...(personalInfo.links || []), { id: uuidv4(), label: '', url: '' }]
     });
   };
 
   const updateLink = (id: string, field: 'label' | 'url', value: string) => {
     updatePersonalInfo({
-      links: personalInfo.links.map(link => 
+      links: (personalInfo.links || []).map(link => 
         link.id === id ? { ...link, [field]: value } : link
       )
     });
@@ -60,7 +60,7 @@ export function PersonalInfoForm() {
 
   const removeLink = (id: string) => {
     updatePersonalInfo({
-      links: personalInfo.links.filter(link => link.id !== id)
+      links: (personalInfo.links || []).filter(link => link.id !== id)
     });
   };
 
@@ -221,7 +221,7 @@ export function PersonalInfoForm() {
         </div>
         
         <div className="space-y-3">
-          {personalInfo.links.map((link) => (
+          {(personalInfo.links || []).map((link) => (
             <div key={link.id} className="flex items-center gap-3 bg-zinc-50/50 p-2 rounded-xl border border-zinc-200/60">
               <Input 
                 placeholder="Label (e.g. LinkedIn)" 
