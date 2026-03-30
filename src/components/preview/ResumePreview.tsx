@@ -4,12 +4,11 @@ import { MinimalTemplate } from './templates/MinimalTemplate';
 import { CorporateTemplate } from './templates/CorporateTemplate';
 import { CreativeTemplate } from './templates/CreativeTemplate';
 import { useRef, useState, useEffect } from 'react';
-import { useReactToPrint } from 'react-to-print';
 import { Button } from '../ui/Button';
 import { Download, ChevronDown, FileText, FileJson, FileType2, FileCode, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { exportTXT, exportJSON, exportDOCX, exportMarkdown, exportHTML } from '@/lib/exportUtils';
+import { exportTXT, exportJSON, exportDOCX, exportMarkdown, exportHTML, exportPDF } from '@/lib/exportUtils';
 import { ATSChecker } from './ATSChecker';
 import { Logo } from '../Logo';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -24,11 +23,6 @@ export function ResumePreview() {
   const [isReady, setIsReady] = useState(false);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const exportMenuRef = useRef<HTMLDivElement>(null);
-
-  const handlePrint = useReactToPrint({
-    contentRef: componentRef,
-    documentTitle: `${data.personalInfo.firstName}_${data.personalInfo.lastName}_Resume`,
-  });
 
   // Calculate initial fit scale
   useEffect(() => {
@@ -166,7 +160,12 @@ export function ResumePreview() {
                       </div>
                       <div className="grid gap-1">
                         <button
-                          onClick={() => { handlePrint(); setIsExportMenuOpen(false); }}
+                          onClick={() => { 
+                            if (componentRef.current) {
+                              exportPDF(componentRef.current, data);
+                            }
+                            setIsExportMenuOpen(false); 
+                          }}
                           className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
                         >
                           <div className="w-9 h-9 rounded-xl bg-red-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">

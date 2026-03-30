@@ -1,5 +1,59 @@
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { ResumeData } from '@/types/resume';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+
+export const exportPDF = async (element: HTMLElement, data: ResumeData) => {
+  try {
+    // Temporarily store original styles to prevent scaling issues during capture
+    const originalTransform = element.style.transform;
+    element.style.transform = 'none';
+    
+    const canvas = await html2canvas(element, {
+      scale: 2, // Higher resolution for better text clarity
+      useCORS: true,
+      logging: false,
+      backgroundColor: '#ffffff',
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight
+    });
+    
+    // Restore original styles
+    element.style.transform = originalTransform;
+    
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+    
+    const isA4 = data.settings.paperSize === 'a4';
+    const pdfWidth = isA4 ? 210 : 215.9; // mm (A4 or Letter)
+    const pdfHeight = isA4 ? 297 : 279.4; // mm
+    
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: isA4 ? 'a4' : 'letter'
+    });
+    
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfRatio = pdfWidth / pdfHeight;
+    const imgRatio = imgProps.width / imgProps.height;
+    
+    let finalWidth = pdfWidth;
+    let finalHeight = pdfHeight;
+    
+    // Ensure the image fits perfectly without distortion
+    if (imgRatio > pdfRatio) {
+      finalHeight = pdfWidth / imgRatio;
+    } else {
+      finalWidth = pdfHeight * imgRatio;
+    }
+    
+    pdf.addImage(imgData, 'JPEG', 0, 0, finalWidth, finalHeight);
+    pdf.save(`${data.personalInfo.firstName || 'My'}_${data.personalInfo.lastName || 'Resume'}.pdf`.replace(/\s+/g, '_'));
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    throw error;
+  }
+};
 
 export const exportTXT = (data: ResumeData) => {
   const { personalInfo, experience, education, skills, projects, certifications } = data;
