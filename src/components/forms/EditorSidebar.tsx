@@ -33,27 +33,36 @@ const ALL_SECTIONS = [...CONTENT_SECTIONS, SETTINGS_SECTION];
 
 export function EditorSidebar() {
   const [activeSection, setActiveSection] = useState(CONTENT_SECTIONS[0].id);
-  const { resetData } = useResumeStore();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const activeItemRef = useRef<HTMLButtonElement>(null);
 
   const ActiveComponent = ALL_SECTIONS.find(s => s.id === activeSection)?.component || PersonalInfoForm;
 
   useEffect(() => {
-    if (activeItemRef.current) {
-      activeItemRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
-      });
+    if (activeItemRef.current && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const item = activeItemRef.current;
+      
+      const containerRect = container.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+
+      const isMobile = window.innerWidth < 768;
+
+      if (isMobile) {
+        const scrollLeft = container.scrollLeft + itemRect.left - containerRect.left - containerRect.width / 2 + itemRect.width / 2;
+        container.scrollTo({
+          left: scrollLeft,
+          behavior: 'smooth'
+        });
+      } else {
+        const scrollTop = container.scrollTop + itemRect.top - containerRect.top - containerRect.height / 2 + itemRect.height / 2;
+        container.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+      }
     }
   }, [activeSection]);
-
-  const handleReset = () => {
-    if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-      resetData();
-    }
-  };
 
   return (
     <div className="flex flex-col-reverse md:flex-row h-full bg-transparent relative">

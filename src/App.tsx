@@ -73,9 +73,8 @@ export default function App() {
 
         {/* Right Panel: Live Preview */}
         <div className={cn(
-          "flex-1 relative lg:relative transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-10 bg-zinc-50/50",
-          showPreview ? "translate-x-0" : "translate-x-full lg:translate-x-0",
-          !showPreview && "absolute inset-0 lg:relative"
+          "absolute inset-0 lg:relative lg:flex-1 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-10 bg-zinc-50/50",
+          showPreview ? "translate-x-0" : "translate-x-full lg:translate-x-0"
         )}>
           <ResumePreview />
         </div>

@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { useResumeStore } from '@/store/useResumeStore';
 import { Label } from '../ui/Label';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, AlertTriangle } from 'lucide-react';
 
 const COLORS = [
   { name: 'Blue', value: '#3b82f6' },
@@ -28,10 +29,16 @@ const FONTS = [
 export function SettingsForm() {
   const { data, updateSettings, resetData } = useResumeStore();
   const { settings } = data;
+  const [isConfirmingReset, setIsConfirmingReset] = useState(false);
 
   const handleReset = () => {
-    if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+    if (isConfirmingReset) {
       resetData();
+      setIsConfirmingReset(false);
+    } else {
+      setIsConfirmingReset(true);
+      // Auto-reset the confirmation state after 3 seconds
+      setTimeout(() => setIsConfirmingReset(false), 3000);
     }
   };
 
@@ -242,12 +249,25 @@ export function SettingsForm() {
               This action will permanently delete all your resume data. This cannot be undone.
             </p>
             <Button 
-              variant="outline" 
+              variant={isConfirmingReset ? "destructive" : "outline"}
               onClick={handleReset} 
-              className="w-full sm:w-auto text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all duration-200"
+              className={`w-full sm:w-auto transition-all duration-200 ${
+                isConfirmingReset 
+                  ? "bg-red-600 hover:bg-red-700 text-white border-red-600" 
+                  : "text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
+              }`}
             >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              Clear All Data
+              {isConfirmingReset ? (
+                <>
+                  <AlertTriangle className="w-4 h-4 mr-2" />
+                  Click again to confirm
+                </>
+              ) : (
+                <>
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  Clear All Data
+                </>
+              )}
             </Button>
           </div>
         </div>

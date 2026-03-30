@@ -15,7 +15,37 @@ const ACTION_VERBS = [
   'facilitated', 'generated', 'guided', 'identified', 'initiated',
   'innovated', 'maximized', 'motivated', 'operated', 'organized',
   'pioneered', 'planned', 'produced', 'promoted', 'reduced',
-  'revamped', 'saved', 'streamlined', 'supervised', 'upgraded'
+  'revamped', 'saved', 'streamlined', 'supervised', 'upgraded',
+  'accelerated', 'adapted', 'administered', 'advocated', 'allocated',
+  'amplified', 'assessed', 'audited', 'calculated', 'centralized',
+  'championed', 'clarified', 'coached', 'compiled', 'completed',
+  'composed', 'computed', 'conceived', 'conducted', 'consolidated',
+  'constructed', 'consulted', 'controlled', 'converted', 'coordinated',
+  'cultivated', 'customized', 'delegated', 'delivered', 'demonstrated',
+  'deployed', 'devised', 'diagnosed', 'discovered', 'dispatched',
+  'drafted', 'drove', 'earned', 'edited', 'educated', 'elevated',
+  'empowered', 'enabled', 'engineered', 'enhanced', 'evaluated',
+  'examined', 'expanded', 'expedited', 'extracted', 'forecasted',
+  'formulated', 'fostered', 'founded', 'gained', 'gathered', 'halted',
+  'headed', 'hosted', 'illustrated', 'incorporated', 'inspired',
+  'installed', 'instituted', 'instructed', 'integrated', 'interpreted',
+  'interviewed', 'introduced', 'invented', 'investigated', 'mentored',
+  'mobilized', 'modeled', 'moderated', 'monitored', 'navigated',
+  'overhauled', 'overversaw', 'participated', 'partnered', 'performed',
+  'persuaded', 'pitched', 'positioned', 'predicted', 'prepared',
+  'presented', 'prevented', 'processed', 'programmed', 'projected',
+  'published', 'purchased', 'qualified', 'quantified', 'recommended',
+  'reconciled', 'recruited', 'redesigned', 'regulated', 'rehabilitated',
+  'reinforced', 'remodeled', 'rendered', 'reorganized', 'reported',
+  'represented', 'researched', 'restored', 'restructured', 'retrieved',
+  'reviewed', 'revised', 'revitalized', 'routed', 'safeguarded',
+  'screened', 'secured', 'selected', 'shaped', 'simplified', 'solved',
+  'sparked', 'specified', 'standardized', 'steered', 'stimulated',
+  'strategized', 'strengthened', 'structured', 'succeeded', 'suggested',
+  'supplied', 'supported', 'surpassed', 'sustained', 'synthesized',
+  'systematized', 'targeted', 'taught', 'tested', 'tracked', 'traded',
+  'translated', 'troushot', 'unified', 'updated', 'utilized', 'validated',
+  'verified', 'visualized', 'won', 'wrote'
 ];
 
 export const analyzeResume = (data: ResumeData): ATSResult => {
@@ -24,21 +54,23 @@ export const analyzeResume = (data: ResumeData): ATSResult => {
   const improvements: string[] = [];
 
   // 1. Contact Info (15 points)
-  if (data.personalInfo.email) {
+  if (data.personalInfo.email && data.personalInfo.email.includes('@')) {
     score += 5;
     good.push('Email address is included.');
   } else {
-    improvements.push('Add a professional email address.');
+    improvements.push('Add a valid professional email address.');
   }
 
-  if (data.personalInfo.phone) {
+  if (data.personalInfo.phone && data.personalInfo.phone.length >= 7) {
     score += 5;
     good.push('Phone number is included.');
   } else {
-    improvements.push('Add a phone number for recruiters to reach you.');
+    improvements.push('Add a valid phone number for recruiters to reach you.');
   }
 
-  const hasLinkedIn = data.personalInfo.links?.some(l => l.label.toLowerCase() === 'linkedin');
+  const hasLinkedIn = data.personalInfo.links?.some(l => 
+    l.label.toLowerCase().includes('linkedin') || l.url.toLowerCase().includes('linkedin')
+  );
   if (hasLinkedIn) {
     score += 5;
     good.push('LinkedIn profile is linked.');
@@ -60,7 +92,9 @@ export const analyzeResume = (data: ResumeData): ATSResult => {
 
     // Check if summary contains skills
     if (data.skills.length > 0) {
-      const hasSkillsInSummary = data.skills.some(skill => summaryText.includes(skill.name.toLowerCase()));
+      const hasSkillsInSummary = data.skills.some(skill => 
+        skill.name.length > 2 && summaryText.includes(skill.name.toLowerCase())
+      );
       if (hasSkillsInSummary) {
         score += 3;
         good.push('Professional summary effectively incorporates your listed skills.');
@@ -92,11 +126,17 @@ export const analyzeResume = (data: ResumeData): ATSResult => {
       if (desc.length >= 100) rolesWithGoodLength++;
 
       const lowerDesc = desc.toLowerCase();
-      if (ACTION_VERBS.some(verb => lowerDesc.includes(verb))) {
+      
+      // Check for at least 2 action verbs per role for better scoring
+      const verbsFound = ACTION_VERBS.filter(verb => lowerDesc.includes(verb));
+      if (verbsFound.length >= 1) {
         rolesWithActionVerbs++;
       }
 
-      if (/\d+/.test(desc) || /%|\$|#/.test(desc)) {
+      // Improved metrics detection: looks for %, $, or numbers that aren't just years (like 2023)
+      // Matches numbers followed by +, k, m, %, or preceded by $, or numbers that are 1-3 digits long (like "increased by 20")
+      const hasMetrics = /(?:%|\$|#)|(?:\b\d{1,3}\b(?!\s*(?:st|nd|rd|th|year|years|month|months|day|days)))|(?:\b\d+(?:k|m|b)\b)/i.test(desc);
+      if (hasMetrics) {
         rolesWithMetrics++;
       }
     });
@@ -136,10 +176,12 @@ export const analyzeResume = (data: ResumeData): ATSResult => {
 
     // Skill Contextualization (10 points)
     if (data.skills.length > 0) {
-      const skillsInExp = data.skills.filter(skill => allExpText.includes(skill.name.toLowerCase()));
+      const skillsInExp = data.skills.filter(skill => 
+        skill.name.length > 2 && allExpText.includes(skill.name.toLowerCase())
+      );
       const skillMatchRatio = skillsInExp.length / data.skills.length;
 
-      if (skillMatchRatio >= 0.5) {
+      if (skillMatchRatio >= 0.4) {
         score += 10;
         good.push('Excellent contextualization! Many of your listed skills are backed up in your experience descriptions.');
       } else if (skillMatchRatio > 0) {

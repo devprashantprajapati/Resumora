@@ -12,29 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { exportTXT, exportJSON, exportDOCX, exportMarkdown, exportHTML } from '@/lib/exportUtils';
 import { ATSChecker } from './ATSChecker';
 import { Logo } from '../Logo';
-import { TransformWrapper, TransformComponent, useControls } from 'react-zoom-pan-pinch';
-
-// Create a component to handle centering
-const ZoomController = ({ initialScale }: { initialScale: number }) => {
-  const { centerView } = useControls();
-  
-  useEffect(() => {
-    const handleResize = () => {
-      // Small delay to let container resize
-      setTimeout(() => {
-        centerView(initialScale, 0);
-      }, 50);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    // Initial center
-    handleResize();
-    
-    return () => window.removeEventListener('resize', handleResize);
-  }, [centerView, initialScale]);
-
-  return null;
-};
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 export function ResumePreview() {
   const { data } = useResumeStore();
@@ -127,7 +105,7 @@ export function ResumePreview() {
   const paperDims = getPaperDimensions();
 
   if (!isReady) {
-    return <div ref={containerRef} className="flex-1 h-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px]" />;
+    return <div ref={containerRef} className="flex-1 h-full bg-zinc-100/50 bg-dot-pattern" />;
   }
 
   return (
@@ -146,34 +124,32 @@ export function ResumePreview() {
     >
       {({ zoomIn, zoomOut, centerView }) => (
         <div className="flex flex-col h-full bg-transparent relative" ref={containerRef}>
-          <ZoomController initialScale={initialScale} />
           {/* Floating Toolbar */}
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className="fixed md:absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center justify-between gap-1 md:gap-1.5 px-3 md:px-4 py-2.5 md:py-3 bg-white/80 backdrop-blur-3xl border border-white/40 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1),0_0_20px_rgba(255,255,255,0.5)] z-40 ring-1 ring-black/5 group/toolbar max-w-[95vw] md:max-w-none w-[310px]"
+            className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center justify-between gap-1 md:gap-3 px-2 md:px-5 py-1.5 md:py-3.5 bg-white/90 backdrop-blur-xl border border-white/60 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)] z-40 ring-1 ring-black/5 group/toolbar w-[330px] sm:w-auto max-w-[95vw] md:max-w-none"
           >
-            <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/toolbar:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/toolbar:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
             
             <div className="flex-shrink-0">
               <ATSChecker />
             </div>
             
-            <div className="w-px h-8 bg-zinc-200/50 mx-0.5 md:mx-1" />
+            <div className="w-px h-6 md:h-8 bg-zinc-200 mx-0.5 md:mx-2 flex-shrink-0" />
 
             {/* Zoom Controls & Export */}
-            <div className="flex items-center gap-0.5 md:gap-1 bg-zinc-900/5 p-1 rounded-full border border-black/5 shadow-inner">
+            <div className="flex items-center gap-0.5 md:gap-2 bg-zinc-100/50 p-1 md:p-1.5 rounded-full border border-black/5 shadow-inner">
               <div className="relative flex-shrink-0" ref={exportMenuRef}>
                 <Button 
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
-                  className="h-8 w-8 md:h-9 md:w-9 rounded-full transition-all active:scale-90 bg-[#eaeaf5] text-zinc-900 hover:bg-[#d8d8e9] shadow-sm ring-1 ring-black/5"
-                  style={{ width: '30px', height: '30px' }}
+                  className="h-8 w-8 md:h-10 md:w-10 rounded-full transition-all active:scale-95 bg-zinc-900 text-white hover:bg-zinc-800 shadow-md hover:shadow-lg flex-shrink-0"
                   title="Download"
                 >
-                  <Download className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  <Download className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />
                 </Button>
 
                 <AnimatePresence>
@@ -182,65 +158,65 @@ export function ResumePreview() {
                       initial={{ opacity: 0, y: -15, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -15, scale: 0.95 }}
-                      transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                      className="absolute bottom-full mb-4 left-0 md:-left-4 w-64 bg-white/95 backdrop-blur-2xl border border-white/50 rounded-[2rem] shadow-[0_-20px_50px_rgba(0,0,0,0.15)] overflow-hidden p-2 z-50 ring-1 ring-black/5"
+                      transition={{ type: "spring", damping: 25, stiffness: 400 }}
+                      className="absolute bottom-[calc(100%+1rem)] left-1/2 -translate-x-1/2 md:translate-x-0 md:-left-4 w-64 bg-white/95 backdrop-blur-2xl border border-white/60 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] overflow-hidden p-2.5 z-50 ring-1 ring-black/5"
                     >
-                      <div className="px-4 py-3 mb-1">
-                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Select Format</span>
+                      <div className="px-4 py-3 mb-1 flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest">Export As</span>
                       </div>
                       <div className="grid gap-1">
                         <button
                           onClick={() => { handlePrint(); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all group text-left font-bold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                            <FileText className="w-4 h-4 text-red-500" />
+                          <div className="w-9 h-9 rounded-xl bg-red-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                            <FileText className="w-4.5 h-4.5 text-red-600" />
                           </div>
                           PDF Document
                         </button>
                         <button
                           onClick={() => { exportDOCX(data); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all group text-left font-bold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                            <FileType2 className="w-4 h-4 text-blue-500" />
+                          <div className="w-9 h-9 rounded-xl bg-blue-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                            <FileType2 className="w-4.5 h-4.5 text-blue-600" />
                           </div>
                           Word Document
                         </button>
-                        <div className="h-px bg-zinc-100/50 my-1 mx-2" />
+                        <div className="h-px bg-zinc-100 my-1.5 mx-3" />
                         <button
                           onClick={() => { exportTXT(data); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all group text-left font-bold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-zinc-50 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                            <FileText className="w-4 h-4 text-zinc-400" />
+                          <div className="w-9 h-9 rounded-xl bg-zinc-100 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                            <FileText className="w-4.5 h-4.5 text-zinc-600" />
                           </div>
                           Plain Text
                         </button>
                         <button
                           onClick={() => { exportMarkdown(data); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all group text-left font-bold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-purple-50 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                            <FileCode className="w-4 h-4 text-purple-500" />
+                          <div className="w-9 h-9 rounded-xl bg-purple-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                            <FileCode className="w-4.5 h-4.5 text-purple-600" />
                           </div>
                           Markdown
                         </button>
                         <button
                           onClick={() => { exportJSON(data); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all group text-left font-bold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-yellow-50 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                            <FileJson className="w-4 h-4 text-yellow-500" />
+                          <div className="w-9 h-9 rounded-xl bg-yellow-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                            <FileJson className="w-4.5 h-4.5 text-yellow-600" />
                           </div>
                           JSON Resume
                         </button>
                         <button
                           onClick={() => { exportHTML(data); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded-2xl transition-all group text-left font-bold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-orange-50 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                            <FileCode className="w-4 h-4 text-orange-500" />
+                          <div className="w-9 h-9 rounded-xl bg-orange-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                            <FileCode className="w-4.5 h-4.5 text-orange-600" />
                           </div>
                           HTML Resume
                         </button>
@@ -250,21 +226,21 @@ export function ResumePreview() {
                 </AnimatePresence>
               </div>
 
-              <div className="w-px h-4 bg-zinc-200/50 mx-0.5" />
+              <div className="w-px h-4 md:h-5 bg-zinc-200 mx-0.5 md:mx-1 flex-shrink-0" />
 
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={() => zoomOut(0.1)}
-                className="h-8 w-8 md:h-9 md:w-9 rounded-full text-zinc-500 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all active:scale-90"
+                onClick={(e) => { e.preventDefault(); zoomOut(0.25); }}
+                className="h-8 w-8 md:h-10 md:w-10 rounded-full text-zinc-600 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all active:scale-95 flex-shrink-0"
                 title="Zoom Out"
               >
-                <ZoomOut className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <ZoomOut className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />
               </Button>
               
-              <div className="flex flex-col items-center min-w-[2.5rem] md:min-w-[3.5rem] select-none px-0.5 md:px-1">
-                <span className="text-[8px] md:text-[9px] font-black text-zinc-400 uppercase tracking-widest leading-none mb-0.5 opacity-70">Zoom</span>
-                <span className="text-[10px] md:text-xs font-bold text-zinc-900 tabular-nums">
+              <div className="flex flex-col items-center min-w-[2.5rem] md:min-w-[3.5rem] select-none px-0.5 md:px-1 flex-shrink-0">
+                <span className="text-[8px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-widest leading-none mb-0.5">Zoom</span>
+                <span className="text-[10px] md:text-sm font-bold text-zinc-800 tabular-nums">
                   {Math.round(currentScale * 100)}%
                 </span>
               </div>
@@ -272,29 +248,30 @@ export function ResumePreview() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={() => zoomIn(0.1)}
-                className="h-8 w-8 md:h-9 md:w-9 rounded-full text-zinc-500 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all active:scale-90"
+                onClick={(e) => { e.preventDefault(); zoomIn(0.25); }}
+                className="h-8 w-8 md:h-10 md:w-10 rounded-full text-zinc-600 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all active:scale-95 flex-shrink-0"
                 title="Zoom In"
               >
-                <ZoomIn className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <ZoomIn className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />
               </Button>
               
-              <div className="hidden sm:block w-px h-4 bg-zinc-200/50 mx-0.5" />
+              <div className="w-px h-4 md:h-5 bg-zinc-200 mx-0.5 md:mx-1 flex-shrink-0" />
               
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={() => centerView(initialScale, 500)}
-                className="hidden sm:flex h-8 w-8 md:h-9 md:w-9 rounded-full text-zinc-500 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all active:scale-90"
+                onClick={(e) => { e.preventDefault(); centerView(initialScale, 500); }}
+                className="flex h-8 w-8 md:h-10 md:w-10 rounded-full text-zinc-600 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all active:scale-95 flex-shrink-0"
                 title="Fit to Screen"
               >
-                <Maximize className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <Maximize className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />
               </Button>
             </div>
           </motion.div>
 
           {/* Preview Area */}
-          <div className="flex-1 overflow-hidden bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] cursor-grab active:cursor-grabbing">
+          <div className="flex-1 overflow-hidden bg-zinc-100/50 bg-dot-pattern cursor-grab active:cursor-grabbing relative">
+            <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
             <TransformComponent 
               wrapperStyle={{ width: '100%', height: '100%' }}
               contentStyle={{ width: 'max-content', height: 'max-content' }}
@@ -302,7 +279,7 @@ export function ResumePreview() {
               <div 
                 ref={componentRef}
                 className={cn(
-                  "bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] ring-1 ring-black/5 rounded-sm transition-all duration-500 group/paper hover:shadow-[0_50px_120px_-20px_rgba(0,0,0,0.25)] relative overflow-hidden shrink-0",
+                  "bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15),0_0_0_1px_rgba(0,0,0,0.05)] rounded-sm transition-all duration-500 group/paper hover:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.2),0_0_0_1px_rgba(0,0,0,0.05)] relative overflow-hidden shrink-0 my-12 md:my-16",
                   getFontSizeClass()
                 )}
                 style={{ 
@@ -313,7 +290,7 @@ export function ResumePreview() {
                 }}
               >
                 {/* Watermark */}
-                <div className="absolute bottom-6 right-8 pointer-events-none select-none opacity-[0.08] group-hover/paper:opacity-[0.15] transition-opacity duration-700 flex items-center gap-2">
+                <div className="absolute bottom-6 right-8 pointer-events-none select-none opacity-[0.06] group-hover/paper:opacity-[0.12] transition-opacity duration-700 flex items-center gap-2">
                   <Logo className="scale-75 origin-right" showText={false} />
                   <span className="text-[12px] font-black tracking-[0.4em] uppercase text-zinc-900">Resumora</span>
                 </div>
