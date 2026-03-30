@@ -289,7 +289,7 @@ export function ResumePreview() {
                 }}
               >
                 {/* Watermark */}
-                <div className="absolute bottom-6 right-8 pointer-events-none select-none opacity-[0.06] group-hover/paper:opacity-[0.12] transition-opacity duration-700 flex items-center gap-2">
+                <div id="resume-watermark" className="absolute bottom-6 right-8 pointer-events-none select-none opacity-[0.06] group-hover/paper:opacity-[0.12] transition-opacity duration-700 flex items-center gap-2">
                   <Logo className="scale-75 origin-right" showText={false} />
                   <span className="text-[12px] font-black tracking-[0.4em] uppercase text-zinc-900">Resumora</span>
                 </div>

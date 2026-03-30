@@ -1,27 +1,67 @@
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { ResumeData } from '@/types/resume';
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image-more';
 import { jsPDF } from 'jspdf';
 
 export const exportPDF = async (element: HTMLElement, data: ResumeData) => {
   try {
-    // Temporarily store original styles to prevent scaling issues during capture
-    const originalTransform = element.style.transform;
-    element.style.transform = 'none';
+    // Create a clone of the element to avoid modifying the visible UI
+    const clone = element.cloneNode(true) as HTMLElement;
     
-    const canvas = await html2canvas(element, {
-      scale: 2, // Higher resolution for better text clarity
-      useCORS: true,
-      logging: false,
-      backgroundColor: '#ffffff',
-      windowWidth: element.scrollWidth,
-      windowHeight: element.scrollHeight
+    // Apply necessary styles to the clone for perfect capturing
+    clone.style.position = 'absolute';
+    clone.style.left = '-9999px';
+    clone.style.top = '0';
+    clone.style.transform = 'none';
+    clone.style.boxShadow = 'none';
+    clone.style.borderRadius = '0';
+    clone.style.margin = '0';
+    clone.className = clone.className.replace(/my-\d+/g, '').replace(/md:my-\d+/g, '').replace(/shadow-\[[^\]]*\]/g, '');
+    
+    // Hide watermark in clone
+    const watermark = clone.querySelector('#resume-watermark') as HTMLElement;
+    if (watermark) {
+      watermark.style.display = 'none';
+    }
+    
+    // Append clone to body so we can compute styles and dom-to-image can render it
+    document.body.appendChild(clone);
+    
+    // FIX FOR BLACK LINES: Tailwind sets global border-style: solid with border-width: 0.
+    // dom-to-image sometimes misinterprets this and draws thick black lines.
+    // We explicitly set border-style: none on elements that have 0px border width.
+    const originalElements = [element, ...Array.from(element.querySelectorAll('*'))];
+    const clonedElements = [clone, ...Array.from(clone.querySelectorAll('*'))];
+    
+    originalElements.forEach((el, index) => {
+      if (!(el instanceof HTMLElement)) return;
+      const clonedEl = clonedElements[index] as HTMLElement;
+      if (!clonedEl) return;
+      
+      const compStyle = window.getComputedStyle(el);
+      if (compStyle.borderTopWidth === '0px') clonedEl.style.borderTopStyle = 'none';
+      if (compStyle.borderRightWidth === '0px') clonedEl.style.borderRightStyle = 'none';
+      if (compStyle.borderBottomWidth === '0px') clonedEl.style.borderBottomStyle = 'none';
+      if (compStyle.borderLeftWidth === '0px') clonedEl.style.borderLeftStyle = 'none';
     });
     
-    // Restore original styles
-    element.style.transform = originalTransform;
+    // Use dom-to-image-more which supports modern CSS like oklch
+    const scale = 2; // Higher resolution
+    const imgData = await domtoimage.toJpeg(clone, {
+      quality: 1.0,
+      bgcolor: '#ffffff',
+      width: element.clientWidth * scale,
+      height: element.clientHeight * scale,
+      style: {
+        transform: `scale(${scale})`,
+        transformOrigin: 'top left',
+        width: `${element.clientWidth}px`,
+        height: `${element.clientHeight}px`
+      }
+    });
     
-    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+    // Clean up the clone
+    document.body.removeChild(clone);
     
     const isA4 = data.settings.paperSize === 'a4';
     const pdfWidth = isA4 ? 210 : 215.9; // mm (A4 or Letter)
