@@ -20,8 +20,12 @@ export const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 10 : 1,
+    zIndex: isDragging ? 50 : 1,
     position: 'relative' as const,
+    ...(isDragging ? {
+      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+      scale: '1.02',
+    } : {})
   };
 
   return (

@@ -73,8 +73,8 @@ export function LanguagesForm() {
         </SortableContext>
       </DndContext>
 
-      <Button variant="outline" className="w-full border-dashed border-2 hover:border-zinc-300 hover:bg-zinc-50/50 text-zinc-600 hover:text-zinc-600 transition-all" onClick={handleAdd}>
-        <Plus className="w-4 h-4 mr-2" />
+      <Button variant="outline" className="w-full border-dashed border-2 border-zinc-300/80 bg-zinc-50/50 hover:border-zinc-400 hover:bg-zinc-100/80 text-zinc-600 hover:text-zinc-900 transition-all duration-300 rounded-xl h-12 shadow-sm hover:shadow-md font-semibold" onClick={handleAdd}>
+        <Plus className="w-5 h-5 mr-2 text-zinc-400 group-hover:text-zinc-600" />
         Add Language
       </Button>
     </div>
@@ -83,7 +83,7 @@ export function LanguagesForm() {
 
 function LanguageCard({ lang, updateLanguage, removeLanguage, dragHandleProps, isDragging }: any) {
   return (
-    <Card className={`p-3 flex items-center gap-3 border-zinc-200/60 bg-white/40 hover:bg-white/60 transition-colors ${isDragging ? 'opacity-50' : ''}`}>
+    <Card className={`p-3 flex items-center gap-3 border-zinc-200/60 bg-white/40 hover:bg-white/60 transition-colors pro-card ${isDragging ? 'opacity-50' : ''}`}>
       <div {...dragHandleProps} className="p-1 text-zinc-400 hover:text-zinc-600 cursor-grab active:cursor-grabbing rounded-lg hover:bg-zinc-100">
         <GripVertical className="w-4 h-4" />
       </div>
@@ -100,7 +100,7 @@ function LanguageCard({ lang, updateLanguage, removeLanguage, dragHandleProps, i
         <select 
           value={lang.proficiency}
           onChange={(e) => updateLanguage(lang.id, { proficiency: e.target.value })}
-          className="flex h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 py-1 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-zinc-500/20 focus:border-zinc-500 hover:bg-white"
+          className="flex h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 py-1 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-zinc-500/20 focus:border-zinc-500 hover:bg-white pro-input"
         >
           <option value="Native">Native</option>
           <option value="Fluent">Fluent</option>

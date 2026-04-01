@@ -86,8 +86,8 @@ export function EditorSidebar() {
                   className={cn(
                     "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0",
                     isActive 
-                      ? "text-zinc-900 md:bg-zinc-900 md:text-white shadow-md md:shadow-xl shadow-zinc-200/50" 
-                      : "text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50"
+                      ? "text-zinc-900 md:bg-zinc-900 md:text-white shadow-sm md:shadow-xl shadow-zinc-200/50" 
+                      : "text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50/80"
                   )}
                 >
                   {isActive && (

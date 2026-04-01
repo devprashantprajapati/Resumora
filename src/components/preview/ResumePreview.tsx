@@ -166,18 +166,18 @@ export function ResumePreview() {
                             }
                             setIsExportMenuOpen(false); 
                           }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
-                          <div className="w-9 h-9 rounded-xl bg-red-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                          <div className="w-9 h-9 rounded-xl bg-red-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-red-200/80 transition-all duration-300 shadow-sm">
                             <FileText className="w-4.5 h-4.5 text-red-600" />
                           </div>
                           PDF Document
                         </button>
                         <button
                           onClick={() => { exportDOCX(data); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
-                          <div className="w-9 h-9 rounded-xl bg-blue-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                          <div className="w-9 h-9 rounded-xl bg-blue-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-blue-200/80 transition-all duration-300 shadow-sm">
                             <FileType2 className="w-4.5 h-4.5 text-blue-600" />
                           </div>
                           Word Document
@@ -185,36 +185,36 @@ export function ResumePreview() {
                         <div className="h-px bg-zinc-100 my-1.5 mx-3" />
                         <button
                           onClick={() => { exportTXT(data); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
-                          <div className="w-9 h-9 rounded-xl bg-zinc-100 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                          <div className="w-9 h-9 rounded-xl bg-zinc-100 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-zinc-200 transition-all duration-300 shadow-sm">
                             <FileText className="w-4.5 h-4.5 text-zinc-600" />
                           </div>
                           Plain Text
                         </button>
                         <button
                           onClick={() => { exportMarkdown(data); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
-                          <div className="w-9 h-9 rounded-xl bg-purple-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                          <div className="w-9 h-9 rounded-xl bg-purple-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-purple-200/80 transition-all duration-300 shadow-sm">
                             <FileCode className="w-4.5 h-4.5 text-purple-600" />
                           </div>
                           Markdown
                         </button>
                         <button
                           onClick={() => { exportJSON(data); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
-                          <div className="w-9 h-9 rounded-xl bg-yellow-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                          <div className="w-9 h-9 rounded-xl bg-yellow-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-yellow-200/80 transition-all duration-300 shadow-sm">
                             <FileJson className="w-4.5 h-4.5 text-yellow-600" />
                           </div>
                           JSON Resume
                         </button>
                         <button
                           onClick={() => { exportHTML(data); setIsExportMenuOpen(false); }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all group text-left font-semibold"
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
-                          <div className="w-9 h-9 rounded-xl bg-orange-100/80 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-sm">
+                          <div className="w-9 h-9 rounded-xl bg-orange-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-orange-200/80 transition-all duration-300 shadow-sm">
                             <FileCode className="w-4.5 h-4.5 text-orange-600" />
                           </div>
                           HTML Resume

@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "Resume": {
+      "title": "Resume",
+      "description": "A user's saved resume data",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns this resume"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the resume (e.g., 'Software Engineer Resume')"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the resume was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the resume was last updated"
+        },
+        "data": {
+          "type": "string",
+          "description": "JSON stringified ResumeData object due to complex nested arrays"
+        }
+      },
+      "required": ["userId", "title", "createdAt", "updatedAt", "data"]
+    }
+  },
+  "firestore": {
+    "/resumes/{resumeId}": {
+      "schema": {
+        "$ref": "#/entities/Resume"
+      },
+      "description": "Collection of user resumes"
+    }
+  }
+}

@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("bg-white/90 backdrop-blur-xl rounded-2xl border border-zinc-200/60 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-300 overflow-hidden", className)} {...props} />
+  <div ref={ref} className={cn("pro-card", className)} {...props} />
 ));
 Card.displayName = "Card";
 

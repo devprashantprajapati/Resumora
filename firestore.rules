@@ -1,0 +1,109 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: resumes
+    // Document ID: auto-generated
+    // Fields:
+    //   - userId: string (required) - The ID of the user who owns this resume
+    //   - title: string (required, max 100 chars) - The title of the resume
+    //   - createdAt: timestamp (required, immutable) - When the resume was created
+    //   - updatedAt: timestamp (required) - When the resume was last updated
+    //   - data: string (required, max 1MB) - JSON stringified ResumeData object
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user owns the resource (for user-owned documents)
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Check if user is owner based on document's userId field
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+    
+    // Verify userId hasn't been tampered with on create
+    function uidUnchanged() {
+      return !('userId' in request.resource.data) ||
+        request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Ensure userId field is not modified on update
+    function uidNotModified() {
+      return !('userId' in request.resource.data) ||
+        request.resource.data.userId == resource.data.userId;
+    }
+    
+    // Validate required fields exist
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    // Validate string length
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+    
+    // Validate that the document contains only the allowed fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+    
+    // Validate that the document hasn't changed in the fields that are not allowed to be changed
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    
+    function isValidResume(data) {
+      return hasOnlyAllowedFields(['userId', 'title', 'createdAt', 'updatedAt', 'data']) &&
+             data.userId is string && data.userId.size() > 0 && data.userId.size() < 128 &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 100 &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp &&
+             data.data is string && data.data.size() > 0 && data.data.size() <= 1000000; // Max 1MB
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /resumes/{resumeId} {
+      // Users can only read their own resumes
+      allow read: if resource == null || isDocOwner();
+      
+      // Users can only create resumes for themselves
+      allow create: if isAuthenticated() && 
+                    isValidResume(request.resource.data) && 
+                    uidUnchanged();
+                    
+      // Users can only update their own resumes, and cannot change the owner or creation date
+      allow update: if isDocOwner() && 
+                    isValidResume(request.resource.data) && 
+                    uidNotModified() &&
+                    areImmutableFieldsUnchanged(['createdAt']);
+                    
+      // Users can only delete their own resumes
+      allow delete: if isDocOwner();
+    }
+  }
+}

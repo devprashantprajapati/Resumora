@@ -11,17 +11,17 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'default', size = 'default', isLoading, children, disabled, ...props }, ref) => {
     const variants = {
-      default: 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-[0_2px_10px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_14px_rgba(0,0,0,0.15)] ring-1 ring-zinc-900/5',
-      outline: 'border border-zinc-200 bg-white/50 hover:bg-zinc-50 text-zinc-700 hover:border-zinc-300 shadow-sm hover:shadow',
+      default: 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-[0_2px_10px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] hover:shadow-[0_4px_14px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.15)] ring-1 ring-zinc-900/5',
+      outline: 'border border-zinc-200/80 bg-white/60 backdrop-blur-md hover:bg-zinc-50 text-zinc-700 hover:border-zinc-300 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)]',
       ghost: 'bg-transparent hover:bg-zinc-100/80 text-zinc-600 hover:text-zinc-900',
-      secondary: 'bg-zinc-100/80 text-zinc-900 hover:bg-zinc-200 ring-1 ring-zinc-200/50',
-      danger: 'bg-red-50 text-red-600 hover:bg-red-100 ring-1 ring-red-100',
+      secondary: 'bg-zinc-100/80 text-zinc-900 hover:bg-zinc-200 ring-1 ring-zinc-200/50 shadow-sm',
+      danger: 'bg-red-50 text-red-600 hover:bg-red-100 ring-1 ring-red-100 shadow-sm',
     };
 
     const sizes = {
-      default: 'h-10 px-5 py-2 text-[13px]',
-      sm: 'h-8 rounded-lg px-3 text-xs',
-      lg: 'h-12 rounded-xl px-8 text-sm',
+      default: 'h-10 px-5 py-2 text-[14px]',
+      sm: 'h-8 rounded-lg px-3 text-[13px]',
+      lg: 'h-12 rounded-xl px-8 text-[15px]',
       icon: 'h-10 w-10',
     };
 

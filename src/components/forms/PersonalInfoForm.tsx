@@ -85,7 +85,7 @@ export function PersonalInfoForm() {
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-6 pb-6 border-b border-zinc-200/60">
-        <div className="relative w-28 h-28 rounded-2xl bg-zinc-50 border-2 border-dashed border-zinc-300 flex items-center justify-center overflow-hidden shrink-0 group hover:border-zinc-400 hover:bg-zinc-50/50 transition-all">
+        <div className="relative w-28 h-28 rounded-2xl bg-zinc-50 border-2 border-dashed border-zinc-300 flex items-center justify-center overflow-hidden shrink-0 group hover:border-zinc-400 hover:bg-zinc-50/50 transition-all shadow-sm">
           {personalInfo.photoUrl ? (
             <>
               <img src={personalInfo.photoUrl} alt="Profile" className="w-full h-full object-cover" />
@@ -116,6 +116,29 @@ export function PersonalInfoForm() {
           <h3 className="text-base font-semibold text-zinc-900">Profile Photo</h3>
           <p className="text-sm text-zinc-500 mt-1.5 leading-relaxed">Upload a professional headshot. Recommended size: 400x400px. A clean background works best.</p>
         </div>
+      </div>
+
+      <div className="space-y-3 pb-6 border-b border-zinc-200/60">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="summary">Professional Summary</Label>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleGenerateSummary}
+            isLoading={isGenerating}
+            className="text-zinc-700 border-zinc-200/60 bg-white/60 hover:bg-white hover:border-zinc-300 h-9 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <Wand2 className="w-4 h-4 mr-2 text-indigo-500" />
+            AI Generate
+          </Button>
+        </div>
+        <Textarea 
+          id="summary" 
+          value={personalInfo.summary} 
+          onChange={(e) => updatePersonalInfo({ summary: e.target.value })} 
+          placeholder="Briefly describe your professional background, key achievements, and career goals..."
+          className="h-36 leading-relaxed"
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -185,39 +208,10 @@ export function PersonalInfoForm() {
         </div>
       </div>
 
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="summary">Professional Summary</Label>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={handleGenerateSummary}
-            isLoading={isGenerating}
-            className="text-zinc-600 border-zinc-200 hover:bg-zinc-50 h-9 rounded-lg"
-          >
-            <Wand2 className="w-4 h-4 mr-2" />
-            AI Generate
-          </Button>
-        </div>
-        <Textarea 
-          id="summary" 
-          value={personalInfo.summary} 
-          onChange={(e) => updatePersonalInfo({ summary: e.target.value })} 
-          placeholder="Briefly describe your professional background, key achievements, and career goals..."
-          className="h-36 leading-relaxed"
-        />
-      </div>
-
       <div className="space-y-4 pt-4 border-t border-zinc-200/60">
-        <div className="flex items-center justify-between">
-          <div>
-            <Label>Social Links & Portfolio</Label>
-            <p className="text-xs text-zinc-500 mt-1">Add links to your LinkedIn, GitHub, or personal website.</p>
-          </div>
-          <Button variant="outline" size="sm" onClick={addLink} className="h-9 rounded-lg">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Link
-          </Button>
+        <div>
+          <Label>Social Links & Portfolio</Label>
+          <p className="text-xs text-zinc-500 mt-1">Add links to your LinkedIn, GitHub, or personal website.</p>
         </div>
         
         <div className="space-y-3">
@@ -241,6 +235,11 @@ export function PersonalInfoForm() {
             </div>
           ))}
         </div>
+
+        <Button variant="outline" className="w-full border-dashed border-2 border-zinc-300/80 bg-zinc-50/50 hover:border-zinc-400 hover:bg-zinc-100/80 text-zinc-600 hover:text-zinc-900 transition-all duration-300 rounded-xl h-12 shadow-sm hover:shadow-md font-semibold" onClick={addLink}>
+          <Plus className="w-5 h-5 mr-2 text-zinc-400 group-hover:text-zinc-600" />
+          Add Link
+        </Button>
       </div>
     </div>
   );

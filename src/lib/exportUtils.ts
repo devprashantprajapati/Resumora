@@ -5,6 +5,9 @@ import { jsPDF } from 'jspdf';
 
 export const exportPDF = async (element: HTMLElement, data: ResumeData) => {
   try {
+    // Wait for all fonts to load before capturing
+    await document.fonts.ready;
+
     // Create a clone of the element to avoid modifying the visible UI
     const clone = element.cloneNode(true) as HTMLElement;
     
@@ -45,9 +48,9 @@ export const exportPDF = async (element: HTMLElement, data: ResumeData) => {
       if (compStyle.borderLeftWidth === '0px') clonedEl.style.borderLeftStyle = 'none';
     });
     
-    // Use dom-to-image-more which supports modern CSS like oklch
-    const scale = 2; // Higher resolution
-    const imgData = await domtoimage.toJpeg(clone, {
+    // Use dom-to-image-more with a high scale for crisp, high-quality text
+    const scale = 4; // Very high resolution
+    const imgData = await domtoimage.toPng(clone, {
       quality: 1.0,
       bgcolor: '#ffffff',
       width: element.clientWidth * scale,
@@ -87,7 +90,7 @@ export const exportPDF = async (element: HTMLElement, data: ResumeData) => {
       finalWidth = pdfHeight * imgRatio;
     }
     
-    pdf.addImage(imgData, 'JPEG', 0, 0, finalWidth, finalHeight);
+    pdf.addImage(imgData, 'PNG', 0, 0, finalWidth, finalHeight, undefined, 'FAST');
     pdf.save(`${data.personalInfo.firstName || 'My'}_${data.personalInfo.lastName || 'Resume'}.pdf`.replace(/\s+/g, '_'));
   } catch (error) {
     console.error('Error generating PDF:', error);

@@ -30,6 +30,7 @@ interface ResumeStore {
   addReference: (ref: ResumeData['references'][0]) => void;
   removeReference: (id: string) => void;
   updateSettings: (settings: Partial<ResumeData['settings']>) => void;
+  updateData: (newData: Partial<ResumeData>) => void;
   resetData: () => void;
   reorderItems: <K extends keyof Omit<ResumeData, 'personalInfo' | 'settings'>>(
     section: K,
@@ -169,6 +170,10 @@ export const useResumeStore = create<ResumeStore>()(
       updateSettings: (settings) =>
         set((state) => ({
           data: { ...state.data, settings: { ...state.data.settings, ...settings } },
+        })),
+      updateData: (newData) =>
+        set((state) => ({
+          data: { ...state.data, ...newData },
         })),
       resetData: () => set({ data: emptyResumeData }),
       reorderItems: (section, startIndex, endIndex) =>

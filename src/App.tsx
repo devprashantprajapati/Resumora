@@ -6,37 +6,55 @@
 import { EditorSidebar } from './components/forms/EditorSidebar';
 import { ResumePreview } from './components/preview/ResumePreview';
 import { Eye, Edit2, Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './components/Logo';
-import { Toaster } from 'sonner';
+import { Toaster, toast } from 'sonner';
+import { useAuth } from './contexts/AuthContext';
+import { getResume } from './lib/resumeService';
+import { useResumeStore } from './store/useResumeStore';
 
 export default function App() {
   const [showPreview, setShowPreview] = useState(false);
+  const { user } = useAuth();
+  const { data, updateData } = useResumeStore();
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const loadUserResume = async () => {
+      if (user) {
+        setIsLoading(true);
+        try {
+          const resumeId = user.uid + '_default';
+          const savedResume = await getResume(resumeId);
+          if (savedResume && savedResume.data) {
+            // We need to update the store with the saved data
+            // Since updateData only takes partial updates, we can do this:
+            Object.keys(savedResume.data).forEach((key) => {
+              updateData({ [key]: savedResume.data[key as keyof typeof savedResume.data] });
+            });
+            toast.success('Resume loaded from cloud');
+          }
+        } catch (error) {
+          console.error('Failed to load resume:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadUserResume();
+  }, [user]);
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-zinc-50 overflow-hidden font-sans selection:bg-zinc-200 selection:text-zinc-900">
+    <div className="flex flex-col h-[100dvh] bg-zinc-50/50 overflow-hidden font-sans selection:bg-zinc-200 selection:text-zinc-900">
       <Toaster position="top-center" />
       {/* Top Navigation Bar */}
-      <header className="h-16 glass-panel flex items-center px-4 sm:px-8 shrink-0 z-40 relative shadow-[0_1px_2px_rgba(0,0,0,0.02),0_4px_16px_rgba(0,0,0,0.02)]">
+      <header className="h-16 glass-panel flex items-center px-4 sm:px-8 shrink-0 z-40 relative">
         <Logo />
         
-        <div className="ml-auto flex items-center gap-6 text-sm text-zinc-500 font-medium">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-emerald-50/50 text-emerald-600 rounded-full text-[10px] uppercase tracking-[0.15em] font-black border border-emerald-100/50 shadow-sm"
-          >
-            <motion.div 
-              animate={{ opacity: [1, 0.4, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-            </motion.div>
-            Auto-saving
-          </motion.div>
-          
+        <div className="ml-auto flex items-center gap-4 text-sm text-zinc-500 font-medium">
           {/* Mobile Toggle */}
           <div className="flex bg-zinc-100/80 p-1 rounded-2xl lg:hidden border border-zinc-200/50 backdrop-blur-md shadow-inner">
             <button 
@@ -62,10 +80,10 @@ export default function App() {
       </header>
 
       {/* Main Workspace */}
-      <main className="flex-1 flex overflow-hidden relative bg-dot-pattern">
+      <main className="flex-1 flex overflow-hidden relative bg-grid-pattern">
         {/* Left Panel: Editor */}
         <div className={cn(
-          "w-full lg:w-[45%] xl:w-[40%] flex-shrink-0 bg-white/60 backdrop-blur-3xl z-20 shadow-[8px_0_30px_rgba(0,0,0,0.02)] border-r border-zinc-200/50 absolute inset-0 lg:relative transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+          "w-full lg:w-[45%] xl:w-[40%] flex-shrink-0 bg-white/70 backdrop-blur-3xl z-20 shadow-[8px_0_30px_rgba(0,0,0,0.03)] border-r border-zinc-200/60 absolute inset-0 lg:relative transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
           showPreview ? "-translate-x-full lg:translate-x-0" : "translate-x-0"
         )}>
           <EditorSidebar />
@@ -73,7 +91,7 @@ export default function App() {
 
         {/* Right Panel: Live Preview */}
         <div className={cn(
-          "absolute inset-0 lg:relative lg:flex-1 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-10 bg-zinc-50/50",
+          "absolute inset-0 lg:relative lg:flex-1 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-10 bg-transparent",
           showPreview ? "translate-x-0" : "translate-x-full lg:translate-x-0"
         )}>
           <ResumePreview />

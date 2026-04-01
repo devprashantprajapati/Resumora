@@ -86,8 +86,8 @@ export function EducationForm() {
         </SortableContext>
       </DndContext>
 
-      <Button variant="outline" className="w-full border-dashed border-2 hover:border-zinc-300 hover:bg-zinc-50/50 text-zinc-600 hover:text-zinc-600 transition-all" onClick={handleAdd}>
-        <Plus className="w-4 h-4 mr-2" />
+      <Button variant="outline" className="w-full border-dashed border-2 border-zinc-300/80 bg-zinc-50/50 hover:border-zinc-400 hover:bg-zinc-100/80 text-zinc-600 hover:text-zinc-900 transition-all duration-300 rounded-xl h-12 shadow-sm hover:shadow-md font-semibold" onClick={handleAdd}>
+        <Plus className="w-5 h-5 mr-2 text-zinc-400 group-hover:text-zinc-600" />
         Add Education
       </Button>
     </div>
@@ -96,7 +96,7 @@ export function EducationForm() {
 
 function EducationCard({ edu, updateEducation, removeEducation, dragHandleProps, isDragging, isExpanded, onToggle }: any) {
   return (
-    <Card className={`p-0 overflow-hidden relative group border-zinc-200/60 bg-white/40 hover:bg-white/60 transition-colors mb-4 ${isDragging ? 'opacity-50' : ''}`}>
+    <Card className={`p-0 overflow-hidden relative group border-zinc-200/60 bg-white/40 hover:bg-white/60 transition-colors mb-4 pro-card ${isDragging ? 'opacity-50' : ''}`}>
       {/* Header / Collapsible Trigger */}
       <div 
         className="flex items-center justify-between p-4 cursor-pointer select-none"

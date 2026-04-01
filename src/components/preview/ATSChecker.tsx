@@ -29,7 +29,7 @@ export function ATSChecker() {
     <>
       <Button 
         onClick={() => setIsOpen(true)}
-        className="group relative overflow-hidden bg-white hover:bg-zinc-50 text-zinc-900 border border-zinc-200/80 shadow-sm rounded-full h-8 md:h-11 px-2 md:px-5 transition-all flex items-center gap-1.5 md:gap-3 active:scale-95"
+        className="group relative overflow-hidden bg-white/90 backdrop-blur-xl hover:bg-white text-zinc-900 border border-zinc-200/80 shadow-sm hover:shadow-md rounded-full h-8 md:h-11 px-2 md:px-5 transition-all duration-300 flex items-center gap-1.5 md:gap-3 active:scale-95"
       >
         <div className="relative flex items-center justify-center w-6 h-6 md:w-8 md:h-8">
           <svg className="w-full h-full -rotate-90 drop-shadow-sm">
