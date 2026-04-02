@@ -84,7 +84,7 @@ export function SettingsForm() {
                 <Button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="flex-1 sm:flex-none flex items-center gap-2 bg-zinc-900 text-white hover:bg-zinc-800"
+                  className="flex-1 sm:flex-none flex items-center gap-2 bg-indigo-600 text-white hover:bg-indigo-700"
                 >
                   <Cloud className="w-4 h-4" />
                   {isSaving ? 'Saving...' : 'Save to Cloud'}
@@ -121,7 +121,7 @@ export function SettingsForm() {
               onClick={() => updateSettings({ template })}
               className={`p-4 rounded-2xl border-2 text-center capitalize transition-all duration-300 ${
                 settings.template === template
-                  ? 'border-zinc-600 bg-zinc-50/80 text-zinc-700 font-semibold shadow-md shadow-zinc-200/50 scale-[1.02]'
+                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 font-semibold shadow-md shadow-indigo-200/50 scale-[1.02]'
                   : 'border-zinc-200/60 bg-white/60 hover:bg-white hover:border-zinc-300 text-zinc-600 pro-card'
               }`}
             >
@@ -139,7 +139,7 @@ export function SettingsForm() {
               key={color.value}
               onClick={() => updateSettings({ color: color.value })}
               className={`w-10 h-10 rounded-full border-2 transition-all duration-200 shadow-sm ${
-                settings.color === color.value ? 'border-zinc-900 scale-110 ring-4 ring-zinc-900/10' : 'border-transparent hover:scale-110'
+                settings.color === color.value ? 'border-indigo-600 scale-110 ring-4 ring-indigo-600/10' : 'border-transparent hover:scale-110'
               }`}
               style={{ backgroundColor: color.value }}
               title={color.name}
@@ -157,7 +157,7 @@ export function SettingsForm() {
               onClick={() => updateSettings({ font: font.value })}
               className={`p-4 rounded-xl border-2 text-left transition-all duration-300 ${
                 settings.font === font.value
-                  ? 'border-zinc-600 bg-zinc-50/80 text-zinc-700 shadow-md shadow-zinc-200/50 scale-[1.02]'
+                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 shadow-md shadow-indigo-200/50 scale-[1.02]'
                   : 'border-zinc-200/60 bg-white/60 hover:bg-white hover:border-zinc-300 text-zinc-700 pro-card'
               }`}
               style={{ fontFamily: font.value }}
@@ -178,7 +178,7 @@ export function SettingsForm() {
               onClick={() => updateSettings({ fontSize: size })}
               className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
                 settings.fontSize === size
-                  ? 'bg-white shadow-md text-zinc-800 font-bold ring-1 ring-zinc-200/50 scale-[1.02]'
+                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
                   : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
               }`}
             >
@@ -197,7 +197,7 @@ export function SettingsForm() {
               onClick={() => updateSettings({ spacing })}
               className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
                 settings.spacing === spacing
-                  ? 'bg-white shadow-md text-zinc-800 font-bold ring-1 ring-zinc-200/50 scale-[1.02]'
+                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
                   : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
               }`}
             >
@@ -216,7 +216,7 @@ export function SettingsForm() {
               onClick={() => updateSettings({ borderRadius: radius })}
               className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
                 settings.borderRadius === radius
-                  ? 'bg-white shadow-md text-zinc-800 font-bold ring-1 ring-zinc-200/50 scale-[1.02]'
+                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
                   : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
               }`}
             >
@@ -235,7 +235,7 @@ export function SettingsForm() {
               onClick={() => updateSettings({ headerAlignment: alignment })}
               className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
                 settings.headerAlignment === alignment
-                  ? 'bg-white shadow-md text-zinc-800 font-bold ring-1 ring-zinc-200/50 scale-[1.02]'
+                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
                   : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
               }`}
             >
@@ -254,7 +254,7 @@ export function SettingsForm() {
               onClick={() => updateSettings({ bodyAlignment: alignment })}
               className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
                 settings.bodyAlignment === alignment
-                  ? 'bg-white shadow-md text-zinc-800 font-bold ring-1 ring-zinc-200/50 scale-[1.02]'
+                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
                   : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
               }`}
             >
@@ -274,7 +274,7 @@ export function SettingsForm() {
                 onClick={() => updateSettings({ paperSize: size })}
                 className={`flex-1 py-2.5 text-sm uppercase rounded-lg transition-all duration-300 ${
                   settings.paperSize === size
-                    ? 'bg-white shadow-md text-zinc-800 font-bold ring-1 ring-zinc-200/50 scale-[1.02]'
+                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
                     : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
                 }`}
               >
@@ -291,7 +291,7 @@ export function SettingsForm() {
               onClick={() => updateSettings({ showPhoto: true })}
               className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
                 settings.showPhoto
-                  ? 'bg-white shadow-md text-zinc-800 font-bold ring-1 ring-zinc-200/50 scale-[1.02]'
+                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
                   : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
               }`}
             >
@@ -301,7 +301,7 @@ export function SettingsForm() {
               onClick={() => updateSettings({ showPhoto: false })}
               className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
                 !settings.showPhoto
-                  ? 'bg-white shadow-md text-zinc-800 font-bold ring-1 ring-zinc-200/50 scale-[1.02]'
+                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
                   : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
               }`}
             >

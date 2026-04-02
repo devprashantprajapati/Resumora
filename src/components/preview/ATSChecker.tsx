@@ -99,7 +99,7 @@ export function ATSChecker() {
             >
               <div className="flex items-center justify-between p-8 border-b border-zinc-100/50">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-zinc-900 rounded-2xl shadow-lg shadow-zinc-200">
+                  <div className="p-3 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-200">
                     <Target className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -210,7 +210,7 @@ export function ATSChecker() {
               <div className="p-6 border-t border-zinc-100/50 bg-zinc-50/50 flex justify-end">
                 <Button 
                   onClick={() => setIsOpen(false)} 
-                  className="bg-zinc-900 text-white hover:bg-zinc-800 rounded-2xl px-8 h-12 font-bold shadow-lg shadow-zinc-200 transition-all active:scale-95"
+                  className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-2xl px-8 h-12 font-bold shadow-lg shadow-indigo-200 transition-all active:scale-95"
                 >
                   Got it
                 </Button>

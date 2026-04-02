@@ -140,7 +140,7 @@ export function ResumePreview() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
-                  className="h-8 w-8 md:h-10 md:w-10 rounded-full transition-all active:scale-95 bg-zinc-900 text-white hover:bg-zinc-800 shadow-md hover:shadow-lg flex-shrink-0"
+                  className="h-8 w-8 md:h-10 md:w-10 rounded-full transition-all active:scale-95 bg-indigo-600 text-white hover:bg-indigo-700 shadow-md hover:shadow-lg flex-shrink-0"
                   title="Download"
                 >
                   <Download className="w-3.5 h-3.5 md:w-4.5 md:h-4.5" />

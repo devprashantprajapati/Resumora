@@ -20,16 +20,16 @@ export const Logo = ({ className, showText = true, ...props }: LogoProps) => {
       >
         <defs>
           <linearGradient id="docGrad" x1="20" y1="20" x2="80" y2="80" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#00d2d3" />
-            <stop offset="1" stopColor="#0f3d7a" />
+            <stop stopColor="#6366f1" />
+            <stop offset="1" stopColor="#312e81" />
           </linearGradient>
           <linearGradient id="arrowGrad" x1="10" y1="60" x2="70" y2="20" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#0f3d7a" />
-            <stop offset="1" stopColor="#00d2d3" />
+            <stop stopColor="#312e81" />
+            <stop offset="1" stopColor="#6366f1" />
           </linearGradient>
           <linearGradient id="starGrad" x1="60" y1="10" x2="90" y2="40" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#00d2d3" />
-            <stop offset="1" stopColor="#00f2fe" />
+            <stop stopColor="#6366f1" />
+            <stop offset="1" stopColor="#818cf8" />
           </linearGradient>
         </defs>
 
@@ -43,9 +43,9 @@ export const Logo = ({ className, showText = true, ...props }: LogoProps) => {
         />
 
         {/* Document Lines */}
-        <rect x="35" y="40" width="20" height="4" rx="2" fill="#0f3d7a" />
-        <rect x="35" y="52" width="20" height="4" rx="2" fill="#0f3d7a" />
-        <rect x="35" y="64" width="12" height="4" rx="2" fill="#0f3d7a" />
+        <rect x="35" y="40" width="20" height="4" rx="2" fill="#312e81" />
+        <rect x="35" y="52" width="20" height="4" rx="2" fill="#312e81" />
+        <rect x="35" y="64" width="12" height="4" rx="2" fill="#312e81" />
 
         {/* Swoosh Arrow */}
         <path
@@ -73,7 +73,7 @@ export const Logo = ({ className, showText = true, ...props }: LogoProps) => {
           animate={{ opacity: [0.3, 1, 0.3] }}
           transition={{ duration: 2, repeat: Infinity }}
           d="M 75 0 V -5 M 75 28 V 33 M 90 14 H 95 M 55 14 H 60 M 83 6 L 86 3 M 67 22 L 64 25 M 67 6 L 64 3 M 83 22 L 86 25" 
-          stroke="#00d2d3" 
+          stroke="#6366f1" 
           strokeWidth="2" 
           strokeLinecap="round" 
         />
@@ -83,7 +83,7 @@ export const Logo = ({ className, showText = true, ...props }: LogoProps) => {
         <div className="flex flex-col justify-center">
           <span className="text-[28px] font-black tracking-tighter leading-none">
             <span className="text-zinc-900">Resum</span>
-            <span className="text-[#00d2d3]">ora</span>
+            <span className="text-indigo-500">ora</span>
           </span>
           <span className="text-[9px] font-black text-zinc-400 tracking-[0.2em] mt-1.5 uppercase">
             AI Resume Architect

@@ -5,7 +5,7 @@ import { Textarea } from '../ui/Textarea';
 import { Button } from '../ui/Button';
 import { generateSummaryStream } from '@/services/ai';
 import React, { useState, useRef } from 'react';
-import { Wand2, Plus, Trash2, Upload, X } from 'lucide-react';
+import { Wand2, Plus, Trash2, Upload, X, ExternalLink } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 
@@ -126,7 +126,7 @@ export function PersonalInfoForm() {
             size="sm" 
             onClick={handleGenerateSummary}
             isLoading={isGenerating}
-            className="text-zinc-700 border-zinc-200/60 bg-white/60 hover:bg-white hover:border-zinc-300 h-9 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+            className="text-indigo-700 border-indigo-200/60 bg-indigo-50/60 hover:bg-indigo-50 hover:border-indigo-300 h-9 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
           >
             <Wand2 className="w-4 h-4 mr-2 text-indigo-500" />
             AI Generate
@@ -216,19 +216,33 @@ export function PersonalInfoForm() {
         
         <div className="space-y-3">
           {(personalInfo.links || []).map((link) => (
-            <div key={link.id} className="flex items-center gap-3 bg-zinc-50/50 p-2 rounded-xl border border-zinc-200/60">
+            <div key={link.id} className="flex items-center gap-2 bg-zinc-50/50 p-2 rounded-xl border border-zinc-200/60">
               <Input 
                 placeholder="Label (e.g. LinkedIn)" 
                 value={link.label}
                 onChange={(e) => updateLink(link.id, 'label', e.target.value)}
                 className="w-1/3 bg-white"
               />
-              <Input 
-                placeholder="URL (e.g. linkedin.com/in/johndoe)" 
-                value={link.url}
-                onChange={(e) => updateLink(link.id, 'url', e.target.value)}
-                className="flex-1 bg-white"
-              />
+              <div className="flex-1 relative flex items-center">
+                <Input 
+                  type="url"
+                  placeholder="URL (e.g. linkedin.com/in/johndoe)" 
+                  value={link.url}
+                  onChange={(e) => updateLink(link.id, 'url', e.target.value)}
+                  className="w-full bg-white pr-10"
+                />
+                {link.url && (
+                  <a 
+                    href={link.url.startsWith('http') ? link.url : `https://${link.url}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="absolute right-2 p-1.5 text-zinc-400 hover:text-indigo-600 transition-colors rounded-md hover:bg-indigo-50"
+                    title="Test Link"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
               <Button variant="ghost" size="icon" onClick={() => removeLink(link.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 h-11 w-11 rounded-lg shrink-0">
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -236,8 +250,8 @@ export function PersonalInfoForm() {
           ))}
         </div>
 
-        <Button variant="outline" className="w-full border-dashed border-2 border-zinc-300/80 bg-zinc-50/50 hover:border-zinc-400 hover:bg-zinc-100/80 text-zinc-600 hover:text-zinc-900 transition-all duration-300 rounded-xl h-12 shadow-sm hover:shadow-md font-semibold" onClick={addLink}>
-          <Plus className="w-5 h-5 mr-2 text-zinc-400 group-hover:text-zinc-600" />
+        <Button variant="outline" className="w-full border-dashed border-2 border-zinc-300/80 bg-zinc-50/50 hover:border-indigo-300 hover:bg-indigo-50/50 text-zinc-600 hover:text-indigo-700 transition-all duration-300 rounded-xl h-12 shadow-sm hover:shadow-md font-semibold group" onClick={addLink}>
+          <Plus className="w-5 h-5 mr-2 text-zinc-400 group-hover:text-indigo-500 transition-colors" />
           Add Link
         </Button>
       </div>

@@ -86,7 +86,7 @@ export function EditorSidebar() {
                   className={cn(
                     "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0",
                     isActive 
-                      ? "text-zinc-900 md:bg-zinc-900 md:text-white shadow-sm md:shadow-xl shadow-zinc-200/50" 
+                      ? "text-indigo-600 md:bg-indigo-600 md:text-white shadow-sm md:shadow-xl shadow-indigo-200/50" 
                       : "text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50/80"
                   )}
                 >
@@ -99,7 +99,7 @@ export function EditorSidebar() {
                   )}
                   <Icon className={cn(
                     "w-4 h-4 md:w-5 md:h-5 shrink-0 transition-all duration-500", 
-                    isActive ? "scale-110" : "group-hover:scale-110"
+                    isActive ? "scale-110 text-indigo-600 md:text-white" : "group-hover:scale-110"
                   )} />
                   <span className={cn(
                     "text-[10px] md:text-[13px] font-bold transition-colors tracking-tight",
@@ -131,14 +131,14 @@ export function EditorSidebar() {
             className={cn(
               "flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative",
               activeSection === SETTINGS_SECTION.id 
-                ? "text-white bg-zinc-900 shadow-md shadow-zinc-200/50" 
+                ? "text-white bg-indigo-600 shadow-md shadow-indigo-200/50" 
                 : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
             )}
           >
             {activeSection === SETTINGS_SECTION.id && (
               <motion.div 
                 layoutId="active-nav-mobile"
-                className="absolute inset-0 bg-zinc-900 rounded-xl -z-10" 
+                className="absolute inset-0 bg-indigo-600 rounded-xl -z-10" 
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
               />
             )}
@@ -156,7 +156,7 @@ export function EditorSidebar() {
             className={cn(
               "flex flex-col md:flex-row items-center justify-center lg:justify-start gap-1 lg:gap-4 px-3 lg:px-5 py-2 lg:py-4 rounded-xl lg:rounded-[1.25rem] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0",
               activeSection === SETTINGS_SECTION.id 
-                ? "text-white bg-zinc-900 shadow-xl shadow-zinc-200/50" 
+                ? "text-white bg-indigo-600 shadow-xl shadow-indigo-200/50" 
                 : "text-zinc-600 hover:text-zinc-900 hover:bg-white border border-transparent hover:border-zinc-200/60 shadow-sm"
             )}
           >
@@ -182,7 +182,7 @@ export function EditorSidebar() {
               key={activeSection + 'icon'}
               initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
-              className="p-4 bg-zinc-900 text-white rounded-[2rem] shadow-2xl shadow-zinc-200 ring-4 ring-zinc-50"
+              className="p-4 bg-indigo-600 text-white rounded-[2rem] shadow-2xl shadow-indigo-200 ring-4 ring-zinc-50"
             >
               {(() => {
                 const ActiveIcon = ALL_SECTIONS.find(s => s.id === activeSection)?.icon || User;

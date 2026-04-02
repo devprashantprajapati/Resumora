@@ -2,7 +2,7 @@ import { useResumeStore } from '@/store/useResumeStore';
 import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
 import { Button } from '../ui/Button';
-import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Card } from '../ui/Card';
 import {
@@ -82,8 +82,8 @@ export function CertificationsForm() {
         </SortableContext>
       </DndContext>
 
-      <Button variant="outline" className="w-full border-dashed border-2 border-zinc-300/80 bg-zinc-50/50 hover:border-zinc-400 hover:bg-zinc-100/80 text-zinc-600 hover:text-zinc-900 transition-all duration-300 rounded-xl h-12 shadow-sm hover:shadow-md font-semibold" onClick={handleAdd}>
-        <Plus className="w-5 h-5 mr-2 text-zinc-400 group-hover:text-zinc-600" />
+      <Button variant="outline" className="w-full border-dashed border-2 border-zinc-300/80 bg-zinc-50/50 hover:border-indigo-300 hover:bg-indigo-50/50 text-zinc-600 hover:text-indigo-700 transition-all duration-300 rounded-xl h-12 shadow-sm hover:shadow-md font-semibold group" onClick={handleAdd}>
+        <Plus className="w-5 h-5 mr-2 text-zinc-400 group-hover:text-indigo-500 transition-colors" />
         Add Certification
       </Button>
     </div>
@@ -160,12 +160,26 @@ function CertificationCard({ cert, updateCertification, removeCertification, dra
                 </div>
                 <div className="space-y-2">
                   <Label>URL (Optional)</Label>
-                  <Input 
-                    type="url"
-                    value={cert.url} 
-                    onChange={(e) => updateCertification(cert.id, { url: e.target.value })} 
-                    placeholder="e.g. https://..."
-                  />
+                  <div className="relative flex items-center">
+                    <Input 
+                      type="url"
+                      value={cert.url} 
+                      onChange={(e) => updateCertification(cert.id, { url: e.target.value })} 
+                      placeholder="e.g. https://..."
+                      className="w-full pr-10"
+                    />
+                    {cert.url && (
+                      <a 
+                        href={cert.url.startsWith('http') ? cert.url : `https://${cert.url}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="absolute right-2 p-1.5 text-zinc-400 hover:text-indigo-600 transition-colors rounded-md hover:bg-indigo-50"
+                        title="Test Link"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

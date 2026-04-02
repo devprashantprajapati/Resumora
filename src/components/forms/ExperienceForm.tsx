@@ -118,8 +118,8 @@ export function ExperienceForm() {
         </SortableContext>
       </DndContext>
 
-      <Button variant="outline" className="w-full border-dashed border-2 border-zinc-300/80 bg-zinc-50/50 hover:border-zinc-400 hover:bg-zinc-100/80 text-zinc-600 hover:text-zinc-900 transition-all duration-300 rounded-xl h-12 shadow-sm hover:shadow-md font-semibold" onClick={handleAdd}>
-        <Plus className="w-5 h-5 mr-2 text-zinc-400 group-hover:text-zinc-600" />
+      <Button variant="outline" className="w-full border-dashed border-2 border-zinc-300/80 bg-zinc-50/50 hover:border-indigo-300 hover:bg-indigo-50/50 text-zinc-600 hover:text-indigo-700 transition-all duration-300 rounded-xl h-12 shadow-sm hover:shadow-md font-semibold group" onClick={handleAdd}>
+        <Plus className="w-5 h-5 mr-2 text-zinc-400 group-hover:text-indigo-500 transition-colors" />
         Add Experience
       </Button>
     </div>
@@ -225,7 +225,7 @@ function ExperienceCard({ exp, updateExperience, removeExperience, handleEnhance
                     size="sm" 
                     onClick={() => handleEnhance(exp.id, exp.description, exp.position)}
                     isLoading={enhancingId === exp.id}
-                    className="text-zinc-700 border-zinc-200/60 bg-white/60 hover:bg-white hover:border-zinc-300 h-8 text-xs rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+                    className="text-indigo-700 border-indigo-200/60 bg-indigo-50/60 hover:bg-indigo-50 hover:border-indigo-300 h-8 text-xs rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
                   >
                     <Wand2 className="w-3 h-3 mr-2 text-indigo-500" />
                     AI Enhance
