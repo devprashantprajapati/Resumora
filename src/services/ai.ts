@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -74,6 +74,93 @@ export async function suggestSkills(title: string): Promise<string[]> {
     return text.split(',').map(s => s.trim()).filter(Boolean);
   } catch (error) {
     console.error("Error suggesting skills:", error);
+    throw error;
+  }
+}
+
+export interface JobMatchResult {
+  score: number;
+  matchingKeywords: string[];
+  missingKeywords: string[];
+  recommendations: string[];
+}
+
+export async function analyzeJobMatch(resumeContent: string, jobDescription: string): Promise<JobMatchResult> {
+  try {
+    const prompt = `You are an expert ATS (Applicant Tracking System) and technical recruiter. 
+    Analyze the provided resume against the job description.
+    
+    Resume Content:
+    ${resumeContent}
+    
+    Job Description:
+    ${jobDescription}
+    
+    Provide a detailed analysis including:
+    1. A match score from 0 to 100.
+    2. A list of matching keywords found in both.
+    3. A list of important missing keywords present in the job description but missing from the resume.
+    4. 3-4 actionable recommendations to improve the resume for this specific job.`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            score: { type: Type.INTEGER, description: "Match score from 0 to 100" },
+            matchingKeywords: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Keywords found in both" },
+            missingKeywords: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Keywords missing from resume" },
+            recommendations: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Actionable recommendations" },
+          },
+          required: ["score", "matchingKeywords", "missingKeywords", "recommendations"],
+        },
+      },
+    });
+
+    const jsonStr = response.text?.trim() || "{}";
+    return JSON.parse(jsonStr) as JobMatchResult;
+  } catch (error) {
+    console.error("Error analyzing job match:", error);
+    throw error;
+  }
+}
+
+export async function* generateCoverLetterStream(resumeContent: string, jobDescription: string, companyName: string): AsyncGenerator<string, void, unknown> {
+  try {
+    const prompt = `You are an expert career coach and executive copywriter. Write a highly tailored, professional, and compelling cover letter.
+    
+    Resume Content:
+    ${resumeContent}
+    
+    Job Description:
+    ${jobDescription}
+    
+    Company Name: ${companyName}
+    
+    Instructions:
+    - Write a modern, impactful cover letter (3-4 paragraphs).
+    - Do not use generic templates. Tailor it specifically to the company and job description using the candidate's actual experience from the resume.
+    - Highlight the most relevant achievements that match the job requirements.
+    - Maintain a confident, professional, yet enthusiastic tone.
+    - Do not include placeholder addresses at the top (like [Your Name] [Your Address]). Start directly with the salutation (e.g., "Dear Hiring Manager," or "Dear [Company] Team,").
+    - End with a professional sign-off.
+    - Return ONLY the cover letter text.`;
+
+    const response = await ai.models.generateContentStream({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+    });
+
+    for await (const chunk of response) {
+      if (chunk.text) {
+        yield chunk.text;
+      }
+    }
+  } catch (error) {
+    console.error("Error generating cover letter stream:", error);
     throw error;
   }
 }

@@ -35,7 +35,15 @@
   }
 
   .pro-input {
-    @apply flex h-11 w-full rounded-xl border border-zinc-200/80 bg-white px-4 py-2 text-[14px] font-medium text-zinc-900 transition-all duration-300 placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white hover:border-zinc-300 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm;
+    @apply flex h-11 md:h-12 w-full rounded-xl border border-zinc-200/80 bg-white px-4 py-2 text-base md:text-[14px] font-medium text-zinc-900 transition-all duration-300 placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white hover:border-zinc-300 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm appearance-none;
+  }
+
+  .safe-pb {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+  
+  .safe-pt {
+    padding-top: env(safe-area-inset-top, 20px);
   }
 }
 
