@@ -300,7 +300,7 @@ export function ATSChecker() {
                         />
                         <Button 
                           onClick={handleAnalyzeJobMatch} 
-                          disabled={!jobDescription.trim() || isAnalyzing}
+                          disabled={isAnalyzing}
                           className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200/50 rounded-xl h-12 font-bold"
                         >
                           {isAnalyzing ? (

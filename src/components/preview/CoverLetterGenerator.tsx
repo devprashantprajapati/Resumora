@@ -129,7 +129,7 @@ export function CoverLetterGenerator() {
 
                   <Button 
                     onClick={handleGenerate} 
-                    disabled={!jobDescription.trim() || !companyName.trim() || isGenerating}
+                    disabled={isGenerating}
                     className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200/50 rounded-xl h-12 font-bold"
                   >
                     {isGenerating ? (

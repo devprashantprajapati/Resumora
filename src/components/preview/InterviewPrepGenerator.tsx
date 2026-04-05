@@ -120,7 +120,7 @@ export function InterviewPrepGenerator() {
 
                   <Button 
                     onClick={handleGenerate} 
-                    disabled={!jobDescription.trim() || !companyName.trim() || isGenerating}
+                    disabled={isGenerating}
                     className="w-full bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-200/50 rounded-xl h-12 font-bold"
                   >
                     {isGenerating ? (
