@@ -13,6 +13,8 @@ import { ATSChecker } from './ATSChecker';
 import { CoverLetterGenerator } from './CoverLetterGenerator';
 import { InterviewPrepGenerator } from './InterviewPrepGenerator';
 import { ResumeImporter } from './ResumeImporter';
+import { LinkedInImporter } from './LinkedInImporter';
+import { PublishModal } from './PublishModal';
 import { Logo } from '../Logo';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
@@ -135,6 +137,8 @@ export function ResumePreview() {
               <CoverLetterGenerator />
               <InterviewPrepGenerator />
               <ResumeImporter />
+              <LinkedInImporter />
+              <PublishModal />
             </div>
             
             <div className="hidden md:block w-px h-6 md:h-8 bg-zinc-200 mx-0.5 md:mx-2 flex-shrink-0" />

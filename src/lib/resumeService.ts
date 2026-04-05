@@ -148,3 +148,128 @@ export const deleteResume = async (resumeId: string): Promise<void> => {
     handleFirestoreError(error, OperationType.DELETE, path);
   }
 };
+
+export interface PublishedResume {
+  slug: string;
+  userId: string;
+  data: ResumeData;
+  publishedAt: Date;
+  views: number;
+}
+
+export const publishResume = async (slug: string, data: ResumeData): Promise<void> => {
+  if (!auth.currentUser) throw new Error('User not authenticated');
+  
+  const path = `published_resumes/${slug}`;
+  try {
+    const resumeRef = doc(db, 'published_resumes', slug);
+    const docSnap = await getDoc(resumeRef);
+    
+    // If it exists and belongs to someone else, throw error
+    if (docSnap.exists() && docSnap.data().userId !== auth.currentUser.uid) {
+      throw new Error('This URL slug is already taken by another user.');
+    }
+    
+    const payload: any = {
+      userId: auth.currentUser.uid,
+      slug: slug,
+      data: JSON.stringify(data),
+    };
+
+    if (!docSnap.exists()) {
+      payload.publishedAt = serverTimestamp();
+      payload.views = 0;
+    }
+
+    await setDoc(resumeRef, payload, { merge: true });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, path);
+  }
+};
+
+export const getPublishedResume = async (slug: string): Promise<PublishedResume | null> => {
+  const path = `published_resumes/${slug}`;
+  try {
+    const docRef = doc(db, 'published_resumes', slug);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return {
+        slug: docSnap.id,
+        userId: data.userId,
+        publishedAt: data.publishedAt instanceof Timestamp ? data.publishedAt.toDate() : new Date(),
+        views: data.views || 0,
+        data: JSON.parse(data.data) as ResumeData
+      };
+    }
+    return null;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.GET, path);
+    return null;
+  }
+};
+
+export const incrementResumeViews = async (slug: string, location: string, userAgent: string): Promise<void> => {
+  const path = `published_resumes/${slug}`;
+  try {
+    const docRef = doc(db, 'published_resumes', slug);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      const currentViews = docSnap.data().views || 0;
+      
+      // Increment views
+      await setDoc(docRef, { views: currentViews + 1 }, { merge: true });
+      
+      // Record view event
+      const viewRef = doc(collection(db, `published_resumes/${slug}/views`));
+      await setDoc(viewRef, {
+        publishedResumeId: slug,
+        viewedAt: serverTimestamp(),
+        location: location.substring(0, 200),
+        userAgent: userAgent.substring(0, 500)
+      });
+    }
+  } catch (error) {
+    // Don't throw for analytics errors, just log
+    console.error('Failed to increment views:', error);
+  }
+};
+
+export const getResumeAnalytics = async (slug: string): Promise<{ views: number, recentViews: any[] }> => {
+  if (!auth.currentUser) throw new Error('User not authenticated');
+  
+  const path = `published_resumes/${slug}/views`;
+  try {
+    const docRef = doc(db, 'published_resumes', slug);
+    const docSnap = await getDoc(docRef);
+    
+    if (!docSnap.exists() || docSnap.data().userId !== auth.currentUser.uid) {
+      throw new Error('Unauthorized or not found');
+    }
+    
+    const views = docSnap.data().views || 0;
+    
+    // Get recent views
+    // Note: We don't have an index on viewedAt, so we just get all and sort in memory if small, or we can just return the total views for now.
+    // To keep it simple and avoid index requirement errors, we'll just fetch a few.
+    const q = query(collection(db, `published_resumes/${slug}/views`));
+    const querySnapshot = await getDocs(q);
+    
+    const recentViews = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        viewedAt: data.viewedAt instanceof Timestamp ? data.viewedAt.toDate() : new Date(),
+        location: data.location || 'Unknown',
+        userAgent: data.userAgent || 'Unknown'
+      };
+    }).sort((a, b) => b.viewedAt.getTime() - a.viewedAt.getTime()).slice(0, 50);
+    
+    return { views, recentViews };
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, path);
+    return { views: 0, recentViews: [] };
+  }
+};

@@ -15,6 +15,23 @@ service cloud.firestore {
     //   - updatedAt: timestamp (required) - When the resume was last updated
     //   - data: string (required, max 1MB) - JSON stringified ResumeData object
     //
+    // Collection: published_resumes
+    // Document ID: slug (e.g., 'johndoe-se')
+    // Fields:
+    //   - userId: string (required)
+    //   - slug: string (required)
+    //   - data: string (required, max 1MB)
+    //   - publishedAt: timestamp (required)
+    //   - views: number (required)
+    //
+    // Collection: published_resumes/{slug}/views
+    // Document ID: auto-generated
+    // Fields:
+    //   - publishedResumeId: string (required)
+    //   - viewedAt: timestamp (required)
+    //   - location: string (optional, max 200 chars)
+    //   - userAgent: string (optional, max 500 chars)
+    //
     // ===============================================================
 
     // ===============================================================
@@ -83,6 +100,27 @@ service cloud.firestore {
              data.data is string && data.data.size() > 0 && data.data.size() <= 1000000; // Max 1MB
     }
 
+    function isValidPublishedResume(data) {
+      return hasOnlyAllowedFields(['userId', 'slug', 'data', 'publishedAt', 'views']) &&
+             data.userId is string && data.userId.size() > 0 && data.userId.size() < 128 &&
+             data.slug is string && data.slug.size() > 0 && data.slug.size() <= 100 &&
+             data.data is string && data.data.size() > 0 && data.data.size() <= 1000000 &&
+             data.publishedAt is timestamp &&
+             data.views is number && data.views >= 0;
+    }
+
+    function isValidResumeView(data) {
+      let hasValidLocation = !('location' in data) || (data.location is string && data.location.size() <= 200);
+      let hasValidUserAgent = !('userAgent' in data) || (data.userAgent is string && data.userAgent.size() <= 500);
+      
+      return data.keys().hasAll(['publishedResumeId', 'viewedAt']) &&
+             data.keys().hasOnly(['publishedResumeId', 'viewedAt', 'location', 'userAgent']) &&
+             data.publishedResumeId is string && data.publishedResumeId.size() > 0 &&
+             data.viewedAt is timestamp &&
+             hasValidLocation &&
+             hasValidUserAgent;
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -104,6 +142,38 @@ service cloud.firestore {
                     
       // Users can only delete their own resumes
       allow delete: if isDocOwner();
+    }
+
+    match /published_resumes/{slug} {
+      // Anyone can read a published resume
+      allow read: if true;
+      
+      // Users can publish their own resumes
+      allow create: if isAuthenticated() && 
+                    isValidPublishedResume(request.resource.data) && 
+                    uidUnchanged() &&
+                    request.resource.data.slug == slug;
+                    
+      // Users can update their published resumes, OR anyone can increment views
+      allow update: if (isDocOwner() && 
+                        isValidPublishedResume(request.resource.data) && 
+                        uidNotModified() &&
+                        areImmutableFieldsUnchanged(['publishedAt', 'slug', 'views'])) ||
+                       (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views']) &&
+                        request.resource.data.views == resource.data.views + 1);
+                        
+      allow delete: if isDocOwner();
+      
+      match /views/{viewId} {
+        // Only the owner of the published resume can read the views
+        allow read: if isAuthenticated() && get(/databases/$(database)/documents/published_resumes/$(slug)).data.userId == request.auth.uid;
+        
+        // Anyone can create a view event
+        allow create: if isValidResumeView(request.resource.data) &&
+                      request.resource.data.publishedResumeId == slug;
+                      
+        allow update, delete: if false;
+      }
     }
   }
 }

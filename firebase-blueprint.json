@@ -29,6 +29,60 @@
         }
       },
       "required": ["userId", "title", "createdAt", "updatedAt", "data"]
+    },
+    "PublishedResume": {
+      "title": "Published Resume",
+      "description": "A publicly accessible resume",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who published this resume"
+        },
+        "slug": {
+          "type": "string",
+          "description": "The unique URL slug for this resume"
+        },
+        "data": {
+          "type": "string",
+          "description": "JSON stringified ResumeData object"
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the resume was published"
+        },
+        "views": {
+          "type": "number",
+          "description": "Total number of views"
+        }
+      },
+      "required": ["userId", "slug", "data", "publishedAt", "views"]
+    },
+    "ResumeView": {
+      "title": "Resume View Event",
+      "description": "An analytics event for a resume view",
+      "type": "object",
+      "properties": {
+        "publishedResumeId": {
+          "type": "string",
+          "description": "The ID of the published resume"
+        },
+        "viewedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the resume was viewed"
+        },
+        "location": {
+          "type": "string",
+          "description": "Approximate location of the viewer"
+        },
+        "userAgent": {
+          "type": "string",
+          "description": "User agent of the viewer"
+        }
+      },
+      "required": ["publishedResumeId", "viewedAt"]
     }
   },
   "firestore": {
@@ -37,6 +91,18 @@
         "$ref": "#/entities/Resume"
       },
       "description": "Collection of user resumes"
+    },
+    "/published_resumes/{publishedResumeId}": {
+      "schema": {
+        "$ref": "#/entities/PublishedResume"
+      },
+      "description": "Collection of publicly accessible resumes"
+    },
+    "/published_resumes/{publishedResumeId}/views/{viewId}": {
+      "schema": {
+        "$ref": "#/entities/ResumeView"
+      },
+      "description": "Analytics events for a specific published resume"
     }
   }
 }

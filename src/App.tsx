@@ -6,13 +6,13 @@
 import { EditorSidebar } from './components/forms/EditorSidebar';
 import { ResumePreview } from './components/preview/ResumePreview';
 import { Eye, Edit2, Sparkles } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './components/Logo';
 import { Toaster, toast } from 'sonner';
 import { useAuth } from './contexts/AuthContext';
-import { getResume } from './lib/resumeService';
+import { getResume, publishResume } from './lib/resumeService';
 import { useResumeStore } from './store/useResumeStore';
 
 export default function App() {
@@ -20,6 +20,8 @@ export default function App() {
   const { user } = useAuth();
   const { data, updateData } = useResumeStore();
   const [isLoading, setIsLoading] = useState(false);
+  const autoSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialLoadRef = useRef(true);
 
   useEffect(() => {
     const loadUserResume = async () => {
@@ -40,12 +42,42 @@ export default function App() {
           console.error('Failed to load resume:', error);
         } finally {
           setIsLoading(false);
+          // Allow a small delay before enabling auto-sync to prevent syncing the initial load
+          setTimeout(() => {
+            isInitialLoadRef.current = false;
+          }, 1000);
         }
+      } else {
+        isInitialLoadRef.current = false;
       }
     };
 
     loadUserResume();
   }, [user]);
+
+  // Auto-sync published resume
+  useEffect(() => {
+    if (isInitialLoadRef.current || !user || !data.settings.publishedSlug) return;
+
+    if (autoSyncTimeoutRef.current) {
+      clearTimeout(autoSyncTimeoutRef.current);
+    }
+
+    autoSyncTimeoutRef.current = setTimeout(async () => {
+      try {
+        await publishResume(data.settings.publishedSlug!, data);
+        console.log('Auto-synced published resume');
+      } catch (error) {
+        console.error('Failed to auto-sync published resume:', error);
+      }
+    }, 2000); // Debounce for 2 seconds
+
+    return () => {
+      if (autoSyncTimeoutRef.current) {
+        clearTimeout(autoSyncTimeoutRef.current);
+      }
+    };
+  }, [data, user]);
 
   return (
     <div className="flex flex-col h-[100dvh] bg-mesh-pattern overflow-hidden font-sans selection:bg-zinc-900 selection:text-white">

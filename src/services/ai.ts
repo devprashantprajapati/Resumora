@@ -239,18 +239,152 @@ export async function generateInterviewPrep(resumeContent: string, jobDescriptio
 
 export async function structureResumeData(rawText: string): Promise<Partial<ResumeData>> {
   try {
-    const prompt = `You are an expert resume parser. Extract the information from the following raw resume text and structure it into a JSON object that matches the ResumeData type.
+    const prompt = `You are an expert resume parser. Extract the information from the following raw resume text (which might be a LinkedIn PDF export or a standard resume) and structure it into a JSON object.
     
     Raw Resume Text:
     ${rawText}
     
-    Return ONLY the JSON object. Do not include any other text.`;
+    Extract all possible fields including personal info, experience, education, skills, projects, certifications, languages, interests, and references. Ensure dates are in YYYY-MM format if possible.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            personalInfo: {
+              type: Type.OBJECT,
+              properties: {
+                firstName: { type: Type.STRING },
+                lastName: { type: Type.STRING },
+                email: { type: Type.STRING },
+                phone: { type: Type.STRING },
+                address: { type: Type.STRING },
+                city: { type: Type.STRING },
+                country: { type: Type.STRING },
+                title: { type: Type.STRING },
+                summary: { type: Type.STRING },
+                links: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      id: { type: Type.STRING },
+                      label: { type: Type.STRING },
+                      url: { type: Type.STRING }
+                    }
+                  }
+                }
+              }
+            },
+            experience: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  company: { type: Type.STRING },
+                  position: { type: Type.STRING },
+                  startDate: { type: Type.STRING },
+                  endDate: { type: Type.STRING },
+                  current: { type: Type.BOOLEAN },
+                  description: { type: Type.STRING }
+                }
+              }
+            },
+            education: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  school: { type: Type.STRING },
+                  degree: { type: Type.STRING },
+                  field: { type: Type.STRING },
+                  startDate: { type: Type.STRING },
+                  endDate: { type: Type.STRING },
+                  current: { type: Type.BOOLEAN },
+                  description: { type: Type.STRING }
+                }
+              }
+            },
+            skills: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  name: { type: Type.STRING },
+                  level: { type: Type.STRING }
+                }
+              }
+            },
+            projects: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  name: { type: Type.STRING },
+                  description: { type: Type.STRING },
+                  url: { type: Type.STRING },
+                  startDate: { type: Type.STRING },
+                  endDate: { type: Type.STRING }
+                }
+              }
+            },
+            certifications: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  name: { type: Type.STRING },
+                  issuer: { type: Type.STRING },
+                  date: { type: Type.STRING },
+                  url: { type: Type.STRING }
+                }
+              }
+            },
+            languages: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  name: { type: Type.STRING },
+                  proficiency: { type: Type.STRING }
+                }
+              }
+            },
+            interests: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  name: { type: Type.STRING }
+                }
+              }
+            },
+            references: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  name: { type: Type.STRING },
+                  position: { type: Type.STRING },
+                  company: { type: Type.STRING },
+                  email: { type: Type.STRING },
+                  phone: { type: Type.STRING }
+                }
+              }
+            }
+          }
+        }
       },
     });
 

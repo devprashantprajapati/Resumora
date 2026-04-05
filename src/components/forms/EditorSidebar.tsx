@@ -216,7 +216,7 @@ export function EditorSidebar() {
               </motion.p>
             </div>
           </div>
-          <div className="pb-24 md:pb-10">
+          <div className="pb-8 md:pb-10">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeSection}
@@ -228,6 +228,53 @@ export function EditorSidebar() {
                 <ActiveComponent />
               </motion.div>
             </AnimatePresence>
+            
+            {/* Navigation Buttons */}
+            <div className="mt-12 pt-8 border-t border-zinc-200/60 flex items-center justify-between pb-16 md:pb-0">
+              {(() => {
+                const currentIndex = ALL_SECTIONS.findIndex(s => s.id === activeSection);
+                const prevSection = currentIndex > 0 ? ALL_SECTIONS[currentIndex - 1] : null;
+                const nextSection = currentIndex < ALL_SECTIONS.length - 1 ? ALL_SECTIONS[currentIndex + 1] : null;
+                
+                return (
+                  <>
+                    <div>
+                      {prevSection && (
+                        <Button 
+                          variant="outline" 
+                          onClick={() => setActiveSection(prevSection.id)}
+                          className="text-zinc-600"
+                        >
+                          &larr; Back to {prevSection.label}
+                        </Button>
+                      )}
+                    </div>
+                    <div>
+                      {nextSection ? (
+                        <Button 
+                          onClick={() => setActiveSection(nextSection.id)}
+                          className="bg-zinc-900 hover:bg-zinc-800 text-white"
+                        >
+                          Proceed to {nextSection.label} &rarr;
+                        </Button>
+                      ) : (
+                        <Button 
+                          onClick={() => {
+                            // On mobile, we might want to toggle preview, but here we just show a success message
+                            // or do nothing since it's the last step.
+                            const previewBtn = document.querySelector('button:has(.lucide-eye)') as HTMLButtonElement;
+                            if (previewBtn) previewBtn.click();
+                          }}
+                          className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                        >
+                          View Resume Preview &rarr;
+                        </Button>
+                      )}
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
           </div>
         </div>
       </div>

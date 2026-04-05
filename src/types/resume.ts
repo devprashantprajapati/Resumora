@@ -79,6 +79,7 @@ export type ResumeData = {
     paperSize: 'a4' | 'letter';
     headerAlignment: 'left' | 'center' | 'right';
     bodyAlignment: 'left' | 'justify';
+    publishedSlug?: string;
   };
 };
 
