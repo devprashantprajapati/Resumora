@@ -15,17 +15,37 @@
     display: none;
   }
   
+  .bg-mesh-pattern {
+    background-color: #fcfcfd;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(253,16%,7%,0.03) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(225,39%,30%,0.03) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(339,49%,30%,0.03) 0, transparent 50%);
+  }
+
   .bg-grid-pattern {
-    background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
-    background-size: 24px 24px;
+    background-image: linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
 
   .bg-dot-pattern {
-    background-image: radial-gradient(rgba(0,0,0,0.08) 1px, transparent 1px);
-    background-size: 16px 16px;
+    background-image: radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
   
+  .glass-nav {
+    @apply bg-white/70 backdrop-blur-2xl border-b border-white/50 shadow-[0_2px_10px_rgba(0,0,0,0.02),inset_0_1px_0_rgba(255,255,255,0.6)];
+  }
+
+  .glass-toolbar {
+    @apply bg-white/80 backdrop-blur-3xl border border-white/60 shadow-[0_0_0_1px_rgba(0,0,0,0.03),0_12px_40px_-8px_rgba(0,0,0,0.08),0_24px_60px_-12px_rgba(0,0,0,0.12)];
+  }
+
+  .paper-premium-shadow {
+    @apply shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_4px_16px_-4px_rgba(0,0,0,0.04),0_16px_48px_-12px_rgba(0,0,0,0.08),0_32px_80px_-20px_rgba(0,0,0,0.12)];
+  }
+
   .glass-panel {
     @apply bg-white/60 backdrop-blur-3xl border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.6)];
   }
