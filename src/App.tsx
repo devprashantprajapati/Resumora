@@ -51,11 +51,31 @@ export default function App() {
     <div className="flex flex-col h-[100dvh] bg-zinc-50/50 overflow-hidden font-sans selection:bg-zinc-200 selection:text-zinc-900">
       <Toaster position="top-center" />
       {/* Top Navigation Bar */}
-      <header className="h-16 glass-panel flex items-center px-4 sm:px-8 shrink-0 z-40 relative">
+      <header className="h-16 bg-white/80 backdrop-blur-xl border-b border-zinc-200/60 flex items-center px-4 sm:px-8 shrink-0 z-40 relative">
         <Logo />
         
         <div className="ml-auto flex items-center gap-4 text-sm text-zinc-500 font-medium">
-          {/* Desktop-only info or actions can go here if needed */}
+          {/* Mobile Toggle */}
+          <div className="flex bg-zinc-100/50 p-1 rounded-2xl lg:hidden border border-zinc-200/50 shadow-inner">
+            <button 
+              className={cn(
+                "flex items-center gap-2 px-5 py-2 rounded-xl transition-all duration-300 ease-out", 
+                !showPreview ? "bg-white text-indigo-700 shadow-sm font-bold scale-100" : "text-zinc-500 hover:text-zinc-900 scale-95"
+              )}
+              onClick={() => setShowPreview(false)}
+            >
+              <Edit2 className="w-4 h-4" /> <span className="hidden xs:inline">Edit</span>
+            </button>
+            <button 
+              className={cn(
+                "flex items-center gap-2 px-5 py-2 rounded-xl transition-all duration-300 ease-out", 
+                showPreview ? "bg-white text-indigo-700 shadow-sm font-bold scale-100" : "text-zinc-500 hover:text-zinc-900 scale-95"
+              )}
+              onClick={() => setShowPreview(true)}
+            >
+              <Eye className="w-4 h-4" /> <span className="hidden xs:inline">Preview</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -77,30 +97,6 @@ export default function App() {
           <ResumePreview />
         </div>
       </main>
-
-      {/* Mobile Floating Toggle */}
-      <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 safe-pb">
-        <div className="flex bg-zinc-900/90 backdrop-blur-xl p-1.5 rounded-full shadow-2xl border border-white/10">
-          <button 
-            className={cn(
-              "flex items-center gap-2 px-6 py-2.5 rounded-full transition-all duration-300 ease-out", 
-              !showPreview ? "bg-white text-zinc-900 font-bold shadow-sm" : "text-zinc-400 hover:text-zinc-200"
-            )}
-            onClick={() => setShowPreview(false)}
-          >
-            <Edit2 className="w-4 h-4" /> <span>Edit</span>
-          </button>
-          <button 
-            className={cn(
-              "flex items-center gap-2 px-6 py-2.5 rounded-full transition-all duration-300 ease-out", 
-              showPreview ? "bg-white text-zinc-900 font-bold shadow-sm" : "text-zinc-400 hover:text-zinc-200"
-            )}
-            onClick={() => setShowPreview(true)}
-          >
-            <Eye className="w-4 h-4" /> <span>Preview</span>
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

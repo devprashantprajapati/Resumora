@@ -67,20 +67,15 @@ export function EditorSidebar() {
   return (
     <div className="flex flex-col-reverse md:flex-row h-full bg-transparent relative">
       {/* Navigation */}
-      <div className="w-full md:w-24 lg:w-72 border-t md:border-t-0 md:border-r border-zinc-200/60 bg-white/80 backdrop-blur-2xl flex flex-row md:flex-col shrink-0 z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] md:shadow-[4px_0_24px_rgba(0,0,0,0.02)] relative">
+      <div className="w-full md:w-24 lg:w-72 border-t md:border-t-0 md:border-r border-zinc-200/60 bg-white/80 backdrop-blur-2xl flex flex-row md:flex-col shrink-0 z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] md:shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
         
         {/* Scrollable Content Sections */}
-        <div className="relative flex-1 flex flex-row md:flex-col min-w-0 md:min-h-0">
-          {/* Gradient Masks for Mobile */}
-          <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-white to-transparent z-10 md:hidden pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 md:hidden pointer-events-none" />
-          
-          <div 
-            ref={scrollContainerRef}
-            className="flex flex-row md:flex-col flex-1 p-2 md:p-6 gap-1 md:gap-3 min-w-0 md:min-h-0 items-center md:items-stretch overflow-x-auto md:overflow-y-auto scrollbar-hide relative z-0"
-          >
-            <div className="flex flex-row md:flex-col gap-1 md:gap-3 min-w-max md:min-w-0 h-full px-2 md:px-0">
-              {CONTENT_SECTIONS.map((section) => {
+        <div 
+          ref={scrollContainerRef}
+          className="flex flex-row md:flex-col flex-1 p-2 md:p-6 gap-1 md:gap-3 min-w-0 md:min-h-0 items-center md:items-stretch overflow-x-auto md:overflow-y-auto scrollbar-hide"
+        >
+          <div className="flex flex-row md:flex-col gap-1 md:gap-3 min-w-max md:min-w-0 h-full">
+            {CONTENT_SECTIONS.map((section) => {
               const Icon = section.icon;
               const isActive = activeSection === section.id;
               return (
@@ -89,22 +84,22 @@ export function EditorSidebar() {
                   ref={isActive ? activeItemRef : null}
                   onClick={() => setActiveSection(section.id)}
                   className={cn(
-                    "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0 min-h-[44px] min-w-[64px]",
+                    "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-300 ease-out group relative shrink-0",
                     isActive 
-                      ? "text-indigo-600 md:bg-indigo-600 md:text-white shadow-sm md:shadow-xl shadow-indigo-200/50" 
-                      : "text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50/80"
+                      ? "text-indigo-600 md:bg-indigo-600 md:text-white shadow-sm md:shadow-lg shadow-indigo-200/50" 
+                      : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/50"
                   )}
                 >
                   {isActive && (
                     <motion.div 
                       layoutId="active-nav-mobile"
-                      className="absolute inset-0 bg-zinc-100 rounded-xl md:rounded-[1.25rem] md:hidden -z-10" 
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      className="absolute inset-0 bg-white md:bg-indigo-600 rounded-xl md:rounded-[1.25rem] md:hidden -z-10 shadow-sm" 
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}
                   <Icon className={cn(
-                    "w-4 h-4 md:w-5 md:h-5 shrink-0 transition-all duration-500", 
-                    isActive ? "scale-110 text-indigo-600 md:text-white" : "group-hover:scale-110"
+                    "w-4 h-4 md:w-5 md:h-5 shrink-0 transition-transform duration-300", 
+                    isActive ? "scale-110" : "group-hover:scale-110"
                   )} />
                   <span className={cn(
                     "text-[10px] md:text-[13px] font-bold transition-colors tracking-tight",
@@ -117,7 +112,7 @@ export function EditorSidebar() {
                   {isActive && (
                     <motion.div 
                       layoutId="active-nav-indicator"
-                      className="hidden lg:block absolute right-4 w-1.5 h-1.5 rounded-full bg-white/40"
+                      className="hidden lg:block absolute right-4 w-1.5 h-1.5 rounded-full bg-white/60"
                     />
                   )}
                 </button>
@@ -127,7 +122,6 @@ export function EditorSidebar() {
             <div className="w-2 md:hidden shrink-0" />
             <div className="h-2 hidden md:block lg:hidden shrink-0" />
           </div>
-          </div>
         </div>
 
         {/* Mobile Fixed Right Area (Design & Settings) */}
@@ -135,7 +129,7 @@ export function EditorSidebar() {
           <button
             onClick={() => setActiveSection(SETTINGS_SECTION.id)}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative min-h-[44px] min-w-[64px]",
+              "flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative",
               activeSection === SETTINGS_SECTION.id 
                 ? "text-white bg-indigo-600 shadow-md shadow-indigo-200/50" 
                 : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
@@ -200,8 +194,7 @@ export function EditorSidebar() {
                 key={activeSection + 'title'}
                 initial={{ x: -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                className="font-black text-zinc-900 tracking-tighter"
-                style={{ fontSize: 'clamp(1.75rem, 5vw, 2.25rem)' }}
+                className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tighter"
               >
                 {ALL_SECTIONS.find(s => s.id === activeSection)?.label}
               </motion.h2>

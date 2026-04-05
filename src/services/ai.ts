@@ -1,4 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
+import { ResumeData } from "../types/resume";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -161,6 +162,31 @@ export async function* generateCoverLetterStream(resumeContent: string, jobDescr
     }
   } catch (error) {
     console.error("Error generating cover letter stream:", error);
+    throw error;
+  }
+}
+
+export async function structureResumeData(rawText: string): Promise<Partial<ResumeData>> {
+  try {
+    const prompt = `You are an expert resume parser. Extract the information from the following raw resume text and structure it into a JSON object that matches the ResumeData type.
+    
+    Raw Resume Text:
+    ${rawText}
+    
+    Return ONLY the JSON object. Do not include any other text.`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      },
+    });
+
+    const jsonStr = response.text?.trim() || "{}";
+    return JSON.parse(jsonStr);
+  } catch (error) {
+    console.error("Error structuring resume data:", error);
     throw error;
   }
 }

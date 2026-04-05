@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { exportTXT, exportJSON, exportDOCX, exportMarkdown, exportHTML, exportPDF } from '@/lib/exportUtils';
 import { ATSChecker } from './ATSChecker';
 import { CoverLetterGenerator } from './CoverLetterGenerator';
+import { ResumeImporter } from './ResumeImporter';
 import { Logo } from '../Logo';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
@@ -124,19 +125,20 @@ export function ResumePreview() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center justify-between gap-1 md:gap-3 px-2 md:px-5 py-1.5 md:py-3.5 bg-white/90 backdrop-blur-xl border border-white/60 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)] z-40 ring-1 ring-black/5 group/toolbar w-[500px] max-w-[95vw]"
+            className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center justify-between gap-1 md:gap-3 px-2 md:px-5 py-1.5 md:py-3.5 bg-white/90 backdrop-blur-xl border border-white/60 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)] z-40 ring-1 ring-black/5 group/toolbar w-[600px] max-w-[95vw]"
           >
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/toolbar:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
             
             <div className="flex-shrink-0 flex items-center gap-2">
               <ATSChecker />
               <CoverLetterGenerator />
+              <ResumeImporter />
             </div>
             
             <div className="w-px h-6 md:h-8 bg-zinc-200 mx-0.5 md:mx-2 flex-shrink-0" />
 
             {/* Zoom Controls & Export */}
-            <div className="flex items-center gap-0.5 md:gap-2 bg-zinc-100/50 p-1 md:p-1.5 rounded-full border border-black/5 shadow-inner w-[192px] justify-center">
+            <div className="flex items-center gap-0.5 md:gap-2 bg-zinc-100/50 p-1 md:p-1.5 rounded-full border border-black/5 shadow-inner">
               <div className="relative flex-shrink-0" ref={exportMenuRef}>
                 <Button 
                   variant="ghost"
@@ -174,6 +176,15 @@ export function ResumePreview() {
                             <FileText className="w-4.5 h-4.5 text-red-600" />
                           </div>
                           PDF Document
+                        </button>
+                        <button
+                          onClick={() => { exportDOCX(data); setIsExportMenuOpen(false); }}
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
+                        >
+                          <div className="w-9 h-9 rounded-xl bg-blue-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-blue-200/80 transition-all duration-300 shadow-sm">
+                            <FileType2 className="w-4.5 h-4.5 text-blue-600" />
+                          </div>
+                          Word Document
                         </button>
                         <div className="h-px bg-zinc-100 my-1.5 mx-3" />
                         <button
