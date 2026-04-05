@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { exportTXT, exportJSON, exportDOCX, exportMarkdown, exportHTML, exportPDF } from '@/lib/exportUtils';
 import { ATSChecker } from './ATSChecker';
 import { CoverLetterGenerator } from './CoverLetterGenerator';
+import { InterviewPrepGenerator } from './InterviewPrepGenerator';
 import { ResumeImporter } from './ResumeImporter';
 import { Logo } from '../Logo';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -125,13 +126,14 @@ export function ResumePreview() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap md:flex-nowrap items-center justify-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3.5 glass-toolbar rounded-2xl md:rounded-full z-40 group/toolbar w-[95vw] md:w-[600px] max-w-[400px] md:max-w-[95vw]"
+            className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap md:flex-nowrap items-center justify-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3.5 glass-toolbar rounded-2xl md:rounded-full z-40 group/toolbar w-[95vw] md:w-[700px] max-w-[400px] md:max-w-[95vw]"
           >
             <div className="absolute inset-0 rounded-2xl md:rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/toolbar:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
             
             <div className="flex-shrink-0 flex items-center justify-center gap-2 w-full md:w-auto">
               <ATSChecker />
               <CoverLetterGenerator />
+              <InterviewPrepGenerator />
               <ResumeImporter />
             </div>
             
