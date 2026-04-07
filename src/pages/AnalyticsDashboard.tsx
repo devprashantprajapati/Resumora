@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getResumeAnalytics } from '@/lib/resumeService';
+import { subscribeToResumeAnalytics } from '@/lib/resumeService';
 import { BarChart3, Eye, Globe, Clock, ArrowLeft, Loader2 } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,24 +13,26 @@ export function AnalyticsDashboard() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchAnalytics = async () => {
-      if (!slug || !user) {
-        setIsLoading(false);
-        return;
-      }
-      
-      try {
-        const data = await getResumeAnalytics(slug);
+    if (!slug || !user) {
+      setIsLoading(false);
+      return;
+    }
+
+    const unsubscribe = subscribeToResumeAnalytics(
+      slug,
+      (data) => {
         setAnalytics(data);
-      } catch (err: any) {
+        setIsLoading(false);
+        setError(null);
+      },
+      (err) => {
         console.error('Error fetching analytics:', err);
         setError(err.message || 'Failed to load analytics');
-      } finally {
         setIsLoading(false);
       }
-    };
+    );
 
-    fetchAnalytics();
+    return () => unsubscribe();
   }, [slug, user]);
 
   if (!user) {

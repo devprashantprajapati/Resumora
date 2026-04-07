@@ -1,7 +1,9 @@
 import { useResumeStore } from '@/store/useResumeStore';
+import { ResumeData } from '@/types/resume';
 
-export function MinimalTemplate() {
-  const { data } = useResumeStore();
+export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
+  const storeData = useResumeStore(state => state.data);
+  const data = propData || storeData;
   const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
 
   const getSpacing = () => {

@@ -111,12 +111,12 @@ export default function App() {
     <div className="flex flex-col h-[100dvh] bg-mesh-pattern overflow-hidden font-sans selection:bg-zinc-900 selection:text-white">
       <Toaster position="top-center" />
       {/* Top Navigation Bar */}
-      <header className="h-16 glass-nav flex items-center px-4 sm:px-8 shrink-0 z-40 relative">
+      <header className="h-16 lg:h-20 glass-nav lg:bg-transparent lg:border-none lg:shadow-none flex items-center px-4 sm:px-8 shrink-0 z-40 relative">
         <Logo />
         
         <div className="ml-auto flex items-center gap-4 text-sm text-zinc-500 font-medium">
           {/* Mobile Toggle */}
-          <div className="flex bg-zinc-100/50 p-1 rounded-2xl lg:hidden border border-zinc-200/50 shadow-inner">
+          <div className="flex bg-zinc-100/50 p-1 rounded-2xl lg:hidden border border-zinc-200/50 shadow-inner h-[50px] w-[125px]">
             <button 
               className={cn(
                 "flex items-center gap-2 px-5 py-2 rounded-xl transition-all duration-300 ease-out", 
@@ -140,10 +140,10 @@ export default function App() {
       </header>
 
       {/* Main Workspace */}
-      <main className="flex-1 flex overflow-hidden relative bg-grid-pattern">
+      <main className="flex-1 flex overflow-hidden relative bg-grid-pattern lg:p-4 lg:gap-4 lg:bg-zinc-50/50">
         {/* Left Panel: Editor */}
         <div className={cn(
-          "w-full lg:w-[45%] xl:w-[40%] flex-shrink-0 bg-white/70 backdrop-blur-3xl z-20 shadow-[8px_0_30px_rgba(0,0,0,0.03)] border-r border-zinc-200/60 absolute inset-0 lg:relative transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+          "w-full lg:w-[45%] xl:w-[40%] flex-shrink-0 bg-white/70 backdrop-blur-3xl z-20 shadow-[8px_0_30px_rgba(0,0,0,0.03)] border-r border-zinc-200/60 absolute inset-0 lg:relative transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] lg:rounded-3xl lg:border lg:shadow-2xl lg:shadow-zinc-200/50 lg:overflow-hidden",
           showPreview ? "-translate-x-full lg:translate-x-0" : "translate-x-0"
         )}>
           <EditorSidebar />
@@ -151,7 +151,7 @@ export default function App() {
 
         {/* Right Panel: Live Preview */}
         <div className={cn(
-          "absolute inset-0 lg:relative lg:flex-1 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-10 bg-transparent",
+          "absolute inset-0 lg:relative lg:flex-1 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-10 bg-transparent lg:bg-white/40 lg:backdrop-blur-xl lg:rounded-3xl lg:border lg:border-zinc-200/60 lg:shadow-2xl lg:shadow-zinc-200/50 lg:overflow-hidden",
           showPreview ? "translate-x-0" : "translate-x-full lg:translate-x-0"
         )}>
           <ResumePreview />

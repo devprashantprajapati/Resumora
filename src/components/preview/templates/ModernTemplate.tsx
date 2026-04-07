@@ -1,8 +1,10 @@
 import { useResumeStore } from '@/store/useResumeStore';
 import { Mail, Phone, MapPin, Link as LinkIcon } from 'lucide-react';
+import { ResumeData } from '@/types/resume';
 
-export function ModernTemplate() {
-  const { data } = useResumeStore();
+export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
+  const storeData = useResumeStore(state => state.data);
+  const data = propData || storeData;
   const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
 
   const color = settings.color;

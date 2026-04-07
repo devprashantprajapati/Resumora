@@ -93,7 +93,7 @@ export function EditorSidebar() {
                   {isActive && (
                     <motion.div 
                       layoutId="active-nav-bg"
-                      className="absolute inset-0 bg-white md:bg-zinc-900 rounded-xl md:rounded-[1.25rem] -z-10 shadow-sm md:shadow-md md:shadow-zinc-900/20 border border-zinc-200/50 md:border-transparent" 
+                      className="absolute inset-0 bg-white md:bg-gradient-to-br md:from-zinc-800 md:to-zinc-950 rounded-xl md:rounded-[1.25rem] -z-10 shadow-sm md:shadow-lg md:shadow-zinc-900/20 border border-zinc-200/50 md:border-zinc-800" 
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}
@@ -163,7 +163,7 @@ export function EditorSidebar() {
             {activeSection === SETTINGS_SECTION.id && (
               <motion.div 
                 layoutId="active-nav-bg"
-                className="absolute inset-0 bg-zinc-900 rounded-xl lg:rounded-[1.25rem] -z-10 shadow-md shadow-zinc-900/20" 
+                className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-950 rounded-xl lg:rounded-[1.25rem] -z-10 shadow-lg shadow-zinc-900/20 border border-zinc-800" 
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}
@@ -182,14 +182,14 @@ export function EditorSidebar() {
       </div>
 
       {/* Form Area */}
-      <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 bg-transparent scroll-smooth">
+      <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 bg-transparent lg:bg-gradient-to-br lg:from-white/40 lg:to-zinc-50/40 scroll-smooth">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-6 mb-12">
             <motion.div 
               key={activeSection + 'icon'}
               initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
-              className="p-4 bg-zinc-900 text-white rounded-[2rem] shadow-2xl shadow-zinc-900/20 ring-4 ring-white"
+              className="p-4 bg-gradient-to-br from-zinc-800 to-zinc-950 text-white rounded-[2rem] shadow-2xl shadow-zinc-900/20 ring-4 ring-white"
             >
               {(() => {
                 const ActiveIcon = ALL_SECTIONS.find(s => s.id === activeSection)?.icon || User;

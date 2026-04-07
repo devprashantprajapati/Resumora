@@ -1,5 +1,5 @@
 import { db, auth } from './firebase';
-import { collection, doc, setDoc, getDoc, getDocs, query, where, deleteDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, getDocs, query, where, deleteDoc, serverTimestamp, Timestamp, onSnapshot } from 'firebase/firestore';
 import { ResumeData } from '@/types/resume';
 
 export interface SavedResume {
@@ -237,27 +237,43 @@ export const incrementResumeViews = async (slug: string, location: string, userA
   }
 };
 
-export const getResumeAnalytics = async (slug: string): Promise<{ views: number, recentViews: any[] }> => {
-  if (!auth.currentUser) throw new Error('User not authenticated');
-  
-  const path = `published_resumes/${slug}/views`;
-  try {
-    const docRef = doc(db, 'published_resumes', slug);
-    const docSnap = await getDoc(docRef);
-    
-    if (!docSnap.exists() || docSnap.data().userId !== auth.currentUser.uid) {
-      throw new Error('Unauthorized or not found');
+export const subscribeToResumeAnalytics = (
+  slug: string,
+  onData: (data: { views: number, recentViews: any[] }) => void,
+  onError: (error: Error) => void
+) => {
+  if (!auth.currentUser) {
+    onError(new Error('User not authenticated'));
+    return () => {};
+  }
+
+  const docRef = doc(db, 'published_resumes', slug);
+  const viewsRef = collection(db, `published_resumes/${slug}/views`);
+
+  let currentViews = 0;
+  let currentRecentViews: any[] = [];
+
+  const updateCallback = () => {
+    onData({ views: currentViews, recentViews: currentRecentViews });
+  };
+
+  const unsubscribeDoc = onSnapshot(docRef, (docSnap) => {
+    if (!docSnap.exists() || docSnap.data().userId !== auth.currentUser?.uid) {
+      onError(new Error('Unauthorized or not found'));
+      return;
     }
-    
-    const views = docSnap.data().views || 0;
-    
-    // Get recent views
-    // Note: We don't have an index on viewedAt, so we just get all and sort in memory if small, or we can just return the total views for now.
-    // To keep it simple and avoid index requirement errors, we'll just fetch a few.
-    const q = query(collection(db, `published_resumes/${slug}/views`));
-    const querySnapshot = await getDocs(q);
-    
-    const recentViews = querySnapshot.docs.map(doc => {
+    currentViews = docSnap.data().views || 0;
+    updateCallback();
+  }, (error) => {
+    try {
+      handleFirestoreError(error, OperationType.GET, `published_resumes/${slug}`);
+    } catch (e: any) {
+      onError(e);
+    }
+  });
+
+  const unsubscribeViews = onSnapshot(viewsRef, (querySnapshot) => {
+    currentRecentViews = querySnapshot.docs.map(doc => {
       const data = doc.data();
       return {
         id: doc.id,
@@ -267,9 +283,17 @@ export const getResumeAnalytics = async (slug: string): Promise<{ views: number,
       };
     }).sort((a, b) => b.viewedAt.getTime() - a.viewedAt.getTime()).slice(0, 50);
     
-    return { views, recentViews };
-  } catch (error) {
-    handleFirestoreError(error, OperationType.LIST, path);
-    return { views: 0, recentViews: [] };
-  }
+    updateCallback();
+  }, (error) => {
+    try {
+      handleFirestoreError(error, OperationType.LIST, `published_resumes/${slug}/views`);
+    } catch (e: any) {
+      onError(e);
+    }
+  });
+
+  return () => {
+    unsubscribeDoc();
+    unsubscribeViews();
+  };
 };
