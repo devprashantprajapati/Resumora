@@ -12,8 +12,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './components/Logo';
 import { Toaster, toast } from 'sonner';
 import { useAuth } from './contexts/AuthContext';
-import { getResume, publishResume } from './lib/resumeService';
+import { getResume, publishResume, saveResume } from './lib/resumeService';
 import { useResumeStore } from './store/useResumeStore';
+import { Button } from './components/ui/Button';
 
 export default function App() {
   const [showPreview, setShowPreview] = useState(false);
@@ -21,6 +22,7 @@ export default function App() {
   const { data, updateData } = useResumeStore();
   const [isLoading, setIsLoading] = useState(false);
   const autoSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const draftSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialLoadRef = useRef(true);
 
   useEffect(() => {
@@ -54,6 +56,32 @@ export default function App() {
 
     loadUserResume();
   }, [user]);
+
+  // Auto-sync draft resume to cloud when logged in
+  useEffect(() => {
+    if (isInitialLoadRef.current || !user) return;
+
+    if (draftSyncTimeoutRef.current) {
+      clearTimeout(draftSyncTimeoutRef.current);
+    }
+
+    draftSyncTimeoutRef.current = setTimeout(async () => {
+      try {
+        const resumeId = user.uid + '_default';
+        const title = `${data.personalInfo.firstName || 'My'} Resume`;
+        await saveResume(resumeId, title, data);
+        console.log('Auto-saved draft to cloud');
+      } catch (error) {
+        console.error('Failed to auto-save draft:', error);
+      }
+    }, 3000); // Debounce for 3 seconds
+
+    return () => {
+      if (draftSyncTimeoutRef.current) {
+        clearTimeout(draftSyncTimeoutRef.current);
+      }
+    };
+  }, [data, user]);
 
   // Auto-sync published resume
   useEffect(() => {
