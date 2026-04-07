@@ -59,7 +59,7 @@ export default function App() {
 
   // Auto-sync draft resume to cloud when logged in
   useEffect(() => {
-    if (isInitialLoadRef.current || !user) return;
+    if (isInitialLoadRef.current || !user || isLoading) return;
 
     if (draftSyncTimeoutRef.current) {
       clearTimeout(draftSyncTimeoutRef.current);
@@ -81,11 +81,11 @@ export default function App() {
         clearTimeout(draftSyncTimeoutRef.current);
       }
     };
-  }, [data, user]);
+  }, [data, user, isLoading]);
 
   // Auto-sync published resume
   useEffect(() => {
-    if (isInitialLoadRef.current || !user || !data.settings.publishedSlug) return;
+    if (isInitialLoadRef.current || !user || !data.settings.publishedSlug || isLoading) return;
 
     if (autoSyncTimeoutRef.current) {
       clearTimeout(autoSyncTimeoutRef.current);
@@ -105,7 +105,7 @@ export default function App() {
         clearTimeout(autoSyncTimeoutRef.current);
       }
     };
-  }, [data, user]);
+  }, [data, user, isLoading]);
 
   return (
     <div className="flex flex-col h-[100dvh] bg-mesh-pattern overflow-hidden font-sans selection:bg-zinc-900 selection:text-white">
@@ -119,21 +119,21 @@ export default function App() {
           <div className="flex bg-zinc-100/50 p-1 rounded-2xl lg:hidden border border-zinc-200/50 shadow-inner h-[50px] w-[125px]">
             <button 
               className={cn(
-                "flex items-center gap-2 px-5 py-2 rounded-xl transition-all duration-300 ease-out", 
+                "flex items-center justify-center gap-1.5 flex-1 rounded-xl transition-all duration-300 ease-out", 
                 !showPreview ? "bg-white text-zinc-900 shadow-sm font-bold scale-100" : "text-zinc-500 hover:text-zinc-900 scale-95"
               )}
               onClick={() => setShowPreview(false)}
             >
-              <Edit2 className="w-4 h-4" /> <span className="hidden xs:inline">Edit</span>
+              <Edit2 className="w-3.5 h-3.5" /> <span className="text-xs">Edit</span>
             </button>
             <button 
               className={cn(
-                "flex items-center gap-2 px-5 py-2 rounded-xl transition-all duration-300 ease-out", 
+                "flex items-center justify-center gap-1.5 flex-1 rounded-xl transition-all duration-300 ease-out", 
                 showPreview ? "bg-white text-zinc-900 shadow-sm font-bold scale-100" : "text-zinc-500 hover:text-zinc-900 scale-95"
               )}
               onClick={() => setShowPreview(true)}
             >
-              <Eye className="w-4 h-4" /> <span className="hidden xs:inline">Preview</span>
+              <Eye className="w-3.5 h-3.5" /> <span className="text-xs">View</span>
             </button>
           </div>
         </div>

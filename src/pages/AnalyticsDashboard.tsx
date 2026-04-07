@@ -87,7 +87,7 @@ export function AnalyticsDashboard() {
               <h1 className="text-2xl font-bold text-zinc-900">Resume Analytics</h1>
             </div>
             <p className="text-zinc-500">
-              Tracking views for <a href={`/p/${slug}`} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-medium">resumora.app/p/{slug}</a>
+              Tracking views for <a href={`/p/${slug}`} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-medium">{window.location.host}/p/{slug}</a>
             </p>
           </div>
 

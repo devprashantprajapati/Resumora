@@ -99,7 +99,7 @@ export function PublishModal() {
               </button>
             </div>
 
-            <div className="px-6 sm:px-8 pb-8 pt-0 overflow-y-auto flex-1 relative -mt-12">
+            <div className="px-6 sm:px-8 pb-32 sm:pb-8 pt-0 overflow-y-auto flex-1 relative -mt-12">
               {/* Icon Circle */}
               <div className="w-24 h-24 bg-white rounded-full p-2 shadow-xl shadow-indigo-500/10 mb-6 mx-auto relative">
                 <div className="w-full h-full bg-indigo-50 rounded-full flex items-center justify-center border border-indigo-100">
@@ -198,7 +198,6 @@ export function PublishModal() {
                         onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                         placeholder="johndoe"
                         className="flex-1 px-4 py-4 bg-transparent outline-none text-zinc-900 font-bold placeholder:text-zinc-300 placeholder:font-medium w-full min-w-0"
-                        autoFocus
                       />
                     </div>
                     <p className="text-xs text-zinc-500 ml-1 flex items-center gap-1.5">

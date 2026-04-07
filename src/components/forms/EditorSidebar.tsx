@@ -102,10 +102,8 @@ export function EditorSidebar() {
                     isActive ? "scale-110" : "group-hover:scale-110"
                   )} />
                   <span className={cn(
-                    "text-[10px] md:text-[13px] font-bold transition-colors tracking-tight",
-                    isActive ? "opacity-100" : "opacity-70 group-hover:opacity-100",
-                    "md:block",
-                    !isActive && "hidden md:block lg:block"
+                    "text-[10px] lg:text-[13px] font-bold transition-colors tracking-tight",
+                    isActive ? "opacity-100 block md:hidden lg:block" : "opacity-70 group-hover:opacity-100 hidden lg:block"
                   )}>
                     {section.label}
                   </span>
