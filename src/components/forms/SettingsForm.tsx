@@ -27,6 +27,9 @@ const FONTS = [
   { name: 'Open Sans', value: '"Open Sans", sans-serif' },
   { name: 'Merriweather', value: 'Merriweather, serif' },
   { name: 'Playfair Display', value: '"Playfair Display", serif' },
+  { name: 'Lora', value: 'Lora, serif' },
+  { name: 'Fira Code', value: '"Fira Code", monospace' },
+  { name: 'Space Grotesk', value: '"Space Grotesk", sans-serif' },
 ];
 
 export function SettingsForm() {
@@ -114,8 +117,8 @@ export function SettingsForm() {
 
       <div className="space-y-4">
         <Label className="text-base font-semibold text-zinc-900">Template</Label>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {(['modern', 'minimal', 'corporate', 'creative'] as const).map((template) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          {(['modern', 'minimal', 'corporate', 'creative', 'elegant', 'tech', 'executive'] as const).map((template) => (
             <button
               key={template}
               onClick={() => updateSettings({ template })}
@@ -149,7 +152,7 @@ export function SettingsForm() {
       </div>
 
       <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Typography (Font)</Label>
+        <Label className="text-base font-semibold text-zinc-900">Typography (Body Font)</Label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {FONTS.map((font) => (
             <button
@@ -170,40 +173,103 @@ export function SettingsForm() {
       </div>
 
       <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Font Size</Label>
-        <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-          {(['small', 'medium', 'large'] as const).map((size) => (
+        <Label className="text-base font-semibold text-zinc-900">Typography (Heading Font)</Label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {FONTS.map((font) => (
             <button
-              key={size}
-              onClick={() => updateSettings({ fontSize: size })}
-              className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                settings.fontSize === size
-                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                  : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
+              key={font.value}
+              onClick={() => updateSettings({ headingFont: font.value })}
+              className={`p-4 rounded-xl border-2 text-left transition-all duration-300 ${
+                (settings.headingFont || settings.font) === font.value
+                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 shadow-md shadow-indigo-200/50 scale-[1.02]'
+                  : 'border-zinc-200/60 bg-white/60 hover:bg-white hover:border-zinc-300 text-zinc-700 pro-card'
               }`}
+              style={{ fontFamily: font.value }}
             >
-              {size}
+              <span className="text-lg font-bold">{font.name}</span>
+              <span className="block text-xs text-zinc-400 mt-1 font-sans">Heading Style Preview</span>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Spacing & Density</Label>
-        <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-          {(['compact', 'normal', 'relaxed'] as const).map((spacing) => (
-            <button
-              key={spacing}
-              onClick={() => updateSettings({ spacing })}
-              className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                settings.spacing === spacing
-                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                  : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-              }`}
-            >
-              {spacing}
-            </button>
-          ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="space-y-4">
+          <Label className="text-base font-semibold text-zinc-900">Font Size</Label>
+          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
+            {(['small', 'medium', 'large'] as const).map((size) => (
+              <button
+                key={size}
+                onClick={() => updateSettings({ fontSize: size })}
+                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
+                  settings.fontSize === size
+                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
+                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <Label className="text-base font-semibold text-zinc-900">Line Height</Label>
+          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
+            {(['tight', 'normal', 'loose'] as const).map((lh) => (
+              <button
+                key={lh}
+                onClick={() => updateSettings({ lineHeight: lh })}
+                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
+                  (settings.lineHeight || 'normal') === lh
+                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
+                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
+                }`}
+              >
+                {lh}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="space-y-4">
+          <Label className="text-base font-semibold text-zinc-900">Spacing & Density</Label>
+          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
+            {(['compact', 'normal', 'relaxed'] as const).map((spacing) => (
+              <button
+                key={spacing}
+                onClick={() => updateSettings({ spacing })}
+                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
+                  settings.spacing === spacing
+                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
+                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
+                }`}
+              >
+                {spacing}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <Label className="text-base font-semibold text-zinc-900">Page Margins</Label>
+          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
+            {(['small', 'medium', 'large'] as const).map((margin) => (
+              <button
+                key={margin}
+                onClick={() => updateSettings({ margins: margin })}
+                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
+                  (settings.margins || 'medium') === margin
+                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
+                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
+                }`}
+              >
+                {margin}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -226,41 +292,92 @@ export function SettingsForm() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="space-y-4">
+          <Label className="text-base font-semibold text-zinc-900">Header Alignment</Label>
+          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
+            {(['left', 'center', 'right'] as const).map((alignment) => (
+              <button
+                key={alignment}
+                onClick={() => updateSettings({ headerAlignment: alignment })}
+                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
+                  settings.headerAlignment === alignment
+                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
+                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
+                }`}
+              >
+                {alignment}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <Label className="text-base font-semibold text-zinc-900">Body Text Alignment</Label>
+          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
+            {(['left', 'justify'] as const).map((alignment) => (
+              <button
+                key={alignment}
+                onClick={() => updateSettings({ bodyAlignment: alignment })}
+                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
+                  settings.bodyAlignment === alignment
+                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
+                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
+                }`}
+              >
+                {alignment}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Header Alignment</Label>
+        <Label className="text-base font-semibold text-zinc-900">Date Format</Label>
         <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-          {(['left', 'center', 'right'] as const).map((alignment) => (
+          {(['MM/YYYY', 'MMM YYYY', 'YYYY', 'Month YYYY'] as const).map((format) => (
             <button
-              key={alignment}
-              onClick={() => updateSettings({ headerAlignment: alignment })}
-              className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                settings.headerAlignment === alignment
+              key={format}
+              onClick={() => updateSettings({ dateFormat: format })}
+              className={`flex-1 py-2.5 text-sm rounded-lg transition-all duration-300 ${
+                (settings.dateFormat || 'MMM YYYY') === format
                   ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
                   : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
               }`}
             >
-              {alignment}
+              {format === 'MM/YYYY' ? '08/2023' : format === 'MMM YYYY' ? 'Aug 2023' : format === 'YYYY' ? '2023' : 'August 2023'}
             </button>
           ))}
         </div>
       </div>
 
       <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Body Text Alignment</Label>
-        <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-          {(['left', 'justify'] as const).map((alignment) => (
-            <button
-              key={alignment}
-              onClick={() => updateSettings({ bodyAlignment: alignment })}
-              className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                settings.bodyAlignment === alignment
-                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                  : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-              }`}
-            >
-              {alignment}
-            </button>
-          ))}
+        <Label className="text-base font-semibold text-zinc-900">Section Visibility</Label>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {[
+            { key: 'showPhoto', label: 'Profile Photo' },
+            { key: 'showReferences', label: 'References' },
+            { key: 'showInterests', label: 'Interests' },
+            { key: 'showLanguages', label: 'Languages' },
+            { key: 'showCertifications', label: 'Certifications' },
+            { key: 'showProjects', label: 'Projects' },
+          ].map(({ key, label }) => {
+            const isVisible = settings[key as keyof typeof settings] !== false;
+            return (
+              <button
+                key={key}
+                onClick={() => updateSettings({ [key]: !isVisible })}
+                className={`p-3 rounded-xl border-2 text-center transition-all duration-300 ${
+                  isVisible
+                    ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 font-semibold shadow-sm'
+                    : 'border-zinc-200/60 bg-white/60 text-zinc-400 hover:border-zinc-300'
+                }`}
+              >
+                <div className="text-sm">{label}</div>
+                <div className="text-xs mt-1 opacity-70">{isVisible ? 'Visible' : 'Hidden'}</div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -283,34 +400,9 @@ export function SettingsForm() {
             ))}
           </div>
         </div>
+      </div>
 
-        <div className="space-y-4">
-          <Label className="text-base font-semibold text-zinc-900">Profile Photo</Label>
-          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-            <button
-              onClick={() => updateSettings({ showPhoto: true })}
-              className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                settings.showPhoto
-                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                  : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-              }`}
-            >
-              Show
-            </button>
-            <button
-              onClick={() => updateSettings({ showPhoto: false })}
-              className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                !settings.showPhoto
-                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                  : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-              }`}
-            >
-              Hide
-            </button>
-          </div>
-        </div>
-
-        <div className="pt-8 border-t border-zinc-200/60">
+      <div className="pt-8 border-t border-zinc-200/60">
           <div className="space-y-4">
             <Label className="text-base font-semibold text-red-600">Danger Zone</Label>
             <p className="text-sm text-zinc-500">
@@ -339,7 +431,6 @@ export function SettingsForm() {
             </Button>
           </div>
         </div>
-      </div>
     </div>
   );
 }

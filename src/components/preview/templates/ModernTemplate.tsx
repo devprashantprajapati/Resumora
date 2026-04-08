@@ -8,6 +8,7 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
   const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
 
   const color = settings.color;
+  const headingFont = settings.headingFont || settings.font;
 
   const getSpacing = () => {
     switch (settings.spacing) {
@@ -54,10 +55,10 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
           <img src={personalInfo.photoUrl} alt="Profile" className={`w-32 h-32 object-cover shadow-md border-2 border-white ring-2 ring-zinc-100 ${getBorderRadius('photo')}`} />
         )}
         <div className={`flex-1 flex flex-col ${alignment}`}>
-          <h1 className="text-4xl font-extrabold uppercase tracking-tight" style={{ color }}>
+          <h1 className="text-4xl font-extrabold uppercase tracking-tight" style={{ color, fontFamily: headingFont }}>
             {personalInfo.firstName} {personalInfo.lastName}
           </h1>
-          <h2 className="text-xl font-medium text-zinc-600 mt-2">{personalInfo.title}</h2>
+          <h2 className="text-xl font-medium text-zinc-600 mt-2" style={{ fontFamily: headingFont }}>{personalInfo.title}</h2>
           
           <div className={`flex flex-wrap ${flexAlignment} gap-x-6 gap-y-2 mt-6 text-sm text-zinc-500`}>
             {personalInfo.email && (
@@ -93,7 +94,7 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Experience */}
           {experience.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color, fontFamily: headingFont }}>
                 Experience
               </h3>
               <div className={spacing.spaceY}>
@@ -116,9 +117,9 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
           )}
 
           {/* Projects */}
-          {projects.length > 0 && (
+          {settings.showProjects !== false && projects.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color, fontFamily: headingFont }}>
                 Projects
               </h3>
               <div className={spacing.spaceY}>
@@ -147,7 +148,7 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Skills */}
           {skills.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color, fontFamily: headingFont }}>
                 Skills
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -166,7 +167,7 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Education */}
           {education.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color, fontFamily: headingFont }}>
                 Education
               </h3>
               <div className={spacing.spaceY}>
@@ -187,9 +188,9 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
           )}
 
           {/* Certifications */}
-          {certifications.length > 0 && (
+          {settings.showCertifications !== false && certifications.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color, fontFamily: headingFont }}>
                 Certifications
               </h3>
               <div className={spacing.spaceY}>
@@ -204,9 +205,9 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
           )}
 
           {/* Languages */}
-          {languages?.length > 0 && (
+          {settings.showLanguages !== false && languages?.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color, fontFamily: headingFont }}>
                 Languages
               </h3>
               <div className={spacing.spaceY}>
@@ -221,9 +222,9 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
           )}
 
           {/* Interests */}
-          {interests?.length > 0 && (
+          {settings.showInterests !== false && interests?.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color, fontFamily: headingFont }}>
                 Interests
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -240,9 +241,9 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
           )}
 
           {/* References */}
-          {references?.length > 0 && (
+          {settings.showReferences !== false && references?.length > 0 && (
             <section>
-              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color }}>
+              <h3 className="text-lg font-bold uppercase tracking-wider mb-6 flex items-center gap-2" style={{ color, fontFamily: headingFont }}>
                 References
               </h3>
               <div className={spacing.spaceY}>

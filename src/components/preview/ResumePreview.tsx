@@ -3,6 +3,9 @@ import { ModernTemplate } from './templates/ModernTemplate';
 import { MinimalTemplate } from './templates/MinimalTemplate';
 import { CorporateTemplate } from './templates/CorporateTemplate';
 import { CreativeTemplate } from './templates/CreativeTemplate';
+import { ElegantTemplate } from './templates/ElegantTemplate';
+import { TechTemplate } from './templates/TechTemplate';
+import { ExecutiveTemplate } from './templates/ExecutiveTemplate';
 import { useRef, useState, useEffect } from 'react';
 import { Button } from '../ui/Button';
 import { Download, ChevronDown, FileText, FileJson, FileType2, FileCode, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
@@ -70,6 +73,12 @@ export function ResumePreview() {
         return <CorporateTemplate />;
       case 'creative':
         return <CreativeTemplate />;
+      case 'elegant':
+        return <ElegantTemplate />;
+      case 'tech':
+        return <TechTemplate />;
+      case 'executive':
+        return <ExecutiveTemplate />;
       default:
         return <ModernTemplate />;
     }

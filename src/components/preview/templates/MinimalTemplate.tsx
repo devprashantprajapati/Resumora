@@ -6,6 +6,8 @@ export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
   const data = propData || storeData;
   const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
 
+  const headingFont = settings.headingFont || settings.font;
+
   const getSpacing = () => {
     switch (settings.spacing) {
       case 'compact': return { mb: 'mb-4', spaceY: 'space-y-3' };
@@ -54,10 +56,10 @@ export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
             className={`w-24 h-24 object-cover shadow-sm mb-4 ${getBorderRadius()}`} 
           />
         )}
-        <h1 className="text-2xl font-light tracking-widest uppercase mb-1.5">
+        <h1 className="text-2xl font-light tracking-widest uppercase mb-1.5" style={{ fontFamily: headingFont }}>
           <span className="font-bold">{personalInfo.firstName}</span> {personalInfo.lastName}
         </h1>
-        <h2 className="text-xs tracking-widest uppercase text-zinc-500 mb-3">{personalInfo.title}</h2>
+        <h2 className="text-xs tracking-widest uppercase text-zinc-500 mb-3" style={{ fontFamily: headingFont }}>{personalInfo.title}</h2>
         
         <div className={`flex flex-wrap ${flexAlignment} gap-x-4 gap-y-1 text-[11px] text-zinc-600`}>
           {personalInfo.email && <span>{personalInfo.email}</span>}
@@ -83,7 +85,7 @@ export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
       {/* Experience */}
       {experience.length > 0 && (
         <section className={spacing.mb}>
-          <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+          <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3" style={{ fontFamily: headingFont }}>
             Experience
           </h3>
           <div className={spacing.spaceY}>
@@ -106,9 +108,9 @@ export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
       )}
 
       {/* Projects */}
-      {projects.length > 0 && (
+      {settings.showProjects !== false && projects.length > 0 && (
         <section className={spacing.mb}>
-          <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+          <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3" style={{ fontFamily: headingFont }}>
             Projects
           </h3>
           <div className={spacing.spaceY}>
@@ -137,7 +139,7 @@ export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
         <div>
           {education.length > 0 && (
             <section className={spacing.mb}>
-              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3" style={{ fontFamily: headingFont }}>
                 Education
               </h3>
               <div className="space-y-3">
@@ -154,9 +156,9 @@ export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
             </section>
           )}
 
-          {certifications.length > 0 && (
+          {settings.showCertifications !== false && certifications.length > 0 && (
             <section className={spacing.mb}>
-              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3" style={{ fontFamily: headingFont }}>
                 Certifications
               </h3>
               <div className="space-y-2">
@@ -171,9 +173,9 @@ export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
           )}
 
           {/* References */}
-          {references?.length > 0 && (
+          {settings.showReferences !== false && references?.length > 0 && (
             <section>
-              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3" style={{ fontFamily: headingFont }}>
                 References
               </h3>
               <div className="space-y-3">
@@ -201,7 +203,7 @@ export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
         <div>
           {skills.length > 0 && (
             <section className={spacing.mb}>
-              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3" style={{ fontFamily: headingFont }}>
                 Skills
               </h3>
               <div className="flex flex-wrap gap-x-3 gap-y-1.5">
@@ -215,9 +217,9 @@ export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
           )}
 
           {/* Languages */}
-          {languages?.length > 0 && (
+          {settings.showLanguages !== false && languages?.length > 0 && (
             <section className={spacing.mb}>
-              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3" style={{ fontFamily: headingFont }}>
                 Languages
               </h3>
               <div className="space-y-1.5">
@@ -232,9 +234,9 @@ export function MinimalTemplate({ data: propData }: { data?: ResumeData }) {
           )}
 
           {/* Interests */}
-          {interests?.length > 0 && (
+          {settings.showInterests !== false && interests?.length > 0 && (
             <section>
-              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 border-b border-zinc-200 pb-1.5 mb-3" style={{ fontFamily: headingFont }}>
                 Interests
               </h3>
               <div className="flex flex-wrap gap-x-3 gap-y-1.5">

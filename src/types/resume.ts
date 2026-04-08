@@ -69,13 +69,22 @@ export type ResumeData = {
     phone: string;
   }[];
   settings: {
-    template: 'modern' | 'minimal' | 'corporate' | 'creative';
+    template: 'modern' | 'minimal' | 'corporate' | 'creative' | 'elegant' | 'tech' | 'executive';
     color: string;
     font: string;
+    headingFont?: string;
     fontSize: 'small' | 'medium' | 'large';
     spacing: 'compact' | 'normal' | 'relaxed';
+    lineHeight?: 'tight' | 'normal' | 'loose';
+    margins?: 'small' | 'medium' | 'large';
     borderRadius: 'sharp' | 'rounded' | 'pill';
     showPhoto: boolean;
+    showReferences?: boolean;
+    showInterests?: boolean;
+    showLanguages?: boolean;
+    showCertifications?: boolean;
+    showProjects?: boolean;
+    dateFormat?: 'MM/YYYY' | 'MMM YYYY' | 'YYYY' | 'Month YYYY';
     paperSize: 'a4' | 'letter';
     headerAlignment: 'left' | 'center' | 'right';
     bodyAlignment: 'left' | 'justify';
@@ -108,10 +117,19 @@ export const emptyResumeData: ResumeData = {
     template: 'modern',
     color: '#3b82f6',
     font: 'Inter',
+    headingFont: 'Inter',
     fontSize: 'medium',
     spacing: 'normal',
+    lineHeight: 'normal',
+    margins: 'medium',
     borderRadius: 'rounded',
     showPhoto: true,
+    showReferences: true,
+    showInterests: true,
+    showLanguages: true,
+    showCertifications: true,
+    showProjects: true,
+    dateFormat: 'MMM YYYY',
     paperSize: 'a4',
     headerAlignment: 'left',
     bodyAlignment: 'left',
@@ -214,10 +232,19 @@ export const initialResumeData: ResumeData = {
     template: 'modern',
     color: '#3b82f6', // blue-500
     font: 'Inter',
+    headingFont: 'Inter',
     fontSize: 'medium',
     spacing: 'normal',
+    lineHeight: 'normal',
+    margins: 'medium',
     borderRadius: 'rounded',
     showPhoto: true,
+    showReferences: true,
+    showInterests: true,
+    showLanguages: true,
+    showCertifications: true,
+    showProjects: true,
+    dateFormat: 'MMM YYYY',
     paperSize: 'a4',
     headerAlignment: 'left',
     bodyAlignment: 'left',
