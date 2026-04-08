@@ -237,6 +237,68 @@ export async function generateInterviewPrep(resumeContent: string, jobDescriptio
   }
 }
 
+export async function* generateInterviewPrepStream(resumeContent: string, jobDescription: string, companyName: string): AsyncGenerator<string, void, unknown> {
+  try {
+    const prompt = `You are an expert technical recruiter and executive career coach. 
+    Based on the candidate's resume and the target job description, generate a highly tailored interview preparation guide.
+    
+    Resume Content:
+    ${resumeContent}
+    
+    Job Description:
+    ${jobDescription}
+    
+    Company Name: ${companyName}
+    
+    Provide:
+    1. 5 highly probable interview questions (mix of behavioral, technical, and experience-based) specific to this role and company.
+    2. For each question, explain WHY the interviewer is asking it.
+    3. For each question, provide a specific strategy on HOW the candidate should answer it, explicitly referencing their actual past experiences and skills from the provided resume.
+    4. 3 general interview tips tailored to this specific company and role.`;
+
+    const response = await ai.models.generateContentStream({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            questions: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  question: { type: Type.STRING, description: "The interview question" },
+                  type: { type: Type.STRING, description: "Type of question (e.g., Behavioral, Technical, Leadership)" },
+                  whyTheyAreAsking: { type: Type.STRING, description: "The underlying motivation for this question" },
+                  suggestedAnswerStrategy: { type: Type.STRING, description: "How to answer, referencing specific resume details" }
+                },
+                required: ["question", "type", "whyTheyAreAsking", "suggestedAnswerStrategy"]
+              }
+            },
+            generalTips: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+              description: "General interview tips for this role/company"
+            }
+          },
+          required: ["questions", "generalTips"]
+        }
+      }
+    });
+
+    for await (const chunk of response) {
+      if (chunk.text) {
+        yield chunk.text;
+      }
+    }
+  } catch (error) {
+    console.error("Error generating interview prep stream:", error);
+    throw error;
+  }
+}
+
 export async function structureResumeData(rawText: string): Promise<Partial<ResumeData>> {
   try {
     const prompt = `You are an expert resume parser. Extract the information from the following raw resume text (which might be a LinkedIn PDF export or a standard resume) and structure it into a JSON object.

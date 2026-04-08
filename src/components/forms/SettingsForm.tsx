@@ -317,7 +317,7 @@ export function SettingsForm() {
               This action will permanently delete all your resume data. This cannot be undone.
             </p>
             <Button 
-              variant={isConfirmingReset ? "destructive" : "outline"}
+              variant={isConfirmingReset ? "danger" : "outline"}
               onClick={handleReset} 
               className={`w-full sm:w-auto transition-all duration-200 ${
                 isConfirmingReset 

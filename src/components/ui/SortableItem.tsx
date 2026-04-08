@@ -31,7 +31,7 @@ export const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
   return (
     <div ref={setNodeRef} style={style}>
       {/* We pass attributes and listeners to the child so it can attach the drag handle where needed */}
-      {React.cloneElement(children as React.ReactElement, {
+      {React.cloneElement(children as React.ReactElement<any>, {
         dragHandleProps: { ...attributes, ...listeners },
         isDragging,
       })}
