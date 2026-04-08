@@ -116,7 +116,7 @@ export default function App() {
         
         <div className="ml-auto flex items-center gap-4 text-sm text-zinc-500 font-medium">
           {/* Mobile Toggle */}
-          <div className="flex bg-zinc-100/50 p-1 rounded-2xl lg:hidden border border-zinc-200/50 shadow-inner h-[50px] w-[125px]">
+          <div className="flex bg-zinc-100/50 p-1 rounded-2xl lg:hidden border border-zinc-200/50 shadow-inner h-[55px] w-[142px]">
             <button 
               className={cn(
                 "flex items-center justify-center gap-1.5 flex-1 rounded-xl transition-all duration-300 ease-out", 
