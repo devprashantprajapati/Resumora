@@ -41,6 +41,7 @@ export function ResumeImporter() {
       />
       <Button
         onClick={() => fileInputRef.current?.click()}
+        onPointerDown={(e) => e.stopPropagation()}
         disabled={isImporting}
         className="bg-zinc-900 hover:bg-zinc-800 text-white rounded-full h-8 md:h-11 px-3 md:px-5 transition-all duration-300 flex items-center gap-2 active:scale-95"
       >

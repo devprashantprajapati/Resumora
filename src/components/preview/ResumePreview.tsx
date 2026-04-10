@@ -127,6 +127,7 @@ export function ResumePreview() {
       wheel={{ step: 0.1 }}
       pinch={{ step: 5 }}
       doubleClick={{ disabled: true }}
+      panning={{ excluded: ['pan-pinch-ignore'] }}
       onTransformed={(ref, state) => setCurrentScale(state.scale)}
       onInit={(ref) => setCurrentScale(ref.state.scale)}
     >
@@ -137,7 +138,7 @@ export function ResumePreview() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap md:flex-nowrap items-center justify-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3.5 glass-toolbar rounded-2xl md:rounded-full z-40 group/toolbar w-[95vw] md:w-auto max-w-[400px] md:max-w-none md:shadow-[0_8px_32px_rgba(0,0,0,0.12)] md:border-white/80"
+            className="pan-pinch-ignore absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap md:flex-nowrap items-center justify-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3.5 glass-toolbar rounded-2xl md:rounded-full z-40 group/toolbar w-[95vw] md:w-auto max-w-[400px] md:max-w-none md:shadow-[0_8px_32px_rgba(0,0,0,0.12)] md:border-white/80"
           >
             <div className="absolute inset-0 rounded-2xl md:rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/toolbar:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
             
@@ -159,6 +160,7 @@ export function ResumePreview() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
+                  onPointerDown={(e) => e.stopPropagation()}
                   className="h-8 w-8 md:h-10 md:w-10 rounded-full transition-all active:scale-95 bg-zinc-900 text-white hover:bg-zinc-800 shadow-md hover:shadow-lg flex-shrink-0"
                   title="Download"
                 >
@@ -172,6 +174,7 @@ export function ResumePreview() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -15, scale: 0.95 }}
                       transition={{ type: "spring", damping: 25, stiffness: 400 }}
+                      onPointerDown={(e) => e.stopPropagation()}
                       className="absolute bottom-[calc(100%+1rem)] left-1/2 -translate-x-1/2 md:translate-x-0 md:-left-4 w-64 bg-white/95 backdrop-blur-2xl border border-white/60 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] overflow-hidden p-2.5 z-50 ring-1 ring-black/5"
                     >
                       <div className="px-4 py-3 mb-1 flex items-center justify-between">
@@ -250,6 +253,7 @@ export function ResumePreview() {
                 variant="ghost" 
                 size="icon" 
                 onClick={(e) => { e.preventDefault(); zoomOut(0.25); }}
+                onPointerDown={(e) => e.stopPropagation()}
                 className="h-8 w-8 md:h-10 md:w-10 rounded-full text-zinc-600 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all active:scale-95 flex-shrink-0"
                 title="Zoom Out"
               >
@@ -267,6 +271,7 @@ export function ResumePreview() {
                 variant="ghost" 
                 size="icon" 
                 onClick={(e) => { e.preventDefault(); zoomIn(0.25); }}
+                onPointerDown={(e) => e.stopPropagation()}
                 className="h-8 w-8 md:h-10 md:w-10 rounded-full text-zinc-600 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all active:scale-95 flex-shrink-0"
                 title="Zoom In"
               >
@@ -279,6 +284,7 @@ export function ResumePreview() {
                 variant="ghost" 
                 size="icon" 
                 onClick={(e) => { e.preventDefault(); centerView(initialScale, 500); }}
+                onPointerDown={(e) => e.stopPropagation()}
                 className="flex h-8 w-8 md:h-10 md:w-10 rounded-full text-zinc-600 hover:text-zinc-900 hover:bg-white hover:shadow-sm transition-all active:scale-95 flex-shrink-0"
                 title="Fit to Screen"
               >

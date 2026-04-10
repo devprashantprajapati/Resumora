@@ -193,6 +193,7 @@ export function CoverLetterGenerator() {
     <>
       <Button 
         onClick={() => setIsOpen(true)}
+        onPointerDown={(e) => e.stopPropagation()}
         className="group relative overflow-hidden bg-white/90 backdrop-blur-xl hover:bg-white text-zinc-900 border border-zinc-200/80 shadow-sm hover:shadow-md rounded-full h-8 md:h-11 px-2 md:px-5 transition-all duration-300 flex items-center gap-1.5 md:gap-2 active:scale-95"
       >
         <Sparkles className="w-4 h-4 text-indigo-600" />

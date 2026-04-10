@@ -238,6 +238,7 @@ export function PublishModal() {
     <>
       <Button
         onClick={() => setIsOpen(true)}
+        onPointerDown={(e) => e.stopPropagation()}
         className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full h-8 md:h-11 px-3 md:px-5 transition-all duration-300 flex items-center gap-2 active:scale-95"
       >
         <Globe className="w-4 h-4" />
