@@ -118,7 +118,7 @@ export function SettingsForm() {
       <div className="space-y-4">
         <Label className="text-base font-semibold text-zinc-900">Template</Label>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {(['modern', 'minimal', 'corporate', 'creative', 'elegant', 'tech', 'executive'] as const).map((template) => (
+          {(['modern', 'minimal', 'corporate', 'creative', 'elegant', 'tech', 'executive', 'premium'] as const).map((template) => (
             <button
               key={template}
               onClick={() => updateSettings({ template })}

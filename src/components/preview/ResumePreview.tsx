@@ -6,6 +6,7 @@ import { CreativeTemplate } from './templates/CreativeTemplate';
 import { ElegantTemplate } from './templates/ElegantTemplate';
 import { TechTemplate } from './templates/TechTemplate';
 import { ExecutiveTemplate } from './templates/ExecutiveTemplate';
+import { PremiumTemplate } from './templates/PremiumTemplate';
 import { useRef, useState, useEffect } from 'react';
 import { Button } from '../ui/Button';
 import { Download, ChevronDown, FileText, FileJson, FileType2, FileCode, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
@@ -79,6 +80,8 @@ export function ResumePreview() {
         return <TechTemplate />;
       case 'executive':
         return <ExecutiveTemplate />;
+      case 'premium':
+        return <PremiumTemplate />;
       default:
         return <ModernTemplate />;
     }
