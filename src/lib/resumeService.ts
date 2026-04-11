@@ -210,7 +210,7 @@ export const getPublishedResume = async (slug: string): Promise<PublishedResume 
   }
 };
 
-export const incrementResumeViews = async (slug: string, location: string, userAgent: string): Promise<void> => {
+export const incrementResumeViews = async (slug: string, location: string, userAgent: string): Promise<string | null> => {
   const path = `published_resumes/${slug}`;
   try {
     const docRef = doc(db, 'published_resumes', slug);
@@ -228,12 +228,25 @@ export const incrementResumeViews = async (slug: string, location: string, userA
         publishedResumeId: slug,
         viewedAt: serverTimestamp(),
         location: location.substring(0, 200),
-        userAgent: userAgent.substring(0, 500)
+        userAgent: userAgent.substring(0, 500),
+        timeSpent: 0
       });
+      return viewRef.id;
     }
+    return null;
   } catch (error) {
     // Don't throw for analytics errors, just log
     console.error('Failed to increment views:', error);
+    return null;
+  }
+};
+
+export const updateViewTime = async (slug: string, viewId: string, timeSpentSeconds: number): Promise<void> => {
+  try {
+    const viewRef = doc(db, `published_resumes/${slug}/views`, viewId);
+    await setDoc(viewRef, { timeSpent: timeSpentSeconds }, { merge: true });
+  } catch (error) {
+    console.error('Failed to update view time:', error);
   }
 };
 
@@ -279,7 +292,8 @@ export const subscribeToResumeAnalytics = (
         id: doc.id,
         viewedAt: data.viewedAt instanceof Timestamp ? data.viewedAt.toDate() : new Date(),
         location: data.location || 'Unknown',
-        userAgent: data.userAgent || 'Unknown'
+        userAgent: data.userAgent || 'Unknown',
+        timeSpent: data.timeSpent || 0
       };
     }).sort((a, b) => b.viewedAt.getTime() - a.viewedAt.getTime()).slice(0, 50);
     

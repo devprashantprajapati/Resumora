@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { getPublishedResume, incrementResumeViews, PublishedResume } from '@/lib/resumeService';
+import { getPublishedResume, incrementResumeViews, updateViewTime, PublishedResume } from '@/lib/resumeService';
 import { ModernTemplate } from '@/components/preview/templates/ModernTemplate';
 import { MinimalTemplate } from '@/components/preview/templates/MinimalTemplate';
 import { CorporateTemplate } from '@/components/preview/templates/CorporateTemplate';
@@ -13,6 +13,8 @@ export function PublicResume() {
   const [resume, setResume] = useState<PublishedResume | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const viewIdRef = useRef<string | null>(null);
+  const startTimeRef = useRef<number>(Date.now());
 
   useEffect(() => {
     const fetchResume = async () => {
@@ -22,10 +24,23 @@ export function PublicResume() {
         const data = await getPublishedResume(slug);
         if (data) {
           setResume(data);
+          
+          // Fetch location
+          let location = 'Unknown Location';
+          try {
+            const response = await fetch('https://ipapi.co/json/');
+            const ipData = await response.json();
+            if (ipData.city && ipData.country_name) {
+              location = `${ipData.city}, ${ipData.country_name}`;
+            }
+          } catch (e) {
+            console.error('Failed to fetch location', e);
+          }
+
           // Increment view count
-          // In a real app, you might want to use an IP-based location service
-          // For now, we just pass basic info
-          incrementResumeViews(slug, 'Web Visitor', navigator.userAgent);
+          const viewId = await incrementResumeViews(slug, location, navigator.userAgent);
+          viewIdRef.current = viewId;
+          startTimeRef.current = Date.now();
         } else {
           setError('Resume not found');
         }
@@ -38,6 +53,25 @@ export function PublicResume() {
     };
 
     fetchResume();
+
+    // Track time spent when user leaves the page
+    const handleBeforeUnload = () => {
+      if (slug && viewIdRef.current) {
+        const timeSpentSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
+        // Use sendBeacon for more reliable delivery during unload if possible, 
+        // but since we need to use Firestore SDK, we just call the async function
+        // Note: This might not always complete if the browser closes immediately,
+        // but it's the best approach for client-side Firebase without a custom backend endpoint.
+        updateViewTime(slug, viewIdRef.current, timeSpentSeconds);
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      handleBeforeUnload(); // Also track when component unmounts (e.g., navigating away in SPA)
+    };
   }, [slug]);
 
   if (isLoading) {

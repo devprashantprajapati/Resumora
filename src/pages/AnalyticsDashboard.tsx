@@ -69,6 +69,38 @@ export function AnalyticsDashboard() {
     );
   }
 
+  // Calculate Top Location
+  const locationCounts = analytics.recentViews.reduce((acc: Record<string, number>, view: any) => {
+    if (view.location && view.location !== 'Unknown' && view.location !== 'Unknown Location' && view.location !== 'Web Visitor') {
+      acc[view.location] = (acc[view.location] || 0) + 1;
+    }
+    return acc;
+  }, {});
+  
+  let topLocation = 'N/A';
+  let maxCount = 0;
+  for (const [loc, count] of Object.entries(locationCounts)) {
+    if ((count as number) > maxCount) {
+      maxCount = count as number;
+      topLocation = loc;
+    }
+  }
+
+  // Calculate Avg Time Spent
+  const viewsWithTime = analytics.recentViews.filter(v => v.timeSpent && v.timeSpent > 0);
+  let avgTimeStr = '0s';
+  if (viewsWithTime.length > 0) {
+    const totalTime = viewsWithTime.reduce((sum, v) => sum + v.timeSpent, 0);
+    const avgSeconds = Math.round(totalTime / viewsWithTime.length);
+    if (avgSeconds < 60) {
+      avgTimeStr = `${avgSeconds}s`;
+    } else {
+      const mins = Math.floor(avgSeconds / 60);
+      const secs = avgSeconds % 60;
+      avgTimeStr = `${mins}m ${secs}s`;
+    }
+  }
+
   return (
     <div className="min-h-screen bg-zinc-50 py-8 px-4 sm:px-8">
       <div className="max-w-4xl mx-auto">
@@ -101,21 +133,20 @@ export function AnalyticsDashboard() {
                 <p className="text-4xl font-bold text-zinc-900">{analytics.views}</p>
               </div>
               
-              {/* Placeholder for future metrics */}
-              <div className="bg-white rounded-xl border border-zinc-200 p-6 shadow-sm flex flex-col items-center text-center opacity-50">
-                <div className="w-12 h-12 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
-                  <Globe className="w-6 h-6 text-zinc-400" />
+              <div className="bg-white rounded-xl border border-zinc-200 p-6 shadow-sm flex flex-col items-center text-center">
+                <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center mb-4">
+                  <Globe className="w-6 h-6 text-emerald-600" />
                 </div>
                 <p className="text-sm font-medium text-zinc-500 mb-1">Top Location</p>
-                <p className="text-xl font-bold text-zinc-900">Coming Soon</p>
+                <p className="text-xl font-bold text-zinc-900 truncate w-full px-2" title={topLocation}>{topLocation}</p>
               </div>
 
-              <div className="bg-white rounded-xl border border-zinc-200 p-6 shadow-sm flex flex-col items-center text-center opacity-50">
-                <div className="w-12 h-12 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
-                  <Clock className="w-6 h-6 text-zinc-400" />
+              <div className="bg-white rounded-xl border border-zinc-200 p-6 shadow-sm flex flex-col items-center text-center">
+                <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mb-4">
+                  <Clock className="w-6 h-6 text-amber-600" />
                 </div>
                 <p className="text-sm font-medium text-zinc-500 mb-1">Avg. Time Spent</p>
-                <p className="text-xl font-bold text-zinc-900">Coming Soon</p>
+                <p className="text-xl font-bold text-zinc-900">{avgTimeStr}</p>
               </div>
             </div>
 
@@ -128,6 +159,7 @@ export function AnalyticsDashboard() {
                       <tr>
                         <th className="px-6 py-3 font-medium">Date & Time</th>
                         <th className="px-6 py-3 font-medium">Location</th>
+                        <th className="px-6 py-3 font-medium">Time Spent</th>
                         <th className="px-6 py-3 font-medium">Device / Browser</th>
                       </tr>
                     </thead>
@@ -139,12 +171,19 @@ export function AnalyticsDashboard() {
                                         view.userAgent.includes('Safari') ? 'Safari' : 
                                         view.userAgent.includes('Firefox') ? 'Firefox' : 'Unknown';
                         
+                        let timeStr = '0s';
+                        if (view.timeSpent) {
+                          if (view.timeSpent < 60) timeStr = `${view.timeSpent}s`;
+                          else timeStr = `${Math.floor(view.timeSpent / 60)}m ${view.timeSpent % 60}s`;
+                        }
+                        
                         return (
                           <tr key={view.id} className="hover:bg-zinc-50/50">
                             <td className="px-6 py-4 text-zinc-900">
                               {view.viewedAt.toLocaleDateString()} at {view.viewedAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                             </td>
                             <td className="px-6 py-4 text-zinc-600">{view.location}</td>
+                            <td className="px-6 py-4 text-zinc-600">{timeStr}</td>
                             <td className="px-6 py-4 text-zinc-600">
                               {isMobile ? 'Mobile' : 'Desktop'} • {browser}
                             </td>
