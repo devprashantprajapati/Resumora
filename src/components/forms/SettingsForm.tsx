@@ -36,7 +36,7 @@ export function SettingsForm() {
   const { data, updateSettings, resetData } = useResumeStore();
   const { settings } = data;
   const [isConfirmingReset, setIsConfirmingReset] = useState(false);
-  const { user, signInWithGoogle, logout } = useAuth();
+  const { user, openAuthModal, logout } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
@@ -103,7 +103,7 @@ export function SettingsForm() {
               </>
             ) : (
               <Button
-                onClick={signInWithGoogle}
+                onClick={openAuthModal}
                 variant="outline"
                 className="w-full sm:w-auto flex items-center gap-2"
               >

@@ -18,7 +18,7 @@ export function PublishModal() {
   const [publishedUrl, setPublishedUrl] = useState(data.settings.publishedSlug ? `${window.location.origin}/p/${data.settings.publishedSlug}` : '');
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { user, signInWithGoogle } = useAuth();
+  const { user, openAuthModal } = useAuth();
 
   useEffect(() => {
     setMounted(true);
@@ -124,11 +124,11 @@ export function PublishModal() {
                   <h2 className="text-2xl font-bold text-zinc-900 mb-2">Sign in to Publish</h2>
                   <p className="text-zinc-500 mb-8 max-w-sm mx-auto">You need an account to publish your resume to the web, claim your custom URL, and track visitor analytics.</p>
                   <Button 
-                    onClick={signInWithGoogle}
+                    onClick={openAuthModal}
                     className="w-full sm:w-auto bg-zinc-900 hover:bg-zinc-800 text-white py-6 px-8 rounded-2xl text-lg font-bold shadow-xl shadow-zinc-900/20 transition-all active:scale-[0.98]"
                   >
                     <LogIn className="w-5 h-5 mr-2" />
-                    Sign In with Google
+                    Sign In to Publish
                   </Button>
                 </div>
               ) : publishedUrl ? (

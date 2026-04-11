@@ -5,7 +5,7 @@
 
 import { EditorSidebar } from './components/forms/EditorSidebar';
 import { ResumePreview } from './components/preview/ResumePreview';
-import { Eye, Edit2, Sparkles } from 'lucide-react';
+import { Eye, Edit2, Sparkles, User as UserIcon, LogOut } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,10 +15,11 @@ import { useAuth } from './contexts/AuthContext';
 import { getResume, publishResume, saveResume } from './lib/resumeService';
 import { useResumeStore } from './store/useResumeStore';
 import { Button } from './components/ui/Button';
+import { AuthModal } from './components/auth/AuthModal';
 
 export default function App() {
   const [showPreview, setShowPreview] = useState(false);
-  const { user } = useAuth();
+  const { user, openAuthModal, logout } = useAuth();
   const { data, updateData } = useResumeStore();
   const [isLoading, setIsLoading] = useState(false);
   const autoSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -110,11 +111,39 @@ export default function App() {
   return (
     <div className="flex flex-col h-[100dvh] bg-mesh-pattern overflow-hidden font-sans selection:bg-zinc-900 selection:text-white">
       <Toaster position="top-center" />
+      <AuthModal />
       {/* Top Navigation Bar */}
       <header className="h-16 lg:h-20 glass-nav lg:bg-transparent lg:border-none lg:shadow-none flex items-center px-4 sm:px-8 shrink-0 z-40 relative">
         <Logo />
         
         <div className="ml-auto flex items-center gap-4 text-sm text-zinc-500 font-medium">
+          {/* Auth Button */}
+          <div className="hidden sm:block">
+            {user ? (
+              <div className="flex items-center gap-3 bg-white border border-zinc-200/60 px-3 py-1.5 rounded-full shadow-sm">
+                <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs">
+                  {user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || <UserIcon className="w-3 h-3" />}
+                </div>
+                <span className="text-sm font-medium text-zinc-700 max-w-[120px] truncate">{user.displayName || user.email}</span>
+                <button 
+                  onClick={logout}
+                  className="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                  title="Sign out"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <Button 
+                onClick={openAuthModal}
+                variant="outline" 
+                className="rounded-full px-5 border-zinc-200/60 hover:bg-zinc-50 hover:text-zinc-900"
+              >
+                Sign In
+              </Button>
+            )}
+          </div>
+
           {/* Mobile Toggle */}
           <div className="flex bg-zinc-100/50 p-1 rounded-2xl lg:hidden border border-zinc-200/50 shadow-inner h-[55px] w-[142px]">
             <button 
