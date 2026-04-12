@@ -225,6 +225,7 @@ function ProjectCard({ project, updateProject, removeProject, handleEnhance, enh
                     size="sm" 
                     onClick={() => handleEnhance(project.id, project.description, project.name)}
                     isLoading={enhancingId === project.id}
+                    disabled={enhancingId !== null || !project.description || !project.name}
                     className="text-indigo-700 border-indigo-200/60 bg-indigo-50/60 hover:bg-indigo-50 hover:border-indigo-300 h-8 text-xs rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
                   >
                     <Wand2 className="w-3 h-3 mr-2 text-indigo-500" />

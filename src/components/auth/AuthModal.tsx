@@ -80,8 +80,10 @@ export function AuthModal() {
     try {
       await signInWithGoogle();
       toast.success('Successfully signed in with Google!');
-    } catch (error) {
-      toast.error('Failed to sign in with Google.');
+    } catch (error: any) {
+      if (error.message !== 'cancelled') {
+        toast.error('Failed to sign in with Google.');
+      }
     } finally {
       setIsLoading(false);
     }

@@ -225,6 +225,7 @@ function ExperienceCard({ exp, updateExperience, removeExperience, handleEnhance
                     size="sm" 
                     onClick={() => handleEnhance(exp.id, exp.description, exp.position)}
                     isLoading={enhancingId === exp.id}
+                    disabled={enhancingId !== null || !exp.description || !exp.position}
                     className="text-indigo-700 border-indigo-200/60 bg-indigo-50/60 hover:bg-indigo-50 hover:border-indigo-300 h-8 text-xs rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
                   >
                     <Wand2 className="w-3 h-3 mr-2 text-indigo-500" />

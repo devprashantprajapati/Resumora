@@ -173,7 +173,18 @@ export const useResumeStore = create<ResumeStore>()(
         })),
       updateData: (newData) =>
         set((state) => ({
-          data: { ...state.data, ...newData },
+          data: { 
+            ...state.data, 
+            ...newData,
+            personalInfo: {
+              ...state.data.personalInfo,
+              ...(newData.personalInfo || {})
+            },
+            settings: {
+              ...state.data.settings,
+              ...(newData.settings || {})
+            }
+          },
         })),
       resetData: () => set({ data: emptyResumeData }),
       reorderItems: (section, startIndex, endIndex) =>

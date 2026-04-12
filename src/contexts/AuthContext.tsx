@@ -43,11 +43,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       if (error?.code === 'auth/popup-closed-by-user') {
         console.log('Sign-in popup closed by user');
-        return;
+        throw new Error('cancelled');
       }
       if (error?.code === 'auth/cancelled-popup-request') {
         console.log('Sign-in popup request cancelled');
-        return;
+        throw new Error('cancelled');
       }
       console.error('Error signing in with Google', error);
       throw error;

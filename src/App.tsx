@@ -35,10 +35,7 @@ export default function App() {
           const savedResume = await getResume(resumeId);
           if (savedResume && savedResume.data) {
             // We need to update the store with the saved data
-            // Since updateData only takes partial updates, we can do this:
-            Object.keys(savedResume.data).forEach((key) => {
-              updateData({ [key]: savedResume.data[key as keyof typeof savedResume.data] });
-            });
+            updateData(savedResume.data);
             toast.success('Resume loaded from cloud');
           }
         } catch (error) {

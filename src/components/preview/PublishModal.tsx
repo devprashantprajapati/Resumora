@@ -24,6 +24,13 @@ export function PublishModal() {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (data.settings.publishedSlug) {
+      setSlug(data.settings.publishedSlug);
+      setPublishedUrl(`${window.location.origin}/p/${data.settings.publishedSlug}`);
+    }
+  }, [data.settings.publishedSlug]);
+
   const handlePublish = async () => {
     if (!user) {
       toast.error('Please sign in to publish your resume.');
