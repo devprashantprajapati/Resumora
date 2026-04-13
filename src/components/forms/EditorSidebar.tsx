@@ -67,7 +67,7 @@ export function EditorSidebar() {
   return (
     <div className="flex flex-col-reverse md:flex-row h-full bg-transparent relative">
       {/* Navigation */}
-      <div className="w-full md:w-24 lg:w-72 border-t md:border-t-0 md:border-r border-zinc-200/60 bg-white/80 backdrop-blur-2xl flex flex-row md:flex-col shrink-0 z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] md:shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+      <div className="w-full md:w-24 lg:w-[30%] lg:min-w-[200px] lg:max-w-[280px] border-t md:border-t-0 md:border-r border-zinc-200/60 bg-white/80 backdrop-blur-2xl flex flex-row md:flex-col shrink-0 z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] md:shadow-[4px_0_24px_rgba(0,0,0,0.02)] transition-[width] duration-300">
         
         {/* Scrollable Content Sections */}
         <div 
@@ -87,15 +87,18 @@ export function EditorSidebar() {
                     "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-300 ease-out group relative shrink-0 z-10",
                     isActive 
                       ? "text-zinc-900 md:text-white" 
-                      : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/50"
+                      : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/80"
                   )}
                 >
                   {isActive && (
                     <motion.div 
                       layoutId="active-nav-bg"
-                      className="absolute inset-0 bg-white md:bg-gradient-to-br md:from-zinc-800 md:to-zinc-950 rounded-xl md:rounded-[1.25rem] -z-10 shadow-sm md:shadow-lg md:shadow-zinc-900/20 border border-zinc-200/50 md:border-zinc-800" 
+                      className="absolute inset-0 bg-white md:bg-gradient-to-br md:from-indigo-600 md:to-violet-700 rounded-xl md:rounded-[1.25rem] -z-10 shadow-sm md:shadow-lg md:shadow-indigo-900/20 border border-zinc-200/50 md:border-indigo-500/30" 
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
+                  )}
+                  {!isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-zinc-100/0 to-zinc-100/0 group-hover:from-zinc-100/50 group-hover:to-zinc-200/30 rounded-[1.25rem] -z-10 transition-all duration-300 hidden md:block" />
                   )}
                   <Icon className={cn(
                     "w-4 h-4 md:w-5 md:h-5 shrink-0 transition-transform duration-300", 
@@ -103,7 +106,7 @@ export function EditorSidebar() {
                   )} />
                   <span className={cn(
                     "text-[10px] lg:text-[13px] font-bold transition-colors tracking-tight",
-                    isActive ? "opacity-100 block md:hidden lg:block" : "opacity-70 group-hover:opacity-100 hidden lg:block"
+                    isActive ? "opacity-100 block md:hidden lg:block text-white drop-shadow-sm" : "opacity-70 group-hover:opacity-100 hidden lg:block"
                   )}>
                     {section.label}
                   </span>
@@ -155,13 +158,13 @@ export function EditorSidebar() {
               "flex flex-col md:flex-row items-center justify-center lg:justify-start gap-1 lg:gap-4 px-3 lg:px-5 py-2 lg:py-4 rounded-xl lg:rounded-[1.25rem] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0 z-10",
               activeSection === SETTINGS_SECTION.id 
                 ? "text-white" 
-                : "text-zinc-600 hover:text-zinc-900 hover:bg-white border border-transparent hover:border-zinc-200/60 shadow-sm"
+                : "text-zinc-600 hover:text-zinc-900 hover:bg-white border border-transparent hover:border-zinc-200/60 shadow-sm hover:shadow-md"
             )}
           >
             {activeSection === SETTINGS_SECTION.id && (
               <motion.div 
                 layoutId="active-nav-bg"
-                className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-950 rounded-xl lg:rounded-[1.25rem] -z-10 shadow-lg shadow-zinc-900/20 border border-zinc-800" 
+                className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-xl lg:rounded-[1.25rem] -z-10 shadow-lg shadow-indigo-900/20 border border-indigo-500/30" 
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}
@@ -180,14 +183,15 @@ export function EditorSidebar() {
       </div>
 
       {/* Form Area */}
-      <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 bg-transparent lg:bg-gradient-to-br lg:from-white/40 lg:to-zinc-50/40 scroll-smooth">
-        <div className="max-w-3xl mx-auto">
+      <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 bg-transparent lg:bg-white/50 scroll-smooth relative">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none" />
+        <div className="max-w-3xl mx-auto relative z-10">
           <div className="flex items-center gap-6 mb-12">
             <motion.div 
               key={activeSection + 'icon'}
               initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
-              className="p-4 bg-gradient-to-br from-zinc-800 to-zinc-950 text-white rounded-[2rem] shadow-2xl shadow-zinc-900/20 ring-4 ring-white"
+              className="p-4 bg-gradient-to-br from-indigo-500 to-violet-600 text-white rounded-[2rem] shadow-2xl shadow-indigo-500/20 ring-4 ring-white"
             >
               {(() => {
                 const ActiveIcon = ALL_SECTIONS.find(s => s.id === activeSection)?.icon || User;

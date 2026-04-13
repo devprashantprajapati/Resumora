@@ -141,7 +141,7 @@ export function ResumePreview() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className="pan-pinch-ignore absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap md:flex-nowrap items-center justify-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3.5 glass-toolbar rounded-2xl md:rounded-full z-40 group/toolbar w-[95vw] md:w-auto max-w-[400px] md:max-w-none md:shadow-[0_8px_32px_rgba(0,0,0,0.12)] md:border-white/80"
+            className="pan-pinch-ignore absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap md:flex-nowrap items-center justify-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3.5 bg-white/80 backdrop-blur-3xl rounded-2xl md:rounded-full z-40 group/toolbar w-[95vw] md:w-auto max-w-[400px] md:max-w-none shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/60 md:border-white/80 ring-1 ring-zinc-900/5"
           >
             <div className="absolute inset-0 rounded-2xl md:rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/toolbar:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
             
@@ -298,6 +298,7 @@ export function ResumePreview() {
 
           {/* Preview Area */}
           <div className="flex-1 overflow-hidden bg-zinc-100/50 lg:bg-transparent bg-dot-pattern cursor-grab active:cursor-grabbing relative">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white/40 pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
             <TransformComponent 
               wrapperStyle={{ width: '100%', height: '100%' }}

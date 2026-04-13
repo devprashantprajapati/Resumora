@@ -87,7 +87,7 @@ export function ReferencesForm() {
 
 function ReferenceCard({ reference, updateReference, removeReference, dragHandleProps, isDragging }: any) {
   return (
-    <Card className={`p-5 border-zinc-200/60 bg-white/40 hover:bg-white/60 transition-colors pro-card ${isDragging ? 'opacity-50' : ''}`}>
+    <Card className={`p-5 border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white transition-all duration-300 pro-card ${isDragging ? 'opacity-50 scale-[0.98] shadow-lg' : ''}`}>
       <div className="flex justify-between items-start mb-4">
         <div {...dragHandleProps} className="p-1.5 -ml-1.5 text-zinc-400 hover:text-zinc-600 cursor-grab active:cursor-grabbing rounded-lg hover:bg-zinc-100">
           <GripVertical className="w-5 h-5" />

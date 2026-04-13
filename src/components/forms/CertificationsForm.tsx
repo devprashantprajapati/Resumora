@@ -92,7 +92,7 @@ export function CertificationsForm() {
 
 function CertificationCard({ cert, updateCertification, removeCertification, dragHandleProps, isDragging, isExpanded, onToggle }: any) {
   return (
-    <Card className={`p-0 overflow-hidden relative group border-zinc-200/60 bg-white/40 hover:bg-white/60 transition-colors mb-4 pro-card ${isDragging ? 'opacity-50' : ''}`}>
+    <Card className={`p-0 overflow-hidden relative group border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white transition-all duration-300 mb-4 pro-card ${isDragging ? 'opacity-50 scale-[0.98] shadow-lg' : ''}`}>
       {/* Header / Collapsible Trigger */}
       <div 
         className="flex items-center justify-between p-4 cursor-pointer select-none"

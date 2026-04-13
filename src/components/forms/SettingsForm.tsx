@@ -125,7 +125,7 @@ export function SettingsForm() {
               className={`p-4 rounded-2xl border-2 text-center capitalize transition-all duration-300 ${
                 settings.template === template
                   ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 font-semibold shadow-md shadow-indigo-200/50 scale-[1.02]'
-                  : 'border-zinc-200/60 bg-white/60 hover:bg-white hover:border-zinc-300 text-zinc-600 pro-card'
+                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-600 pro-card'
               }`}
             >
               {template}
@@ -161,7 +161,7 @@ export function SettingsForm() {
               className={`p-4 rounded-xl border-2 text-left transition-all duration-300 ${
                 settings.font === font.value
                   ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 shadow-md shadow-indigo-200/50 scale-[1.02]'
-                  : 'border-zinc-200/60 bg-white/60 hover:bg-white hover:border-zinc-300 text-zinc-700 pro-card'
+                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-700 pro-card'
               }`}
               style={{ fontFamily: font.value }}
             >
@@ -182,7 +182,7 @@ export function SettingsForm() {
               className={`p-4 rounded-xl border-2 text-left transition-all duration-300 ${
                 (settings.headingFont || settings.font) === font.value
                   ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 shadow-md shadow-indigo-200/50 scale-[1.02]'
-                  : 'border-zinc-200/60 bg-white/60 hover:bg-white hover:border-zinc-300 text-zinc-700 pro-card'
+                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-700 pro-card'
               }`}
               style={{ fontFamily: font.value }}
             >

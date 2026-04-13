@@ -5,7 +5,7 @@
 
 import { EditorSidebar } from './components/forms/EditorSidebar';
 import { ResumePreview } from './components/preview/ResumePreview';
-import { Eye, Edit2, Sparkles, User as UserIcon, LogOut } from 'lucide-react';
+import { Eye, Edit2, Sparkles, User as UserIcon, LogOut, GripVertical } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +16,8 @@ import { getResume, publishResume, saveResume } from './lib/resumeService';
 import { useResumeStore } from './store/useResumeStore';
 import { Button } from './components/ui/Button';
 import { AuthModal } from './components/auth/AuthModal';
+import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from 'react-resizable-panels';
+import { useMediaQuery } from './hooks/useMediaQuery';
 
 export default function App() {
   const [showPreview, setShowPreview] = useState(false);
@@ -25,6 +27,7 @@ export default function App() {
   const autoSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const draftSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialLoadRef = useRef(true);
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   useEffect(() => {
     const loadUserResume = async () => {
@@ -110,15 +113,15 @@ export default function App() {
       <Toaster position="top-center" />
       <AuthModal />
       {/* Top Navigation Bar */}
-      <header className="h-16 lg:h-20 glass-nav lg:bg-transparent lg:border-none lg:shadow-none flex items-center px-4 sm:px-8 shrink-0 z-40 relative">
+      <header className="h-16 lg:h-20 glass-nav lg:bg-white/40 lg:backdrop-blur-3xl lg:border-b lg:border-white/60 lg:shadow-[0_4px_30px_rgba(0,0,0,0.03)] flex items-center px-4 sm:px-8 shrink-0 z-40 relative transition-all duration-500">
         <Logo />
         
         <div className="ml-auto flex items-center gap-4 text-sm text-zinc-500 font-medium">
           {/* Auth Button */}
           <div className="hidden sm:block">
             {user ? (
-              <div className="flex items-center gap-3 bg-white border border-zinc-200/60 px-3 py-1.5 rounded-full shadow-sm">
-                <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs">
+              <div className="flex items-center gap-3 bg-white/80 backdrop-blur-md border border-zinc-200/60 px-3 py-1.5 rounded-full shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white font-bold text-xs shadow-inner">
                   {user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || <UserIcon className="w-3 h-3" />}
                 </div>
                 <span className="text-sm font-medium text-zinc-700 max-w-[120px] truncate">{user.displayName || user.email}</span>
@@ -134,7 +137,7 @@ export default function App() {
               <Button 
                 onClick={openAuthModal}
                 variant="outline" 
-                className="rounded-full px-5 border-zinc-200/60 hover:bg-zinc-50 hover:text-zinc-900"
+                className="rounded-full px-5 border-zinc-200/60 hover:bg-zinc-50 hover:text-zinc-900 shadow-sm hover:shadow-md transition-all duration-300"
               >
                 Sign In
               </Button>
@@ -166,22 +169,60 @@ export default function App() {
       </header>
 
       {/* Main Workspace */}
-      <main className="flex-1 flex overflow-hidden relative bg-grid-pattern lg:p-4 lg:gap-4 lg:bg-zinc-50/50">
-        {/* Left Panel: Editor */}
-        <div className={cn(
-          "w-full lg:w-[45%] xl:w-[40%] flex-shrink-0 bg-white/70 backdrop-blur-3xl z-20 shadow-[8px_0_30px_rgba(0,0,0,0.03)] border-r border-zinc-200/60 absolute inset-0 lg:relative transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] lg:rounded-3xl lg:border lg:shadow-2xl lg:shadow-zinc-200/50 lg:overflow-hidden",
-          showPreview ? "-translate-x-full lg:translate-x-0" : "translate-x-0"
-        )}>
-          <EditorSidebar />
-        </div>
+      <main className="flex-1 flex overflow-hidden relative bg-grid-pattern lg:p-6 lg:gap-6 lg:bg-zinc-50/30">
+        {/* Animated Background Gradients for Desktop */}
+        {isDesktop && (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-400/10 blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-violet-400/10 blur-[120px] animate-pulse" style={{ animationDuration: '12s' }} />
+          </div>
+        )}
 
-        {/* Right Panel: Live Preview */}
-        <div className={cn(
-          "absolute inset-0 lg:relative lg:flex-1 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-10 bg-transparent lg:bg-white/40 lg:backdrop-blur-xl lg:rounded-3xl lg:border lg:border-zinc-200/60 lg:shadow-2xl lg:shadow-zinc-200/50 lg:overflow-hidden",
-          showPreview ? "translate-x-0" : "translate-x-full lg:translate-x-0"
-        )}>
-          <ResumePreview />
-        </div>
+        {isDesktop ? (
+          <PanelGroup orientation="horizontal" className="w-full h-full">
+            <Panel 
+              defaultSize={40} 
+              minSize={30} 
+              maxSize={60}
+              className="bg-white/80 backdrop-blur-3xl z-20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] border-r border-zinc-200/60 lg:rounded-[2rem] lg:border lg:shadow-2xl lg:shadow-zinc-200/40 lg:overflow-hidden flex flex-col transition-all duration-300 hover:shadow-indigo-500/5"
+            >
+              <EditorSidebar />
+            </Panel>
+            
+            <PanelResizeHandle className="w-6 flex items-center justify-center group cursor-col-resize z-30 relative">
+              <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-1 bg-transparent group-hover:bg-indigo-500/20 group-active:bg-indigo-500/40 transition-colors" />
+              <div className="w-1.5 h-12 bg-zinc-200/80 rounded-full group-hover:bg-indigo-500 group-active:bg-indigo-600 transition-all duration-300 flex items-center justify-center shadow-sm group-hover:shadow-indigo-500/20 group-hover:scale-y-110">
+                <GripVertical className="w-3 h-3 text-zinc-400 group-hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </PanelResizeHandle>
+
+            <Panel 
+              defaultSize={60} 
+              minSize={40}
+              className="z-10 bg-transparent lg:bg-white/50 lg:backdrop-blur-2xl lg:rounded-[2rem] lg:border lg:border-white/60 lg:shadow-2xl lg:shadow-zinc-200/40 lg:overflow-hidden flex flex-col transition-all duration-300 hover:shadow-violet-500/5"
+            >
+              <ResumePreview />
+            </Panel>
+          </PanelGroup>
+        ) : (
+          <>
+            {/* Left Panel: Editor (Mobile) */}
+            <div className={cn(
+              "w-full flex-shrink-0 bg-white/70 backdrop-blur-3xl z-20 shadow-[8px_0_30px_rgba(0,0,0,0.03)] border-r border-zinc-200/60 absolute inset-0 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+              showPreview ? "-translate-x-full" : "translate-x-0"
+            )}>
+              <EditorSidebar />
+            </div>
+
+            {/* Right Panel: Live Preview (Mobile) */}
+            <div className={cn(
+              "absolute inset-0 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-10 bg-transparent",
+              showPreview ? "translate-x-0" : "translate-x-full"
+            )}>
+              <ResumePreview />
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
