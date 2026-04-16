@@ -179,17 +179,18 @@ export default function App() {
         )}
 
         {isDesktop ? (
-          <PanelGroup orientation="horizontal" className="w-full h-full">
+          <PanelGroup id="resume-builder" orientation="horizontal" className="flex-1 w-full h-full">
             <Panel 
+              id="editor-panel"
               defaultSize={40} 
               minSize={30} 
               maxSize={60}
-              className="bg-white/80 backdrop-blur-3xl z-20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] border-r border-zinc-200/60 lg:rounded-[2rem] lg:border lg:shadow-2xl lg:shadow-zinc-200/40 lg:overflow-hidden flex flex-col transition-all duration-300 hover:shadow-indigo-500/5"
+              className="bg-white/80 backdrop-blur-3xl z-20 shadow-[0_8px_32px_rgba(0,0,0,0.04)] border-r border-zinc-200/60 lg:rounded-[2rem] lg:border lg:shadow-2xl lg:shadow-zinc-200/40 lg:overflow-hidden flex flex-col transition-shadow duration-300 hover:shadow-indigo-500/5"
             >
               <EditorSidebar />
             </Panel>
             
-            <PanelResizeHandle className="w-6 flex items-center justify-center group cursor-col-resize z-30 relative">
+            <PanelResizeHandle id="resize-handle" className="w-6 flex items-center justify-center group cursor-col-resize z-30 relative">
               <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-1 bg-transparent group-hover:bg-indigo-500/20 group-active:bg-indigo-500/40 transition-colors" />
               <div className="w-1.5 h-12 bg-zinc-200/80 rounded-full group-hover:bg-indigo-500 group-active:bg-indigo-600 transition-all duration-300 flex items-center justify-center shadow-sm group-hover:shadow-indigo-500/20 group-hover:scale-y-110">
                 <GripVertical className="w-3 h-3 text-zinc-400 group-hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -197,9 +198,10 @@ export default function App() {
             </PanelResizeHandle>
 
             <Panel 
+              id="preview-panel"
               defaultSize={60} 
               minSize={40}
-              className="z-10 bg-transparent lg:bg-white/50 lg:backdrop-blur-2xl lg:rounded-[2rem] lg:border lg:border-white/60 lg:shadow-2xl lg:shadow-zinc-200/40 lg:overflow-hidden flex flex-col transition-all duration-300 hover:shadow-violet-500/5"
+              className="z-10 bg-transparent lg:bg-white/50 lg:backdrop-blur-2xl lg:rounded-[2rem] lg:border lg:border-white/60 lg:shadow-2xl lg:shadow-zinc-200/40 lg:overflow-hidden flex flex-col transition-shadow duration-300 hover:shadow-violet-500/5"
             >
               <ResumePreview />
             </Panel>

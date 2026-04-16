@@ -67,7 +67,7 @@ export function EditorSidebar() {
   return (
     <div className="flex flex-col-reverse md:flex-row h-full bg-transparent relative">
       {/* Navigation */}
-      <div className="w-full md:w-24 lg:w-[30%] lg:min-w-[200px] lg:max-w-[280px] border-t md:border-t-0 md:border-r border-zinc-200/60 bg-white/80 backdrop-blur-2xl flex flex-row md:flex-col shrink-0 z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] md:shadow-[4px_0_24px_rgba(0,0,0,0.02)] transition-[width] duration-300">
+      <div className="w-full md:w-24 lg:w-[30%] lg:min-w-[200px] lg:max-w-[280px] border-t md:border-t-0 md:border-r border-zinc-200/60 bg-white/80 backdrop-blur-2xl flex flex-row md:flex-col shrink-0 z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] md:shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
         
         {/* Scrollable Content Sections */}
         <div 

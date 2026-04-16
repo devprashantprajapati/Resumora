@@ -49,8 +49,16 @@ export function ResumePreview() {
     };
 
     calculateScale();
-    window.addEventListener('resize', calculateScale);
-    return () => window.removeEventListener('resize', calculateScale);
+    
+    const observer = new ResizeObserver(() => {
+      calculateScale();
+    });
+    
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    
+    return () => observer.disconnect();
   }, [data.settings.paperSize]);
 
   // Close export menu when clicking outside
