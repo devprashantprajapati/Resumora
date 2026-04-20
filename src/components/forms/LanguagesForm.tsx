@@ -100,7 +100,7 @@ function LanguageCard({ lang, updateLanguage, removeLanguage, dragHandleProps, i
         <select 
           value={lang.proficiency}
           onChange={(e) => updateLanguage(lang.id, { proficiency: e.target.value })}
-          className="flex h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 py-1 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-zinc-500/20 focus:border-zinc-500 hover:bg-white pro-input"
+          className="pro-select h-10 w-full"
         >
           <option value="Native">Native</option>
           <option value="Fluent">Fluent</option>

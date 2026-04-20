@@ -156,7 +156,7 @@ function SkillCard({ skill, updateSkill, removeSkill, dragHandleProps, isDraggin
         <select 
           value={skill.level}
           onChange={(e) => updateSkill(skill.id, { level: e.target.value })}
-          className="flex h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 py-1 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-zinc-500/20 focus:border-zinc-500 hover:bg-white pro-input"
+          className="pro-select h-10 w-full"
         >
           <option value="Beginner">Beginner</option>
           <option value="Intermediate">Intermediate</option>

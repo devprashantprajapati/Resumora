@@ -58,6 +58,19 @@
     @apply flex h-11 md:h-[3rem] w-full rounded-xl border-zinc-200 border bg-white/80 backdrop-blur-sm px-4 py-2.5 text-base md:text-[15px] font-medium text-zinc-900 shadow-[0_2px_4px_-2px_rgba(0,0,0,0.02)] transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] placeholder:text-zinc-400 focus:outline-none focus:bg-white hover:border-zinc-300 hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 appearance-none focus:ring-[3px] focus:ring-indigo-500/20 focus:border-indigo-500;
   }
 
+  .pro-select {
+    @apply flex h-11 md:h-[3rem] w-full rounded-xl border-zinc-200 border bg-white/80 backdrop-blur-sm px-4 py-2.5 text-base md:text-[15px] font-medium text-zinc-900 shadow-[0_2px_4px_-2px_rgba(0,0,0,0.02)] transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] placeholder:text-zinc-400 focus:outline-none focus:bg-white hover:border-zinc-300 hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 appearance-none focus:ring-[3px] focus:ring-indigo-500/20 focus:border-indigo-500;
+    
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
   .safe-pb {
     padding-bottom: env(safe-area-inset-bottom, 20px);
   }

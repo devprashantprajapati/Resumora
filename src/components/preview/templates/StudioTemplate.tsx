@@ -117,8 +117,8 @@ export function StudioTemplate({ data: propData }: { data?: ResumeData }) {
             <section>
               <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-400 mb-4" style={{ fontFamily: headingFont }}>Capabilities</h3>
               <div className="flex flex-col gap-2">
-                {skills.map((skill, i) => (
-                  <div key={i} className="flex items-center justify-between">
+                {skills.map((skill) => (
+                  <div key={skill.id} className="flex items-center justify-between">
                     <span className="text-[13px] font-bold text-zinc-700">{skill.name}</span>
                     <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }}></span>
                   </div>

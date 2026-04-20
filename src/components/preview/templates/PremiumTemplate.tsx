@@ -221,8 +221,8 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
             <section>
               <SectionHeader title="Interests" icon={Heart} />
               <div className="flex flex-wrap gap-2">
-                {interests.map((interest, i) => (
-                  <span key={i} className="text-sm text-zinc-600 bg-white border border-zinc-200 px-3 py-1 rounded-full shadow-sm">
+                {interests.map((interest) => (
+                  <span key={interest.id} className="text-sm text-zinc-600 bg-white border border-zinc-200 px-3 py-1 rounded-full shadow-sm">
                     {interest.name}
                   </span>
                 ))}
