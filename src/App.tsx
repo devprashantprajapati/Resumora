@@ -179,7 +179,7 @@ export default function App() {
         )}
 
         {isDesktop ? (
-          <PanelGroup id="resume-builder" orientation="horizontal" className="flex-1 w-full h-full">
+          <PanelGroup id="resume-builder" direction="horizontal" className="flex-1 w-full h-full">
             <Panel 
               id="editor-panel"
               defaultSize={40} 
