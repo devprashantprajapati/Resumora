@@ -190,10 +190,10 @@ export default function App() {
               <EditorSidebar />
             </Panel>
             
-            <PanelResizeHandle id="resize-handle" className="w-6 flex items-center justify-center group cursor-col-resize z-30 relative">
-              <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-1 bg-transparent group-hover:bg-indigo-500/20 group-active:bg-indigo-500/40 transition-colors" />
-              <div className="w-1.5 h-12 bg-zinc-200/80 rounded-full group-hover:bg-indigo-500 group-active:bg-indigo-600 transition-all duration-300 flex items-center justify-center shadow-sm group-hover:shadow-indigo-500/20 group-hover:scale-y-110">
-                <GripVertical className="w-3 h-3 text-zinc-400 group-hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            <PanelResizeHandle id="resize-handle" className="w-6 flex items-center justify-center group cursor-col-resize z-30 relative outline-none">
+              <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-1 bg-transparent group-hover:bg-indigo-500/10 group-active:bg-indigo-500/20 transition-colors duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" />
+              <div className="w-1.5 h-12 bg-zinc-200/80 rounded-full group-hover:bg-indigo-500 group-active:bg-indigo-600 transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] flex items-center justify-center shadow-sm group-hover:shadow-indigo-500/30 group-hover:h-16 group-active:scale-x-90">
+                <GripVertical className="w-3 h-3 text-zinc-400 group-hover:text-white/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             </PanelResizeHandle>
 

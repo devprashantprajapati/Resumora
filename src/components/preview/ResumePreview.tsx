@@ -8,6 +8,7 @@ import { TechTemplate } from './templates/TechTemplate';
 import { ExecutiveTemplate } from './templates/ExecutiveTemplate';
 import { PremiumTemplate } from './templates/PremiumTemplate';
 import { AcademicTemplate } from './templates/AcademicTemplate';
+import { StudioTemplate } from './templates/StudioTemplate';
 import { useRef, useState, useEffect } from 'react';
 import { Button } from '../ui/Button';
 import { Download, ChevronDown, FileText, FileJson, FileType2, FileCode, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
@@ -93,6 +94,8 @@ export function ResumePreview() {
         return <PremiumTemplate />;
       case 'academic':
         return <AcademicTemplate />;
+      case 'studio':
+        return <StudioTemplate />;
       default:
         return <ModernTemplate />;
     }
@@ -152,7 +155,7 @@ export function ResumePreview() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className="pan-pinch-ignore absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap md:flex-nowrap items-center justify-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3.5 bg-white/80 backdrop-blur-3xl rounded-2xl md:rounded-full z-40 group/toolbar w-[95vw] md:w-auto max-w-[400px] md:max-w-none shadow-[0_8px_32px_rgba(0,0,0,0.08)] border border-white/60 md:border-white/80 ring-1 ring-zinc-900/5"
+            className="pan-pinch-ignore absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex flex-wrap md:flex-nowrap items-center justify-center gap-2 md:gap-3 px-3 md:px-5 py-2 md:py-3.5 bg-white/80 backdrop-blur-3xl rounded-2xl md:rounded-full z-40 group/toolbar w-[95vw] md:w-auto max-w-[400px] md:max-w-none shadow-[0_16px_40px_-8px_rgba(0,0,0,0.1)] border border-white/80 ring-1 ring-zinc-900/5 transition-shadow duration-500 hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.15)]"
           >
             <div className="absolute inset-0 rounded-2xl md:rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/toolbar:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
             

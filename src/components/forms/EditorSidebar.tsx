@@ -86,10 +86,10 @@ export function EditorSidebar() {
                   ref={isActive ? activeItemRef : null}
                   onClick={() => setActiveSection(section.id)}
                   className={cn(
-                    "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-300 ease-out group relative shrink-0 z-10",
+                    "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0 z-10",
                     isActive 
                       ? "text-zinc-900 md:text-white" 
-                      : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/80"
+                      : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
                   )}
                 >
                   {isActive && (

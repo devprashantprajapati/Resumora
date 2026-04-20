@@ -8,7 +8,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <textarea
         className={cn(
-          "pro-input min-h-[120px] py-3 resize-y",
+          "pro-input min-h-[120px] h-auto py-3.5 resize-y leading-relaxed",
           className
         )}
         ref={ref}

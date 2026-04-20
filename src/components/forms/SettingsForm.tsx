@@ -11,12 +11,14 @@ import { toast } from 'sonner';
 const COLORS = [
   { name: 'Blue', value: '#3b82f6' },
   { name: 'Indigo', value: '#6366f1' },
+  { name: 'Sky', value: '#0ea5e9' },
   { name: 'Purple', value: '#a855f7' },
-  { name: 'Rose', value: '#f43f5e' },
-  { name: 'Emerald', value: '#10b981' },
-  { name: 'Amber', value: '#f59e0b' },
-  { name: 'Teal', value: '#14b8a6' },
   { name: 'Fuchsia', value: '#d946ef' },
+  { name: 'Rose', value: '#f43f5e' },
+  { name: 'Crimson', value: '#dc2626' },
+  { name: 'Emerald', value: '#10b981' },
+  { name: 'Teal', value: '#14b8a6' },
+  { name: 'Amber', value: '#f59e0b' },
   { name: 'Slate', value: '#475569' },
   { name: 'Black', value: '#000000' },
 ];
@@ -118,14 +120,14 @@ export function SettingsForm() {
       <div className="space-y-4">
         <Label className="text-base font-semibold text-zinc-900">Template</Label>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {(['modern', 'minimal', 'corporate', 'creative', 'elegant', 'tech', 'executive', 'premium', 'academic'] as const).map((template) => (
+          {(['modern', 'minimal', 'corporate', 'creative', 'elegant', 'tech', 'executive', 'premium', 'academic', 'studio'] as const).map((template) => (
             <button
               key={template}
               onClick={() => updateSettings({ template })}
-              className={`p-4 rounded-2xl border-2 text-center capitalize transition-all duration-300 ${
+              className={`p-4 rounded-[1rem] border-2 text-center capitalize transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
                 settings.template === template
-                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 font-semibold shadow-md shadow-indigo-200/50 scale-[1.02]'
-                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-600 pro-card'
+                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 font-semibold shadow-md shadow-indigo-200/50 scale-[1.02] ring-1 ring-indigo-600/30 ring-offset-1'
+                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-600 shadow-sm hover:shadow-md hover:scale-[1.01]'
               }`}
             >
               {template}
@@ -158,10 +160,10 @@ export function SettingsForm() {
             <button
               key={font.value}
               onClick={() => updateSettings({ font: font.value })}
-              className={`p-4 rounded-xl border-2 text-left transition-all duration-300 ${
+              className={`p-4 rounded-[1rem] border-2 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
                 settings.font === font.value
-                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 shadow-md shadow-indigo-200/50 scale-[1.02]'
-                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-700 pro-card'
+                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 shadow-md shadow-indigo-200/50 scale-[1.02] ring-1 ring-indigo-600/30 ring-offset-1'
+                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-700 shadow-sm hover:shadow-md hover:scale-[1.01]'
               }`}
               style={{ fontFamily: font.value }}
             >
@@ -179,10 +181,10 @@ export function SettingsForm() {
             <button
               key={font.value}
               onClick={() => updateSettings({ headingFont: font.value })}
-              className={`p-4 rounded-xl border-2 text-left transition-all duration-300 ${
+              className={`p-4 rounded-[1rem] border-2 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
                 (settings.headingFont || settings.font) === font.value
-                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 shadow-md shadow-indigo-200/50 scale-[1.02]'
-                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-700 pro-card'
+                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 shadow-md shadow-indigo-200/50 scale-[1.02] ring-1 ring-indigo-600/30 ring-offset-1'
+                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-700 shadow-sm hover:shadow-md hover:scale-[1.01]'
               }`}
               style={{ fontFamily: font.value }}
             >

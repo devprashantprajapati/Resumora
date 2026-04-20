@@ -8,7 +8,6 @@ import { analyzeJobMatch, generateCoverLetterStream, generateInterviewPrep, JobM
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, FileText, Target, CheckCircle2, XCircle, Search, Lightbulb, Copy, Check, ChevronDown, CheckSquare, MessageSquare } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
 
 export function AIToolsForm() {
   const { data } = useResumeStore();

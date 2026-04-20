@@ -51,11 +51,11 @@
   }
 
   .pro-card {
-    @apply bg-white/90 backdrop-blur-xl rounded-2xl border border-zinc-200/60 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_16px_32px_rgba(0,0,0,0.02)] transition-all duration-500 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06),0_24px_48px_rgba(0,0,0,0.04)] hover:border-indigo-200/60 hover:bg-white;
+    @apply bg-white/90 backdrop-blur-xl rounded-2xl border border-zinc-200/60 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05),0_4px_16px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.08),0_16px_32px_-8px_rgba(0,0,0,0.04)] hover:border-indigo-200/80 hover:bg-white;
   }
 
   .pro-input {
-    @apply flex h-11 md:h-12 w-full rounded-xl border border-zinc-200/80 bg-white/80 backdrop-blur-sm px-4 py-2 text-base md:text-[14px] font-medium text-zinc-900 transition-all duration-300 placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 focus:border-indigo-500 focus:bg-white hover:border-zinc-300 hover:bg-white hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 shadow-sm appearance-none;
+    @apply flex h-11 md:h-[3rem] w-full rounded-xl border-zinc-200 border bg-white/80 backdrop-blur-sm px-4 py-2.5 text-base md:text-[15px] font-medium text-zinc-900 shadow-[0_2px_4px_-2px_rgba(0,0,0,0.02)] transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] placeholder:text-zinc-400 focus:outline-none focus:bg-white hover:border-zinc-300 hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 appearance-none focus:ring-[3px] focus:ring-indigo-500/20 focus:border-indigo-500;
   }
 
   .safe-pb {
@@ -69,8 +69,8 @@
 
 /* Custom Scrollbar for Webkit */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
