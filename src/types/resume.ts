@@ -69,7 +69,7 @@ export type ResumeData = {
     phone: string;
   }[];
   settings: {
-    template: 'modern' | 'minimal' | 'corporate' | 'creative' | 'elegant' | 'tech' | 'executive' | 'premium';
+    template: 'modern' | 'minimal' | 'corporate' | 'creative' | 'elegant' | 'tech' | 'executive' | 'premium' | 'academic';
     color: string;
     font: string;
     headingFont?: string;

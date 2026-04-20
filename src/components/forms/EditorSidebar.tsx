@@ -9,7 +9,8 @@ import { LanguagesForm } from './LanguagesForm';
 import { InterestsForm } from './InterestsForm';
 import { ReferencesForm } from './ReferencesForm';
 import { SettingsForm } from './SettingsForm';
-import { User, Briefcase, GraduationCap, Wrench, FolderGit2, Award, Palette, RotateCcw, Languages, Heart, Users } from 'lucide-react';
+import { AIToolsForm } from './AIToolsForm';
+import { User, Briefcase, GraduationCap, Wrench, FolderGit2, Award, Palette, RotateCcw, Languages, Heart, Users, Bot } from 'lucide-react';
 import { useResumeStore } from '@/store/useResumeStore';
 import { Button } from '../ui/Button';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,7 @@ const CONTENT_SECTIONS = [
   { id: 'languages', label: 'Languages', icon: Languages, component: LanguagesForm },
   { id: 'interests', label: 'Interests', icon: Heart, component: InterestsForm },
   { id: 'references', label: 'References', icon: Users, component: ReferencesForm },
+  { id: 'ai-tools', label: 'AI Career Tools', icon: Bot, component: AIToolsForm },
 ];
 
 const SETTINGS_SECTION = { id: 'settings', label: 'Design & Settings', icon: Palette, component: SettingsForm };
