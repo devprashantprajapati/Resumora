@@ -1,7 +1,6 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 import App from './App.tsx';
 import { PublicResume } from './pages/PublicResume.tsx';
 import { AnalyticsDashboard } from './pages/AnalyticsDashboard.tsx';
@@ -19,6 +18,5 @@ createRoot(document.getElementById('root')!).render(
         </Routes>
       </BrowserRouter>
     </AuthProvider>
-    <SpeedInsights />
   </StrictMode>,
 );
