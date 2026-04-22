@@ -1,7 +1,8 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import App from './App.tsx';
+import { Dashboard } from './pages/Dashboard';
+import { Editor } from './pages/Editor';
 import { PublicResume } from './pages/PublicResume.tsx';
 import { AnalyticsDashboard } from './pages/AnalyticsDashboard.tsx';
 import './index.css';
@@ -12,7 +13,8 @@ createRoot(document.getElementById('root')!).render(
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/editor/:id" element={<Editor />} />
           <Route path="/p/:slug" element={<PublicResume />} />
           <Route path="/analytics/:slug" element={<AnalyticsDashboard />} />
         </Routes>

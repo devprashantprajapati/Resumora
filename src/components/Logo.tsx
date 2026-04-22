@@ -9,10 +9,9 @@ interface LogoProps extends React.SVGProps<SVGSVGElement> {
 
 export const Logo = ({ className, showText = true, ...props }: LogoProps) => {
   return (
-    <div className={cn("flex items-center gap-3", className)}>
+    <div className={cn("flex items-center gap-2 sm:gap-3", className)}>
       <svg
-        width="48"
-        height="48"
+        className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0"
         viewBox="0 0 100 100"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -81,11 +80,11 @@ export const Logo = ({ className, showText = true, ...props }: LogoProps) => {
       
       {showText && (
         <div className="flex flex-col justify-center">
-          <span className="text-[28px] font-black tracking-tighter leading-none">
+          <span className="text-[24px] sm:text-[28px] font-black tracking-tighter leading-none">
             <span className="text-zinc-900">Resum</span>
             <span className="text-indigo-500">ora</span>
           </span>
-          <span className="text-[9px] font-black text-zinc-400 tracking-[0.2em] mt-1.5 uppercase">
+          <span className="hidden sm:block text-[8px] sm:text-[9px] font-black text-zinc-400 tracking-[0.2em] mt-1 sm:mt-1.5 uppercase">
             AI Resume Architect
           </span>
         </div>
