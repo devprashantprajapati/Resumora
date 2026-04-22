@@ -16,7 +16,7 @@ import { getResume, publishResume, saveResume } from './lib/resumeService';
 import { useResumeStore } from './store/useResumeStore';
 import { Button } from './components/ui/Button';
 import { AuthModal } from './components/auth/AuthModal';
-import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from 'react-resizable-panels';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { useMediaQuery } from './hooks/useMediaQuery';
 
 export default function App() {
@@ -179,7 +179,7 @@ export default function App() {
         )}
 
         {isDesktop ? (
-          <PanelGroup id="resume-builder" direction="horizontal" className="flex-1 w-full h-full">
+          <PanelGroup id="resume-builder" autoSaveId="desktop-layout" direction="horizontal" className="flex-1 w-full h-full">
             <Panel 
               id="editor-panel"
               defaultSize={40} 

@@ -37,6 +37,7 @@ export function ResumePreview() {
 
   // Calculate initial fit scale
   useEffect(() => {
+    let timeoutId: number;
     const calculateScale = () => {
       if (containerRef.current) {
         const containerWidth = containerRef.current.clientWidth;
@@ -53,14 +54,20 @@ export function ResumePreview() {
     calculateScale();
     
     const observer = new ResizeObserver(() => {
-      calculateScale();
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => {
+        calculateScale();
+      }, 50);
     });
     
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
     
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(timeoutId);
+    };
   }, [data.settings.paperSize]);
 
   // Close export menu when clicking outside
