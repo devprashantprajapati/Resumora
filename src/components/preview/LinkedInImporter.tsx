@@ -122,10 +122,10 @@ export function LinkedInImporter() {
       <Button
         onClick={() => setIsOpen(true)}
         onPointerDown={(e) => e.stopPropagation()}
-        className="bg-[#0A66C2] hover:bg-[#004182] text-white rounded-full h-8 md:h-11 px-3 md:px-5 transition-all duration-300 flex items-center gap-2 active:scale-95"
+        className="bg-[#0A66C2] hover:bg-[#004182] text-white rounded-full h-8 md:h-9 px-3 md:px-4 transition-all duration-300 flex items-center gap-2 active:scale-95"
       >
         <Linkedin className="w-4 h-4" />
-        <span className="hidden md:inline text-xs md:text-sm font-bold">Import LinkedIn</span>
+        <span className="hidden md:inline text-xs font-bold whitespace-nowrap">Import LinkedIn</span>
       </Button>
 
       {mounted && createPortal(modalContent, document.body)}
