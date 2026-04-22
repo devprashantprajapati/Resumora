@@ -18,6 +18,7 @@ import { Button } from './components/ui/Button';
 import { AuthModal } from './components/auth/AuthModal';
 import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from 'react-resizable-panels';
 import { useMediaQuery } from './hooks/useMediaQuery';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   const [showPreview, setShowPreview] = useState(false);
@@ -226,6 +227,7 @@ export default function App() {
           </>
         )}
       </main>
+      <Analytics />
     </div>
   );
 }
