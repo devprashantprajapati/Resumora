@@ -135,7 +135,7 @@ export function Editor() {
         
         <div className="ml-auto flex items-center gap-2 sm:gap-4 text-sm text-zinc-500 font-medium">
           {/* Auth Button */}
-          <div className="hidden sm:block w-[198px] h-[44px]">
+          <div className="hidden sm:block w-[150px] h-[44px]">
             {user ? (
               <div className="flex items-center gap-3 bg-white/80 backdrop-blur-md border border-zinc-200/60 px-4 h-full rounded-full shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="w-6 h-6 shrink-0 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white font-bold text-xs shadow-inner">

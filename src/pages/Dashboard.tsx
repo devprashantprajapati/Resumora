@@ -100,7 +100,7 @@ export function Dashboard() {
       {/* Navigation */}
       <header className="h-16 lg:h-20 glass-nav lg:bg-white/40 lg:backdrop-blur-3xl lg:border-b lg:border-white/60 lg:shadow-[0_4px_30px_rgba(0,0,0,0.03)] flex items-center px-4 sm:px-8 shrink-0 z-40 relative transition-all duration-500">
         <Logo />
-        <div className="ml-auto flex items-center gap-4 text-sm text-zinc-500 font-medium h-[44px] w-[198px]">
+        <div className="ml-auto flex items-center gap-4 text-sm text-zinc-500 font-medium h-[44px] w-[150px]">
           {user ? (
             <div className="flex items-center gap-3 bg-white/80 backdrop-blur-md border border-zinc-200/60 w-full h-full px-4 rounded-full shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-6 h-6 shrink-0 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white font-bold text-xs shadow-inner">
