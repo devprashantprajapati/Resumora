@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getUserResumes, createNewResume, deleteResume, SavedResume } from '../lib/resumeService';
+import { getUserResumes, saveResume, deleteResume, SavedResume } from '../lib/resumeService';
+import { emptyResumeData } from '../types/resume';
 import { Logo } from '../components/Logo';
 import { Button } from '../components/ui/Button';
 import { Plus, FileText, MoreVertical, Trash2, Edit2, Loader2, User as UserIcon, LogOut } from 'lucide-react';
@@ -55,7 +56,8 @@ export function Dashboard() {
     setIsCreating(true);
     try {
       const newId = crypto.randomUUID();
-      // It will auto-save initial state in the Editor, but let's navigate first
+      // Pre-save the newly created blank state to the database directly
+      await saveResume(newId, 'Untitled Resume', emptyResumeData);
       navigate(`/editor/${newId}`);
     } catch (error) {
       console.error("Failed to create resume:", error);
