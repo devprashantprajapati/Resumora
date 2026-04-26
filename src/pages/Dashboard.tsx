@@ -175,6 +175,21 @@ export function Dashboard() {
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {/* Inline Create New Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0 }}
+              onClick={handleCreateNew}
+              className="group relative bg-white border-2 border-dashed border-zinc-200 rounded-[2rem] p-6 hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] hover:border-indigo-400/60 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center h-[280px] overflow-hidden"
+            >
+               <div className="absolute inset-0 bg-zinc-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+               <div className="w-16 h-16 bg-white border border-zinc-100 rounded-full shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all duration-300">
+                  {isCreating ? <Loader2 className="w-6 h-6 animate-spin text-indigo-500" /> : <Plus className="w-6 h-6 text-zinc-400 group-hover:text-indigo-600" />}
+               </div>
+               <span className="font-semibold text-zinc-600 group-hover:text-indigo-600 transition-colors">Start from scratch</span>
+            </motion.div>
+
             <AnimatePresence>
               {resumes.map((resume, idx) => (
                 <motion.div
@@ -182,49 +197,48 @@ export function Dashboard() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ delay: idx * 0.05 }}
+                  transition={{ delay: (idx + 1) * 0.05 }}
                   onClick={() => navigate(`/editor/${resume.id}`)}
-                  className="group relative bg-white/60 backdrop-blur-xl border border-white/80 rounded-[2rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 hover:border-indigo-500/20 transition-all duration-500 cursor-pointer flex flex-col h-[280px] overflow-hidden"
+                  className="group relative bg-white border border-zinc-200/80 rounded-[2rem] p-6 shadow-sm hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] hover:-translate-y-1 hover:border-indigo-200 transition-all duration-300 cursor-pointer flex flex-col h-[280px] overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                   
                   <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-300">
                     {confirmDeleteId === resume.id ? (
                       <button 
                         onClick={(e) => handleDelete(resume.id, e)}
                         disabled={deletingId === resume.id}
-                        className="px-4 py-2 bg-red-500 backdrop-blur-md rounded-full text-white font-semibold text-sm shadow-sm border border-red-600 transition-all hover:bg-red-600 active:scale-95 flex items-center gap-2"
+                        className="px-4 py-2 bg-red-600 rounded-full text-white font-medium text-sm shadow-sm transition-colors hover:bg-red-700 active:scale-95 flex items-center gap-2"
                       >
                         {deletingId === resume.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                        Confirm Delete
+                        Confirm
                       </button>
                     ) : (
                       <button 
                         onClick={(e) => handleDelete(resume.id, e)}
                         disabled={deletingId === resume.id}
-                        className="p-2 bg-white/80 backdrop-blur-md rounded-full text-zinc-400 hover:text-red-500 hover:bg-red-50 shadow-sm border border-zinc-200/60 transition-all hover:scale-110 active:scale-95"
+                        className="p-2 bg-white rounded-full text-zinc-400 hover:text-red-600 hover:bg-red-50 shadow-sm border border-zinc-200/60 transition-all hover:scale-105 active:scale-95"
                       >
                         {deletingId === resume.id ? <Loader2 className="w-4 h-4 animate-spin text-red-500" /> : <Trash2 className="w-4 h-4" />}
                       </button>
                     )}
                   </div>
                   
-                  <div className="w-14 h-14 bg-gradient-to-br from-indigo-50 to-violet-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 shrink-0 group-hover:scale-110 group-hover:rotate-3 group-hover:from-indigo-600 group-hover:to-violet-600 group-hover:text-white transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-sm relative overflow-hidden">
-                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 translate-y-full group-hover:translate-y-0 transition-transform duration-500 pointer-events-none" />
-                    <FileText className="w-7 h-7 relative z-10" />
+                  <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 shrink-0 group-hover:scale-105 group-hover:-rotate-3 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm border border-indigo-100 group-hover:border-indigo-600">
+                    <FileText className="w-6 h-6" />
                   </div>
                   
-                  <h3 className="text-xl font-bold text-zinc-900 mb-2 line-clamp-2 group-hover:text-indigo-950 transition-colors">{resume.title || 'Untitled Resume'}</h3>
-                  <div className="text-sm font-medium text-zinc-500 mb-4 line-clamp-1">
+                  <h3 className="text-lg font-bold text-zinc-900 mb-1.5 line-clamp-2 group-hover:text-indigo-900 transition-colors">{resume.title || 'Untitled Resume'}</h3>
+                  <div className="text-sm text-zinc-500 mb-4 line-clamp-1 font-medium">
                     {resume.data?.personalInfo?.firstName || ''} {resume.data?.personalInfo?.lastName || ''} {resume.data?.personalInfo?.firstName ? '• ' : ''}{resume.data?.personalInfo?.title || 'No Role'}
                   </div>
                   
-                  <div className="mt-auto pt-4 border-t border-zinc-200/60 flex items-center justify-between text-xs font-semibold text-zinc-400">
-                    <span className="bg-zinc-100/80 px-2 py-1 rounded-md group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
-                      Updated {formatDistanceToNow(resume.updatedAt, { addSuffix: true })}
+                  <div className="mt-auto pt-4 border-t border-zinc-100 flex items-center justify-between text-[11px] uppercase tracking-wider font-semibold text-zinc-400">
+                    <span>
+                      {formatDistanceToNow(resume.updatedAt, { addSuffix: true })}
                     </span>
-                    <div className="w-8 h-8 rounded-full bg-zinc-50 flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
-                      <Edit2 className="w-4 h-4 text-zinc-300 group-hover:text-indigo-500 transition-colors" />
+                    <div className="text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity font-bold">
+                      Edit
                     </div>
                   </div>
                 </motion.div>
