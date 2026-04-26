@@ -138,6 +138,21 @@ export const getResume = async (resumeId: string): Promise<SavedResume | null> =
   }
 };
 
+export const renameResume = async (resumeId: string, newTitle: string): Promise<void> => {
+  if (!auth.currentUser) throw new Error('User not authenticated');
+  
+  const path = `resumes/${resumeId}`;
+  try {
+    const resumeRef = doc(db, 'resumes', resumeId);
+    await setDoc(resumeRef, {
+      title: newTitle,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, path);
+  }
+};
+
 export const deleteResume = async (resumeId: string): Promise<void> => {
   if (!auth.currentUser) throw new Error('User not authenticated');
   

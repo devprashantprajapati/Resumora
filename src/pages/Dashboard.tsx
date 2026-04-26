@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getUserResumes, saveResume, deleteResume, SavedResume } from '../lib/resumeService';
+import { getUserResumes, saveResume, deleteResume, renameResume, SavedResume } from '../lib/resumeService';
 import { emptyResumeData } from '../types/resume';
 import { Logo } from '../components/Logo';
 import { Button } from '../components/ui/Button';
@@ -18,6 +18,9 @@ export function Dashboard() {
   const [isCreating, setIsCreating] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState<string>('');
+  const [isRenaming, setIsRenaming] = useState(false);
 
   useEffect(() => {
     // Dismiss confirm states if clicking outside (handled simply by navigating away or setting a timer, but let's just keep it simple)
@@ -84,6 +87,43 @@ export function Dashboard() {
       console.error("Failed to delete resume:", error);
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleStartRename = (resume: SavedResume, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setRenamingId(resume.id);
+    setRenameValue(resume.title || 'Untitled Resume');
+  };
+
+  const submitRename = async (id: string, e?: React.MouseEvent | React.FormEvent) => {
+    if (e) e.stopPropagation();
+    if (!renameValue.trim() || isRenaming) return;
+    
+    // Check if title actually changed
+    const currentResume = resumes.find(r => r.id === id);
+    if (currentResume && currentResume.title === renameValue.trim()) {
+      setRenamingId(null);
+      return;
+    }
+    
+    setIsRenaming(true);
+    try {
+      await renameResume(id, renameValue.trim());
+      setResumes(prev => prev.map(r => r.id === id ? { ...r, title: renameValue.trim() } : r));
+    } catch (error) {
+      console.error("Failed to rename resume:", error);
+    } finally {
+      setIsRenaming(false);
+      setRenamingId(null);
+    }
+  };
+
+  const handleKeyDown = (id: string, e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      submitRename(id);
+    } else if (e.key === 'Escape') {
+      setRenamingId(null);
     }
   };
 
@@ -189,7 +229,14 @@ export function Dashboard() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                   
-                  <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-300">
+                  <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-300 flex flex-col gap-2">
+                    <button 
+                      onClick={(e) => handleStartRename(resume, e)}
+                      className="p-2 bg-white rounded-full text-zinc-400 hover:text-indigo-600 hover:bg-indigo-50 shadow-sm border border-zinc-200/60 transition-all hover:scale-105 active:scale-95"
+                      title="Rename"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
                     {confirmDeleteId === resume.id ? (
                       <button 
                         onClick={(e) => handleDelete(resume.id, e)}
@@ -204,6 +251,7 @@ export function Dashboard() {
                         onClick={(e) => handleDelete(resume.id, e)}
                         disabled={deletingId === resume.id}
                         className="p-2 bg-white rounded-full text-zinc-400 hover:text-red-600 hover:bg-red-50 shadow-sm border border-zinc-200/60 transition-all hover:scale-105 active:scale-95"
+                        title="Delete"
                       >
                         {deletingId === resume.id ? <Loader2 className="w-4 h-4 animate-spin text-red-500" /> : <Trash2 className="w-4 h-4" />}
                       </button>
@@ -214,7 +262,28 @@ export function Dashboard() {
                     <FileText className="w-6 h-6" />
                   </div>
                   
-                  <h3 className="text-lg font-bold text-zinc-900 mb-1.5 line-clamp-2 group-hover:text-indigo-900 transition-colors">{resume.title || 'Untitled Resume'}</h3>
+                  {renamingId === resume.id ? (
+                    <div className="mb-1.5 relative z-20" onClick={(e) => e.stopPropagation()}>
+                      <div className="relative flex items-center">
+                        <input 
+                          type="text" 
+                          autoFocus
+                          value={renameValue}
+                          onChange={(e) => setRenameValue(e.target.value)}
+                          onKeyDown={(e) => handleKeyDown(resume.id, e)}
+                          onBlur={() => submitRename(resume.id)}
+                          className="w-full bg-white border-2 border-indigo-500 rounded-lg py-1 px-2 text-lg font-bold text-zinc-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10"
+                        />
+                        {isRenaming && (
+                          <div className="absolute right-2 text-indigo-500">
+                             <Loader2 className="w-4 h-4 animate-spin" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <h3 className="text-lg font-bold text-zinc-900 mb-1.5 line-clamp-2 group-hover:text-indigo-900 transition-colors">{resume.title || 'Untitled Resume'}</h3>
+                  )}
                   <div className="text-sm text-zinc-500 mb-4 line-clamp-1 font-medium">
                     {resume.data?.personalInfo?.firstName || ''} {resume.data?.personalInfo?.lastName || ''} {resume.data?.personalInfo?.firstName ? '• ' : ''}{resume.data?.personalInfo?.title || 'No Role'}
                   </div>

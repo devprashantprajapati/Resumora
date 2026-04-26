@@ -5,7 +5,7 @@ import { Mail, Lock, User as UserIcon, X, ArrowRight, CheckCircle2, AlertCircle 
 import { toast } from 'sonner';
 
 export function AuthModal() {
-  const { isAuthModalOpen, closeAuthModal, signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
+  const { isAuthModalOpen, closeAuthModal, signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -47,6 +47,30 @@ export function AuthModal() {
       setEmailError('');
     }
   }, [email]);
+
+  const handleForgotPassword = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error('Please enter your email above to reset password.');
+      return;
+    }
+    if (emailError) {
+      toast.error('Please fix the email error before resetting password.');
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      await resetPassword(email);
+      toast.success('Password reset link sent! Check your inbox.');
+    } catch (error: any) {
+      let message = 'Failed to send reset email. Please try again.';
+      if (error.code === 'auth/user-not-found') message = 'No account found with this email.';
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,9 +214,13 @@ export function AuthModal() {
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-zinc-700">Password</label>
                   {isLogin && (
-                    <a href="#" className="text-xs font-medium text-indigo-600 hover:text-indigo-500">
+                    <button 
+                      type="button"
+                      onClick={handleForgotPassword}
+                      className="text-xs font-medium text-indigo-600 hover:text-indigo-500"
+                    >
                       Forgot password?
-                    </a>
+                    </button>
                   )}
                 </div>
                 <div className="relative">

@@ -194,24 +194,24 @@ export function Editor() {
           </div>
 
           {/* Mobile Toggle */}
-          <div className="flex bg-zinc-100/80 p-1.5 rounded-full lg:hidden border border-zinc-200/50 shadow-inner h-[52px] w-[150px] shrink-0">
+          <div className="flex bg-zinc-100/90 p-1 rounded-full lg:hidden border border-zinc-200/50 shadow-inner h-[40px] w-[140px] shrink-0">
             <button 
               className={cn(
-                "flex items-center justify-center gap-1.5 flex-1 rounded-full transition-all duration-300 ease-out", 
-                !showPreview ? "bg-white text-zinc-900 shadow-[0_2px_8px_rgba(0,0,0,0.08)] font-bold scale-100" : "text-zinc-500 hover:text-zinc-700 scale-95"
+                "flex items-center justify-center gap-1.5 flex-1 rounded-full transition-all duration-200 ease-out", 
+                !showPreview ? "bg-white text-zinc-900 shadow-sm font-bold scale-100" : "text-zinc-500 hover:text-zinc-800 scale-95 font-medium"
               )}
               onClick={() => setShowPreview(false)}
             >
-              <Edit2 className="w-4 h-4" /> <span className="text-sm">Edit</span>
+              <Edit2 className="w-3.5 h-3.5" strokeWidth={2.5} /> <span className="text-sm">Edit</span>
             </button>
             <button 
               className={cn(
-                "flex items-center justify-center gap-1.5 flex-1 rounded-full transition-all duration-300 ease-out", 
-                showPreview ? "bg-white text-zinc-900 shadow-[0_2px_8px_rgba(0,0,0,0.08)] font-bold scale-100" : "text-zinc-500 hover:text-zinc-700 scale-95"
+                "flex items-center justify-center gap-1.5 flex-1 rounded-full transition-all duration-200 ease-out", 
+                showPreview ? "bg-white text-zinc-900 shadow-sm font-bold scale-100" : "text-zinc-500 hover:text-zinc-800 scale-95 font-medium"
               )}
               onClick={() => setShowPreview(true)}
             >
-              <Eye className="w-4 h-4" /> <span className="text-sm">View</span>
+              <Eye className="w-3.5 h-3.5" strokeWidth={2.5} /> <span className="text-sm">View</span>
             </button>
           </div>
         </div>
