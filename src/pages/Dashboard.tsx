@@ -58,7 +58,9 @@ export function Dashboard() {
     
     setIsCreating(true);
     try {
-      const newId = crypto.randomUUID();
+      const newId = typeof crypto !== 'undefined' && crypto.randomUUID 
+        ? crypto.randomUUID() 
+        : `res_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       // Pre-save the newly created blank state to the database directly
       await saveResume(newId, 'Untitled Resume', emptyResumeData);
       navigate(`/editor/${newId}`);
