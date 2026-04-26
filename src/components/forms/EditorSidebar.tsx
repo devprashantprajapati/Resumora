@@ -88,14 +88,14 @@ export function EditorSidebar() {
                   className={cn(
                     "flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-4 px-3 md:px-5 py-2 md:py-4 rounded-xl md:rounded-[1.25rem] transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group relative shrink-0 z-10",
                     isActive 
-                      ? "text-zinc-900 md:text-white" 
+                      ? "text-indigo-600 md:text-white" 
                       : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
                   )}
                 >
                   {isActive && (
                     <motion.div 
                       layoutId="active-nav-bg"
-                      className="absolute inset-0 bg-white md:bg-gradient-to-br md:from-indigo-600 md:to-violet-700 rounded-xl md:rounded-[1.25rem] -z-10 shadow-sm md:shadow-lg md:shadow-indigo-900/20 border border-zinc-200/50 md:border-indigo-500/30" 
+                      className="absolute inset-0 bg-indigo-50 md:bg-white md:bg-gradient-to-br md:from-indigo-600 md:to-violet-700 rounded-xl md:rounded-[1.25rem] -z-10 shadow-sm md:shadow-lg md:shadow-indigo-900/20 border border-indigo-100 md:border-indigo-500/30" 
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}
@@ -108,7 +108,7 @@ export function EditorSidebar() {
                   )} />
                   <span className={cn(
                     "text-[10px] lg:text-[13px] font-bold transition-colors tracking-tight",
-                    isActive ? "opacity-100 block md:hidden lg:block text-white drop-shadow-sm" : "opacity-70 group-hover:opacity-100 hidden lg:block"
+                    isActive ? "opacity-100 block md:hidden lg:block text-indigo-600 md:text-white md:drop-shadow-sm" : "opacity-70 group-hover:opacity-100 hidden lg:block"
                   )}>
                     {section.label}
                   </span>
@@ -134,19 +134,19 @@ export function EditorSidebar() {
             className={cn(
               "flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] group relative z-10",
               activeSection === SETTINGS_SECTION.id 
-                ? "text-zinc-900" 
+                ? "text-indigo-600" 
                 : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
             )}
           >
             {activeSection === SETTINGS_SECTION.id && (
               <motion.div 
                 layoutId="active-nav-bg"
-                className="absolute inset-0 bg-white rounded-xl -z-10 shadow-sm border border-zinc-200/50" 
+                className="absolute inset-0 bg-indigo-50 rounded-xl -z-10 shadow-sm border border-indigo-100" 
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}
-            <Palette className={cn("w-5 h-5 shrink-0 transition-all duration-500", activeSection === SETTINGS_SECTION.id ? "scale-110 text-white" : "group-hover:scale-110")} />
-            <span className={cn("text-[10px] font-bold transition-colors tracking-tight", activeSection === SETTINGS_SECTION.id ? "text-white" : "")}>
+            <Palette className={cn("w-5 h-5 shrink-0 transition-all duration-500", activeSection === SETTINGS_SECTION.id ? "scale-110 text-indigo-600" : "group-hover:scale-110")} />
+            <span className={cn("text-[10px] font-bold transition-colors tracking-tight", activeSection === SETTINGS_SECTION.id ? "text-indigo-600" : "")}>
               Design
             </span>
           </button>
