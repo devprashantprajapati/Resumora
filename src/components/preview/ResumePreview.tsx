@@ -11,12 +11,11 @@ import { AcademicTemplate } from './templates/AcademicTemplate';
 import { StudioTemplate } from './templates/StudioTemplate';
 import { useRef, useState, useEffect } from 'react';
 import { Button } from '../ui/Button';
-import { Download, ChevronDown, FileText, FileJson, FileType2, FileCode, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
+import { Download, ChevronDown, FileText, FileJson, FileType2, FileCode, ZoomIn, ZoomOut, Maximize, Printer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { exportTXT, exportJSON, exportDOCX, exportMarkdown, exportHTML, exportPDF } from '@/lib/exportUtils';
 import { useReactToPrint } from 'react-to-print';
-import { Printer, Download, FileText, FileType2, FileCode } from 'lucide-react';
 import { ATSChecker } from './ATSChecker';
 import { CoverLetterGenerator } from './CoverLetterGenerator';
 import { InterviewPrepGenerator } from './InterviewPrepGenerator';
@@ -25,6 +24,7 @@ import { LinkedInImporter } from './LinkedInImporter';
 import { PublishModal } from './PublishModal';
 import { Logo } from '../Logo';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { toast } from 'sonner';
 
 export function ResumePreview() {
   const { data } = useResumeStore();
@@ -214,7 +214,13 @@ export function ResumePreview() {
                       <div className="grid gap-1">
                         <button
                           onClick={() => { 
-                            handlePrint();
+                            const id = toast.loading('Preparing native PDF...');
+                            try {
+                              handlePrint();
+                              toast.success('Print dialog opened', { id });
+                            } catch (e) {
+                              toast.error('Failed to open print dialog', { id });
+                            }
                             setIsExportMenuOpen(false); 
                           }}
                           className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
@@ -225,9 +231,17 @@ export function ResumePreview() {
                           Print / Native PDF
                         </button>
                         <button
-                          onClick={() => { 
-                            if (componentRef.current) {
-                              exportPDF(componentRef.current, data);
+                          onClick={async () => {
+                            const id = toast.loading('Generating image-based PDF...');
+                            try {
+                              if (componentRef.current) {
+                                await exportPDF(componentRef.current, data);
+                                toast.success('PDF generated successfully', { id });
+                              } else {
+                                toast.error('Preview not loaded yet', { id });
+                              }
+                            } catch (e) {
+                              toast.error('Failed to generate PDF', { id });
                             }
                             setIsExportMenuOpen(false); 
                           }}
@@ -239,7 +253,15 @@ export function ResumePreview() {
                           PDF (Image Base)
                         </button>
                         <button
-                          onClick={() => { exportDOCX(data); setIsExportMenuOpen(false); }}
+                          onClick={() => {
+                            try {
+                              exportDOCX(data);
+                              toast.success('Word document generated');
+                            } catch (e) {
+                              toast.error('Failed to generate Word document');
+                            }
+                            setIsExportMenuOpen(false);
+                          }}
                           className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
                           <div className="w-9 h-9 rounded-xl bg-blue-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-blue-200/80 transition-all duration-300 shadow-sm">
@@ -249,7 +271,13 @@ export function ResumePreview() {
                         </button>
                         <div className="h-px bg-zinc-100 my-1.5 mx-3" />
                         <button
-                          onClick={() => { exportTXT(data); setIsExportMenuOpen(false); }}
+                          onClick={() => {
+                            try {
+                              exportTXT(data);
+                              toast.success('Plain text generated');
+                            } catch(e) { toast.error('Failed to export'); }
+                            setIsExportMenuOpen(false);
+                          }}
                           className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
                           <div className="w-9 h-9 rounded-xl bg-zinc-100 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-zinc-200 transition-all duration-300 shadow-sm">
@@ -258,7 +286,13 @@ export function ResumePreview() {
                           Plain Text
                         </button>
                         <button
-                          onClick={() => { exportMarkdown(data); setIsExportMenuOpen(false); }}
+                          onClick={() => {
+                            try {
+                              exportMarkdown(data);
+                              toast.success('Markdown generated');
+                            } catch(e) { toast.error('Failed to export'); }
+                            setIsExportMenuOpen(false);
+                          }}
                           className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
                           <div className="w-9 h-9 rounded-xl bg-purple-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-purple-200/80 transition-all duration-300 shadow-sm">
@@ -267,7 +301,13 @@ export function ResumePreview() {
                           Markdown
                         </button>
                         <button
-                          onClick={() => { exportJSON(data); setIsExportMenuOpen(false); }}
+                          onClick={() => {
+                            try {
+                              exportJSON(data);
+                              toast.success('JSON generated');
+                            } catch(e) { toast.error('Failed to export'); }
+                            setIsExportMenuOpen(false);
+                          }}
                           className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
                           <div className="w-9 h-9 rounded-xl bg-yellow-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-yellow-200/80 transition-all duration-300 shadow-sm">
@@ -276,7 +316,13 @@ export function ResumePreview() {
                           JSON Resume
                         </button>
                         <button
-                          onClick={() => { exportHTML(data); setIsExportMenuOpen(false); }}
+                          onClick={() => {
+                            try {
+                              exportHTML(data);
+                              toast.success('HTML generated');
+                            } catch(e) { toast.error('Failed to export'); }
+                            setIsExportMenuOpen(false);
+                          }}
                           className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
                         >
                           <div className="w-9 h-9 rounded-xl bg-orange-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-orange-200/80 transition-all duration-300 shadow-sm">

@@ -129,20 +129,6 @@ export function Dashboard() {
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 sm:px-10 py-12 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-zinc-900 tracking-tight mb-2">My Resumes</h1>
-            <p className="text-zinc-500 text-lg">Manage and organize your professional profiles.</p>
-          </div>
-          <Button 
-            onClick={handleCreateNew}
-            disabled={isCreating}
-            className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200/50 h-12 px-6 gap-2"
-          >
-            {isCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
-            <span className="font-bold">Create New Resume</span>
-          </Button>
-        </div>
 
         {isLoading ? (
           <div className="flex justify-center items-center py-32 relative z-10 w-full h-[400px] glass-panel rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">

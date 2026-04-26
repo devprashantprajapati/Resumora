@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useResumeStore } from '@/store/useResumeStore';
-import { initialResumeData } from '@/types/resume';
+import { initialResumeData, emptyResumeData } from '@/types/resume';
 import { Label } from '../ui/Label';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -407,25 +407,46 @@ export function SettingsForm() {
 
       <div className="pt-8 border-t border-zinc-200/60">
           <div className="space-y-4">
-            <Label className="text-base font-semibold text-zinc-900">Demo Flow</Label>
+            <Label className="text-base font-semibold text-zinc-900">Content Controls</Label>
             <p className="text-sm text-zinc-500">
-              Not sure where to start? Load a fully completed example resume.
+              Not sure where to start? Load a fully completed example resume. Or clear all content to start fresh.
             </p>
-            <Button 
-              variant="outline"
-              onClick={() => {
-                const proceed = window.confirm('This will overwrite your current resume data. Proceed?');
-                if (proceed) {
-                  updateSettings(initialResumeData.settings);
-                  useResumeStore.getState().updateData(initialResumeData);
-                  toast.success('Demo data loaded!');
-                }
-              }} 
-              className="w-full sm:w-auto transition-all duration-200 text-indigo-600 border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              Fill with Demo Data
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  const proceed = window.confirm('This will overwrite your current resume data. Proceed?');
+                  if (proceed) {
+                    updateSettings(initialResumeData.settings);
+                    useResumeStore.getState().updateData(initialResumeData);
+                    toast.success('Demo data loaded!');
+                  }
+                }} 
+                className="w-full sm:w-auto transition-all duration-200 text-indigo-600 border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300"
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                Fill with Demo Data
+              </Button>
+
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  const proceed = window.confirm('This will wipe all your text data (but keep settings). Proceed?');
+                  if (proceed) {
+                    const currentSettings = useResumeStore.getState().data.settings;
+                    useResumeStore.getState().updateData({
+                      ...emptyResumeData,
+                      settings: currentSettings
+                    });
+                    toast.success('Resume content cleared!');
+                  }
+                }} 
+                className="w-full sm:w-auto transition-all duration-200 text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300"
+              >
+                <RotateCcw className="w-4 h-4 mr-2" />
+                Clear All Content
+              </Button>
+            </div>
           </div>
       </div>
       
