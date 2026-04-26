@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '../contexts/AuthContext';
 import { getUserResumes, saveResume, deleteResume, renameResume, SavedResume } from '../lib/resumeService';
 import { emptyResumeData } from '../types/resume';
@@ -58,9 +59,7 @@ export function Dashboard() {
     
     setIsCreating(true);
     try {
-      const newId = typeof crypto !== 'undefined' && crypto.randomUUID 
-        ? crypto.randomUUID() 
-        : `res_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const newId = uuidv4();
       // Pre-save the newly created blank state to the database directly
       await saveResume(newId, 'Untitled Resume', emptyResumeData);
       navigate(`/editor/${newId}`);
