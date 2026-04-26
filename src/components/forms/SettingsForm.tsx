@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useResumeStore } from '@/store/useResumeStore';
+import { initialResumeData } from '@/types/resume';
 import { Label } from '../ui/Label';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
-import { RotateCcw, AlertTriangle, Cloud, LogOut, LogIn } from 'lucide-react';
+import { RotateCcw, AlertTriangle, Cloud, LogOut, LogIn, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { saveResume } from '@/lib/resumeService';
 import { toast } from 'sonner';
@@ -405,6 +406,30 @@ export function SettingsForm() {
       </div>
 
       <div className="pt-8 border-t border-zinc-200/60">
+          <div className="space-y-4">
+            <Label className="text-base font-semibold text-zinc-900">Demo Flow</Label>
+            <p className="text-sm text-zinc-500">
+              Not sure where to start? Load a fully completed example resume.
+            </p>
+            <Button 
+              variant="outline"
+              onClick={() => {
+                const proceed = window.confirm('This will overwrite your current resume data. Proceed?');
+                if (proceed) {
+                  updateSettings(initialResumeData.settings);
+                  useResumeStore.getState().updateData(initialResumeData);
+                  toast.success('Demo data loaded!');
+                }
+              }} 
+              className="w-full sm:w-auto transition-all duration-200 text-indigo-600 border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              Fill with Demo Data
+            </Button>
+          </div>
+      </div>
+      
+      <div className="pt-8 mt-8 border-t border-zinc-200/60">
           <div className="space-y-4">
             <Label className="text-base font-semibold text-red-600">Danger Zone</Label>
             <p className="text-sm text-zinc-500">

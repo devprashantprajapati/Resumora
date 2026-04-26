@@ -33,6 +33,8 @@ export function Editor() {
   const isInitialLoadRef = useRef(true);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
+  const [syncState, setSyncState] = useState<'idle' | 'syncing' | 'saved'>('idle');
+
   useEffect(() => {
     // Component unmount or ID change cleanup
     resetData();
@@ -74,16 +76,21 @@ export function Editor() {
     if (draftSyncTimeoutRef.current) {
       clearTimeout(draftSyncTimeoutRef.current);
     }
+    
+    setSyncState('syncing');
 
     draftSyncTimeoutRef.current = setTimeout(async () => {
       try {
         const title = `${data.personalInfo.firstName || 'My'} Resume`;
         await saveResume(id, title, data);
+        setSyncState('saved');
+        setTimeout(() => setSyncState('idle'), 2000);
         console.log('Auto-saved draft to cloud');
       } catch (error) {
         console.error('Failed to auto-save draft:', error);
+        setSyncState('idle');
       }
-    }, 3000); // Debounce for 3 seconds
+    }, 2000); // Debounce for 2 seconds
 
     return () => {
       if (draftSyncTimeoutRef.current) {
@@ -134,6 +141,31 @@ export function Editor() {
         </div>
         
         <div className="ml-auto flex items-center gap-2 sm:gap-4 text-sm text-zinc-500 font-medium">
+          
+          {/* Cloud Sync Status */}
+          {user && (
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-100/50 rounded-full border border-black/5 text-xs font-medium text-zinc-500 transition-all duration-300">
+              {syncState === 'syncing' && (
+                <>
+                  <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                  <span>Syncing...</span>
+                </>
+              )}
+              {syncState === 'saved' && (
+                <>
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span className="text-zinc-600">Saved to Cloud</span>
+                </>
+              )}
+              {syncState === 'idle' && (
+                <>
+                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-300" />
+                  <span>Up to date</span>
+                </>
+              )}
+            </div>
+          )}
+
           {/* Auth Button */}
           <div className="hidden sm:block w-[150px] h-[44px]">
             {user ? (

@@ -15,6 +15,8 @@ import { Download, ChevronDown, FileText, FileJson, FileType2, FileCode, ZoomIn,
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { exportTXT, exportJSON, exportDOCX, exportMarkdown, exportHTML, exportPDF } from '@/lib/exportUtils';
+import { useReactToPrint } from 'react-to-print';
+import { Printer, Download, FileText, FileType2, FileCode } from 'lucide-react';
 import { ATSChecker } from './ATSChecker';
 import { CoverLetterGenerator } from './CoverLetterGenerator';
 import { InterviewPrepGenerator } from './InterviewPrepGenerator';
@@ -34,6 +36,11 @@ export function ResumePreview() {
   const [isReady, setIsReady] = useState(false);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const exportMenuRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: `${data.personalInfo.firstName || 'My'}_${data.personalInfo.lastName || 'Resume'}`,
+  });
 
   // Calculate initial fit scale
   useEffect(() => {
@@ -207,6 +214,18 @@ export function ResumePreview() {
                       <div className="grid gap-1">
                         <button
                           onClick={() => { 
+                            handlePrint();
+                            setIsExportMenuOpen(false); 
+                          }}
+                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
+                        >
+                          <div className="w-9 h-9 rounded-xl bg-green-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-green-200/80 transition-all duration-300 shadow-sm">
+                            <Printer className="w-4.5 h-4.5 text-green-600" />
+                          </div>
+                          Print / Native PDF
+                        </button>
+                        <button
+                          onClick={() => { 
                             if (componentRef.current) {
                               exportPDF(componentRef.current, data);
                             }
@@ -217,7 +236,7 @@ export function ResumePreview() {
                           <div className="w-9 h-9 rounded-xl bg-red-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-red-200/80 transition-all duration-300 shadow-sm">
                             <FileText className="w-4.5 h-4.5 text-red-600" />
                           </div>
-                          PDF Document
+                          PDF (Image Base)
                         </button>
                         <button
                           onClick={() => { exportDOCX(data); setIsExportMenuOpen(false); }}
