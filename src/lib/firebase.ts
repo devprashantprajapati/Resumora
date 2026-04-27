@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, enableMultiTabIndexedDbPersistence } from 'firebase/firestore';
 import defaultFirebaseConfig from '../../firebase-applet-config.json';
 
 // Use environment variables if available (for Vercel), otherwise fallback to AI Studio config
@@ -23,5 +23,14 @@ export const auth = getAuth(app);
 // If using AI Studio, use the specific databaseId.
 const databaseId = import.meta.env.VITE_FIREBASE_PROJECT_ID ? undefined : defaultFirebaseConfig.firestoreDatabaseId;
 export const db = getFirestore(app, databaseId);
+
+// Enable offline persistence
+enableMultiTabIndexedDbPersistence(db).catch((err) => {
+  if (err.code == 'failed-precondition') {
+    console.warn('Multiple tabs open, offline persistence is only enabled in one tab at a time.');
+  } else if (err.code == 'unimplemented') {
+    console.warn('The current browser does not support all of the features required to enable persistence');
+  }
+});
 
 export const googleProvider = new GoogleAuthProvider();

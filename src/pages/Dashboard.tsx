@@ -60,8 +60,12 @@ export function Dashboard() {
     setIsCreating(true);
     try {
       const newId = uuidv4();
-      // Pre-save the newly created blank state to the database directly
-      await saveResume(newId, 'Untitled Resume', emptyResumeData, true);
+      try {
+        // Attempt to pre-save the newly created blank state to the database directly
+        await saveResume(newId, 'Untitled Resume', emptyResumeData, true);
+      } catch (error: any) {
+        console.warn("Failed to save resume in cloud, continuing in local mode:", error);
+      }
       navigate(`/editor/${newId}`);
     } catch (error: any) {
       console.error("Failed to create resume:", error);
