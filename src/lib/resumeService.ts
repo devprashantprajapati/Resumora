@@ -57,13 +57,12 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
   throw new Error(JSON.stringify(errInfo));
 }
 
-export const saveResume = async (resumeId: string, title: string, data: ResumeData): Promise<void> => {
+export const saveResume = async (resumeId: string, title: string, data: ResumeData, isNew = false): Promise<void> => {
   if (!auth.currentUser) throw new Error('User not authenticated');
   
   const path = `resumes/${resumeId}`;
   try {
     const resumeRef = doc(db, 'resumes', resumeId);
-    const docSnap = await getDoc(resumeRef);
     
     const payload = {
       userId: auth.currentUser.uid,
@@ -72,15 +71,33 @@ export const saveResume = async (resumeId: string, title: string, data: ResumeDa
       data: JSON.stringify(data)
     };
 
-    if (!docSnap.exists()) {
-      // Create new
+    if (isNew) {
       await setDoc(resumeRef, {
         ...payload,
         createdAt: serverTimestamp()
       });
     } else {
-      // Update existing
-      await setDoc(resumeRef, payload, { merge: true });
+      let documentExists = true;
+      try {
+        const docSnap = await getDoc(resumeRef);
+        documentExists = docSnap.exists();
+      } catch (e: any) {
+        if (e.message?.includes('offline')) {
+          // If offline, assume it exists if we are updating, but setDoc with merge will handle it safely
+          console.warn('Offline during getDoc, falling back to setDoc with merge');
+        } else {
+          throw e;
+        }
+      }
+
+      if (!documentExists) {
+        await setDoc(resumeRef, {
+          ...payload,
+          createdAt: serverTimestamp()
+        });
+      } else {
+        await setDoc(resumeRef, payload, { merge: true });
+      }
     }
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, path);

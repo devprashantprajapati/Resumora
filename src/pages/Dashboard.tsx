@@ -61,7 +61,7 @@ export function Dashboard() {
     try {
       const newId = uuidv4();
       // Pre-save the newly created blank state to the database directly
-      await saveResume(newId, 'Untitled Resume', emptyResumeData);
+      await saveResume(newId, 'Untitled Resume', emptyResumeData, true);
       navigate(`/editor/${newId}`);
     } catch (error: any) {
       console.error("Failed to create resume:", error);
