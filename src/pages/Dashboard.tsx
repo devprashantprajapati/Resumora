@@ -63,8 +63,9 @@ export function Dashboard() {
       // Pre-save the newly created blank state to the database directly
       await saveResume(newId, 'Untitled Resume', emptyResumeData);
       navigate(`/editor/${newId}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to create resume:", error);
+      alert(`Error creating: ${error.message || String(error)}`);
     } finally {
       setIsCreating(false);
     }
