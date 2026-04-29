@@ -60,16 +60,16 @@ export function Dashboard() {
     setIsCreating(true);
     try {
       const newId = uuidv4();
-      try {
-        // Attempt to pre-save the newly created blank state to the database directly
-        await saveResume(newId, 'Untitled Resume', emptyResumeData, true);
-      } catch (error: any) {
+      
+      // Attempt to pre-save the newly created blank state to the database directly
+      // Do not await this, allows instant navigation even if Firestore is slow or offline
+      saveResume(newId, 'Untitled Resume', emptyResumeData, true).catch((error: any) => {
         console.warn("Failed to save resume in cloud, continuing in local mode:", error);
-      }
+      });
+      
       navigate(`/editor/${newId}`);
     } catch (error: any) {
       console.error("Failed to create resume:", error);
-      alert(`Error creating: ${error.message || String(error)}`);
     } finally {
       setIsCreating(false);
     }
