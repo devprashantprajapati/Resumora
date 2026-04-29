@@ -219,7 +219,7 @@ export function Dashboard() {
                <div className="w-16 h-16 bg-white border border-zinc-100 rounded-full shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all duration-300">
                   {isCreating ? <Loader2 className="w-6 h-6 animate-spin text-indigo-500" /> : <Plus className="w-6 h-6 text-zinc-400 group-hover:text-indigo-600" />}
                </div>
-               <span className="font-semibold text-zinc-600 group-hover:text-indigo-600 transition-colors">Start from scratch</span>
+               <span className="font-semibold text-zinc-600 group-hover:text-indigo-600 transition-colors">Create new resume</span>
             </motion.div>
 
             <AnimatePresence>
