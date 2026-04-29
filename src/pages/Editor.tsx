@@ -194,7 +194,7 @@ export function Editor() {
           </div>
 
           {/* Mobile Toggle */}
-          <div className="flex bg-zinc-100/90 p-1 rounded-full lg:hidden border border-zinc-200/50 shadow-inner h-[40px] w-[140px] shrink-0">
+          <div className="flex bg-zinc-100/90 p-1 rounded-full lg:hidden border border-zinc-200/50 shadow-inner h-[45px] w-[150px] shrink-0">
             <button 
               className={cn(
                 "flex items-center justify-center gap-1.5 flex-1 rounded-full transition-all duration-200 ease-out", 
