@@ -4,19 +4,20 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
 import { Textarea } from '../ui/Textarea';
-import { analyzeJobMatch, generateCoverLetterStream, generateInterviewPrep, JobMatchResult, InterviewPrepResult } from '@/services/ai';
+import { analyzeJobMatch, generateCoverLetterStream, generateInterviewPrep, tailorResumeData, JobMatchResult, InterviewPrepResult } from '@/services/ai';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, FileText, Target, CheckCircle2, XCircle, Search, Lightbulb, Copy, Check, ChevronDown, CheckSquare, MessageSquare } from 'lucide-react';
+import { Bot, FileText, Target, CheckCircle2, XCircle, Search, Lightbulb, Copy, Check, ChevronDown, CheckSquare, MessageSquare, Wand2 } from 'lucide-react';
 
 export function AIToolsForm() {
-  const { data } = useResumeStore();
+  const { data, updateData } = useResumeStore();
   const [activeTab, setActiveTab] = useState<'match' | 'coverletter' | 'interview'>('match');
   const [jobDescription, setJobDescription] = useState('');
   const [companyName, setCompanyName] = useState('');
   
   // Job Match State
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isTailoring, setIsTailoring] = useState(false);
   const [matchResult, setMatchResult] = useState<JobMatchResult | null>(null);
 
   // Cover Letter State
@@ -55,6 +56,41 @@ export function AIToolsForm() {
       toast.error('Failed to analyze job match');
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const handleTailorResume = async () => {
+    if (!jobDescription.trim()) {
+      toast.error('Please enter a job description first');
+      return;
+    }
+
+    setIsTailoring(true);
+    try {
+      const tailoredContent = await tailorResumeData(getResumeContent(), jobDescription);
+      
+      const newExperience = data.experience.map(exp => {
+        const matchingTailoredExp = tailoredContent.experiences.find(te => te.id === exp.id);
+        if (matchingTailoredExp) {
+          return { ...exp, description: matchingTailoredExp.description };
+        }
+        return exp;
+      });
+
+      updateData({
+        ...data,
+        personalInfo: {
+          ...data.personalInfo,
+          summary: tailoredContent.summary
+        },
+        experience: newExperience
+      });
+
+      toast.success('Resume successfully tailored to job!');
+    } catch (error) {
+      toast.error('Failed to tailor resume');
+    } finally {
+      setIsTailoring(false);
     }
   };
 
@@ -156,9 +192,14 @@ export function AIToolsForm() {
       <div className="mt-8">
         {activeTab === 'match' && (
           <div className="space-y-6">
-            <Button onClick={handleAnalyzeMatch} isLoading={isAnalyzing} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-12 shadow-sm font-medium">
-              <Search className="w-4 h-4 mr-2" /> Analyze Resume Match
-            </Button>
+            <div className="flex gap-3">
+              <Button onClick={handleAnalyzeMatch} isLoading={isAnalyzing} className="flex-1 bg-white hover:bg-zinc-50 text-zinc-900 border border-zinc-200 rounded-xl h-12 shadow-sm font-medium">
+                <Search className="w-4 h-4 mr-2 text-zinc-500" /> Analyze Match
+              </Button>
+              <Button onClick={handleTailorResume} isLoading={isTailoring} className="flex-1 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 border-none text-white rounded-xl h-12 shadow-sm font-medium transition-all hover:scale-[1.02]">
+                <Wand2 className="w-4 h-4 mr-2" /> Auto-Tailor Resume
+              </Button>
+            </div>
             
             {matchResult && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">

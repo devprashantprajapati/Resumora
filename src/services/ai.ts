@@ -299,6 +299,58 @@ export async function* generateInterviewPrepStream(resumeContent: string, jobDes
   }
 }
 
+export async function tailorResumeData(resumeContent: string, jobDescription: string): Promise<{ summary: string; experiences: { id: string; description: string }[] }> {
+  try {
+    const prompt = `You are an expert resume writer and career coach. 
+    Review the provided Resume Content against the Job Description.
+    Your goal is to rewrite the candidate's Professional Summary and Experience descriptions to better align with the job requirements, highlighting relevant skills and keywords.
+    Keep the same factual achievements, but emphasize the aspects most relevant to the job.
+    IMPORTANT: You must return the EXACT SAME experience IDs so they can be matched.
+    
+    Resume Content:
+    ${resumeContent}
+    
+    Job Description:
+    ${jobDescription}
+    
+    Return a JSON object with:
+    1. "summary": A tailored professional summary (3-4 sentences).
+    2. "experiences": An array of objects, each containing the "id" (from the original experience) and the "description" (the tailored bullet points, using •).`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            summary: { type: Type.STRING, description: "Tailored professional summary" },
+            experiences: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  description: { type: Type.STRING, description: "Tailored bullet points for this experience" }
+                },
+                required: ["id", "description"]
+              }
+            }
+          },
+          required: ["summary", "experiences"]
+        }
+      }
+    });
+
+    const jsonStr = response.text?.trim() || "{}";
+    return JSON.parse(jsonStr);
+  } catch (error) {
+    console.error("Error tailoring resume data:", error);
+    throw error;
+  }
+}
+
 export async function structureResumeData(rawText: string): Promise<Partial<ResumeData>> {
   try {
     const prompt = `You are an expert resume parser. Extract the information from the following raw resume text (which might be a LinkedIn PDF export or a standard resume) and structure it into a JSON object.
