@@ -235,7 +235,7 @@ export function Dashboard() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                   
-                  <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-300 flex flex-col gap-2">
+                  <div className="absolute top-0 right-0 p-4 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-300 flex flex-col gap-2">
                     <button 
                       onClick={(e) => handleStartRename(resume, e)}
                       className="p-2 bg-white rounded-full text-zinc-400 hover:text-indigo-600 hover:bg-indigo-50 shadow-sm border border-zinc-200/60 transition-all hover:scale-105 active:scale-95"
@@ -298,7 +298,7 @@ export function Dashboard() {
                     <span>
                       {formatDistanceToNow(resume.updatedAt, { addSuffix: true })}
                     </span>
-                    <div className="text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity font-bold">
+                    <div className="text-indigo-600 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity font-bold">
                       Edit
                     </div>
                   </div>
