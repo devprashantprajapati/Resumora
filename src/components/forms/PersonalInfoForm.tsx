@@ -5,7 +5,7 @@ import { Textarea } from '../ui/Textarea';
 import { Button } from '../ui/Button';
 import { generateSummaryStream } from '@/services/ai';
 import React, { useState, useRef } from 'react';
-import { Wand2, Plus, Trash2, Upload, X, ExternalLink } from 'lucide-react';
+import { Wand2, Plus, Trash2, Upload, X, ExternalLink, Loader2 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 
@@ -122,27 +122,31 @@ export function PersonalInfoForm() {
       <div className="space-y-3 pb-6 border-b border-zinc-200/60">
         <div className="flex items-center justify-between">
           <Label htmlFor="summary">Professional Summary</Label>
-          <div className="flex items-center gap-2">
-            <select
-              value={tone}
-              onChange={(e) => setTone(e.target.value)}
-              className="h-9 px-3 text-xs border border-zinc-200/80 rounded-lg bg-zinc-50/50 text-zinc-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 max-w-[120px]"
-            >
-              <option value="Professional">Professional</option>
-              <option value="Confident">Confident</option>
-              <option value="Creative">Creative</option>
-              <option value="Enthusiastic">Enthusiastic</option>
-            </select>
-            <Button 
-              variant="outline" 
-              size="sm" 
+          <div className="flex items-center bg-indigo-50/50 border border-indigo-200/60 rounded-[10px] p-0.5 shadow-sm">
+            <div className="relative flex items-center">
+              <select
+                value={tone}
+                onChange={(e) => setTone(e.target.value)}
+                className="h-8 pl-3 pr-7 text-[11.5px] font-medium bg-transparent text-indigo-800 focus:outline-none cursor-pointer hover:bg-indigo-100/50 rounded-md transition-colors appearance-none relative z-10"
+              >
+                <option value="Professional">Professional</option>
+                <option value="Confident">Confident</option>
+                <option value="Creative">Creative</option>
+                <option value="Enthusiastic">Enthusiastic</option>
+              </select>
+              <div className="absolute right-2 text-indigo-500 pointer-events-none z-0">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </div>
+            <div className="w-[1px] h-4 bg-indigo-200/60 mx-0.5" />
+            <button 
               onClick={handleGenerateSummary}
-              isLoading={isGenerating}
-              className="text-indigo-700 border-indigo-200/60 bg-indigo-50/60 hover:bg-indigo-50 hover:border-indigo-300 h-9 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+              disabled={isGenerating}
+              className="flex items-center h-8 px-3 ml-0.5 text-[11.5px] font-semibold text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800 rounded-md transition-colors disabled:opacity-50 disabled:pointer-events-none"
             >
-              <Wand2 className="w-4 h-4 mr-2 text-indigo-500" />
-              AI Generate
-            </Button>
+              {isGenerating ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Wand2 className="w-3.5 h-3.5 mr-1.5 text-indigo-500" />}
+              Generate
+            </button>
           </div>
         </div>
         <Textarea 

@@ -254,36 +254,38 @@ export function Dashboard() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                   
-                  <div className="absolute top-0 right-0 p-4 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity z-10 duration-300 flex flex-col gap-2">
+                  <div className="absolute top-3 right-3 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all z-10 duration-300 flex items-center gap-1 p-1 bg-white/90 backdrop-blur-md rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.08)] border border-zinc-200/50 transform group-hover:translate-y-0 translate-y-[-4px]">
                     <button 
                       onClick={(e) => handleStartRename(resume, e)}
-                      className="p-2 bg-white rounded-full text-zinc-400 hover:text-indigo-600 hover:bg-indigo-50 shadow-sm border border-zinc-200/60 transition-all hover:scale-105 active:scale-95"
+                      className="p-2 rounded-full text-zinc-500 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
                       title="Rename"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
+                    <div className="w-[1px] h-4 bg-zinc-200" />
                     <button 
                       onClick={(e) => handleDuplicate(resume.id, e)}
                       disabled={isDuplicating === resume.id}
-                      className="p-2 bg-white rounded-full text-zinc-400 hover:text-green-600 hover:bg-green-50 shadow-sm border border-zinc-200/60 transition-all hover:scale-105 active:scale-95"
+                      className="p-2 rounded-full text-zinc-500 hover:text-emerald-600 hover:bg-emerald-50 transition-colors disabled:opacity-50"
                       title="Duplicate"
                     >
-                      {isDuplicating === resume.id ? <Loader2 className="w-4 h-4 animate-spin text-green-500" /> : <Copy className="w-4 h-4" />}
+                      {isDuplicating === resume.id ? <Loader2 className="w-4 h-4 animate-spin text-emerald-500" /> : <Copy className="w-4 h-4" />}
                     </button>
+                    <div className="w-[1px] h-4 bg-zinc-200" />
                     {confirmDeleteId === resume.id ? (
                       <button 
                         onClick={(e) => handleDelete(resume.id, e)}
                         disabled={deletingId === resume.id}
-                        className="px-4 py-2 bg-red-600 rounded-full text-white font-medium text-sm shadow-sm transition-colors hover:bg-red-700 active:scale-95 flex items-center gap-2"
+                        className="px-3 py-1.5 mx-1 bg-red-500 rounded-full text-white font-medium text-[11px] shadow-sm transition-colors hover:bg-red-600 flex items-center gap-1.5 disabled:opacity-50"
                       >
-                        {deletingId === resume.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                        {deletingId === resume.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                         Confirm
                       </button>
                     ) : (
                       <button 
                         onClick={(e) => handleDelete(resume.id, e)}
                         disabled={deletingId === resume.id}
-                        className="p-2 bg-white rounded-full text-zinc-400 hover:text-red-600 hover:bg-red-50 shadow-sm border border-zinc-200/60 transition-all hover:scale-105 active:scale-95"
+                        className="p-2 rounded-full text-zinc-500 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
                         title="Delete"
                       >
                         {deletingId === resume.id ? <Loader2 className="w-4 h-4 animate-spin text-red-500" /> : <Trash2 className="w-4 h-4" />}
