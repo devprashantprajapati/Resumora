@@ -52,8 +52,12 @@ export function ATSChecker() {
 
       const matchResult = await analyzeJobMatch(resumeContent, jobDescription);
       setJobMatchResult(matchResult);
-    } catch (error) {
-      toast.error('Failed to analyze job match. Please try again.');
+    } catch (error: any) {
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', { description: 'Please wait a moment before trying again.' });
+      } else {
+        toast.error('Failed to analyze job match. Please try again.');
+      }
     } finally {
       setIsAnalyzing(false);
     }

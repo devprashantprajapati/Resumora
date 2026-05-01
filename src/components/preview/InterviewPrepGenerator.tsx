@@ -50,8 +50,12 @@ export function InterviewPrepGenerator() {
           // Ignore partial parse errors
         }
       }
-    } catch (error) {
-      toast.error('Failed to generate interview prep. Please try again.');
+    } catch (error: any) {
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', { description: 'Please wait a moment before trying again.' });
+      } else {
+        toast.error('Failed to generate interview prep. Please try again.');
+      }
     } finally {
       setIsGenerating(false);
     }

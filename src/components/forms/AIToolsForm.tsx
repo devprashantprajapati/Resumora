@@ -52,8 +52,12 @@ export function AIToolsForm() {
       const result = await analyzeJobMatch(getResumeContent(), jobDescription);
       setMatchResult(result);
       toast.success('Analysis complete!');
-    } catch (error) {
-      toast.error('Failed to analyze job match');
+    } catch (error: any) {
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', { description: 'Please wait a moment before trying again.' });
+      } else {
+        toast.error('Failed to analyze job match');
+      }
     } finally {
       setIsAnalyzing(false);
     }
@@ -87,8 +91,12 @@ export function AIToolsForm() {
       });
 
       toast.success('Resume successfully tailored to job!');
-    } catch (error) {
-      toast.error('Failed to tailor resume');
+    } catch (error: any) {
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', { description: 'Please wait a moment before trying again.' });
+      } else {
+        toast.error('Failed to tailor resume');
+      }
     } finally {
       setIsTailoring(false);
     }
@@ -110,8 +118,12 @@ export function AIToolsForm() {
         setCoverLetter(fullText);
       }
       toast.success('Cover letter generated!');
-    } catch (error) {
-      toast.error('Failed to generate cover letter');
+    } catch (error: any) {
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', { description: 'Please wait a moment before trying again.' });
+      } else {
+        toast.error('Failed to generate cover letter');
+      }
     } finally {
       setIsGeneratingCL(false);
     }
@@ -129,8 +141,12 @@ export function AIToolsForm() {
       const result = await generateInterviewPrep(getResumeContent(), jobDescription, companyName);
       setPrepResult(result);
       toast.success('Interview prep guide generated!');
-    } catch (error) {
-      toast.error('Failed to generate interview prep guide');
+    } catch (error: any) {
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', { description: 'Please wait a moment before trying again.' });
+      } else {
+        toast.error('Failed to generate interview prep guide');
+      }
     } finally {
       setIsGeneratingPrep(false);
     }

@@ -47,8 +47,12 @@ export function CoverLetterGenerator() {
         fullText += chunk;
         setCoverLetter(fullText);
       }
-    } catch (error) {
-      toast.error('Failed to generate cover letter. Please try again.');
+    } catch (error: any) {
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', { description: 'Please wait a moment before trying again.' });
+      } else {
+        toast.error('Failed to generate cover letter. Please try again.');
+      }
     } finally {
       setIsGenerating(false);
     }
