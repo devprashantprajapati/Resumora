@@ -1,10 +1,38 @@
-import { TextareaHTMLAttributes, forwardRef } from 'react';
+import { TextareaHTMLAttributes, forwardRef, useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
-export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {}
+export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+  debounceTime?: number;
+}
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, debounceTime = 300, value: externalValue, onChange, ...props }, ref) => {
+    const [localValue, setLocalValue] = useState(externalValue ?? '');
+
+    useEffect(() => {
+      setLocalValue(externalValue ?? '');
+    }, [externalValue]);
+
+    useEffect(() => {
+      const handler = setTimeout(() => {
+        if (localValue !== externalValue && localValue !== '') {
+          if (onChange) {
+            onChange({
+              target: { value: localValue }
+            } as any);
+          }
+        } else if (localValue === '' && externalValue !== '' && externalValue !== undefined) {
+          if (onChange) {
+            onChange({
+              target: { value: localValue }
+            } as any);
+          }
+        }
+      }, debounceTime);
+
+      return () => clearTimeout(handler);
+    }, [localValue, externalValue, onChange, debounceTime]);
+
     return (
       <textarea
         className={cn(
@@ -12,6 +40,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           className
         )}
         ref={ref}
+        value={localValue === null ? '' : localValue}
+        onChange={(e) => {
+          setLocalValue(e.target.value);
+        }}
         {...props}
       />
     );
