@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '../contexts/AuthContext';
-import { getUserResumes, saveResume, deleteResume, renameResume, SavedResume } from '../lib/resumeService';
+import { getUserResumes, saveResume, deleteResume, renameResume, duplicateResume, SavedResume } from '../lib/resumeService';
 import { emptyResumeData } from '../types/resume';
 import { Logo } from '../components/Logo';
 import { Button } from '../components/ui/Button';
-import { Plus, FileText, MoreVertical, Trash2, Edit2, Loader2, User as UserIcon, LogOut } from 'lucide-react';
+import { Plus, FileText, MoreVertical, Trash2, Edit2, Loader2, User as UserIcon, LogOut, Copy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { AuthModal } from '../components/auth/AuthModal';
+import { toast } from 'sonner';
 
 export function Dashboard() {
   const { user, openAuthModal, logout } = useAuth();
@@ -22,6 +23,7 @@ export function Dashboard() {
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState<string>('');
   const [isRenaming, setIsRenaming] = useState(false);
+  const [isDuplicating, setIsDuplicating] = useState<string | null>(null);
 
   useEffect(() => {
     // Dismiss confirm states if clicking outside (handled simply by navigating away or setting a timer, but let's just keep it simple)
@@ -122,6 +124,23 @@ export function Dashboard() {
     } finally {
       setIsRenaming(false);
       setRenamingId(null);
+    }
+  };
+
+  const handleDuplicate = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsDuplicating(id);
+    try {
+      const duplicatedResume = await duplicateResume(id);
+      if (duplicatedResume) {
+        setResumes(prev => [duplicatedResume, ...prev]);
+        toast.success("Resume duplicated!");
+      }
+    } catch (error) {
+      console.error("Failed to duplicate resume:", error);
+      toast.error("Failed to duplicate resume");
+    } finally {
+      setIsDuplicating(null);
     }
   };
 
@@ -242,6 +261,14 @@ export function Dashboard() {
                       title="Rename"
                     >
                       <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={(e) => handleDuplicate(resume.id, e)}
+                      disabled={isDuplicating === resume.id}
+                      className="p-2 bg-white rounded-full text-zinc-400 hover:text-green-600 hover:bg-green-50 shadow-sm border border-zinc-200/60 transition-all hover:scale-105 active:scale-95"
+                      title="Duplicate"
+                    >
+                      {isDuplicating === resume.id ? <Loader2 className="w-4 h-4 animate-spin text-green-500" /> : <Copy className="w-4 h-4" />}
                     </button>
                     {confirmDeleteId === resume.id ? (
                       <button 

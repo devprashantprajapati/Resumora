@@ -3,9 +3,9 @@ import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
 import { Textarea } from '../ui/Textarea';
 import { Button } from '../ui/Button';
-import { enhanceDescriptionStream } from '@/services/ai';
+import { enhanceDescriptionStream, fixGrammarStream } from '@/services/ai';
 import { useState } from 'react';
-import { Wand2, Plus, Trash2, GripVertical, ChevronDown, ChevronUp } from 'lucide-react';
+import { Wand2, Plus, Trash2, GripVertical, ChevronDown, ChevronUp, CheckCircle } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Card } from '../ui/Card';
 import { toast } from 'sonner';
@@ -30,6 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export function ExperienceForm() {
   const { data, addExperience, updateExperience, removeExperience, reorderItems } = useResumeStore();
   const [enhancingId, setEnhancingId] = useState<string | null>(null);
+  const [fixingId, setFixingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>((data.experience || [])[0]?.id || null);
 
   const sensors = useSensors(
@@ -81,6 +82,34 @@ export function ExperienceForm() {
     }
   };
 
+  const handleFixGrammar = async (id: string, description: string) => {
+    if (!description) return;
+    setFixingId(id);
+    try {
+      updateExperience(id, { description: '' });
+      let fullText = '';
+      const stream = fixGrammarStream(description);
+      for await (const chunk of stream) {
+        fullText += chunk;
+        updateExperience(id, { description: fullText });
+      }
+    } catch (error: any) {
+      console.error("Failed to fix grammar:", error);
+      updateExperience(id, { description }); // Restore original on error
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', {
+          description: 'Please wait a moment before trying again.',
+        });
+      } else {
+        toast.error('Failed to fix grammar', {
+          description: 'An unexpected error occurred. Please try again.',
+        });
+      }
+    } finally {
+      setFixingId(null);
+    }
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -109,7 +138,9 @@ export function ExperienceForm() {
                 updateExperience={updateExperience} 
                 removeExperience={removeExperience} 
                 handleEnhance={handleEnhance} 
+                handleFixGrammar={handleFixGrammar}
                 enhancingId={enhancingId} 
+                fixingId={fixingId}
                 isExpanded={expandedId === exp.id}
                 onToggle={() => setExpandedId(expandedId === exp.id ? null : exp.id)}
               />
@@ -126,7 +157,7 @@ export function ExperienceForm() {
   );
 }
 
-function ExperienceCard({ exp, updateExperience, removeExperience, handleEnhance, enhancingId, dragHandleProps, isDragging, isExpanded, onToggle }: any) {
+function ExperienceCard({ exp, updateExperience, removeExperience, handleEnhance, handleFixGrammar, enhancingId, fixingId, dragHandleProps, isDragging, isExpanded, onToggle }: any) {
   return (
     <Card className={`p-0 overflow-hidden relative group border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white transition-all duration-300 mb-4 pro-card ${isDragging ? 'opacity-50 scale-[0.98] shadow-lg' : ''}`}>
       {/* Header / Collapsible Trigger */}
@@ -220,17 +251,30 @@ function ExperienceCard({ exp, updateExperience, removeExperience, handleEnhance
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label>Description</Label>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleEnhance(exp.id, exp.description, exp.position)}
-                    isLoading={enhancingId === exp.id}
-                    disabled={enhancingId !== null || !exp.description || !exp.position}
-                    className="text-indigo-700 border-indigo-200/60 bg-indigo-50/60 hover:bg-indigo-50 hover:border-indigo-300 h-8 text-xs rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
-                  >
-                    <Wand2 className="w-3 h-3 mr-2 text-indigo-500" />
-                    AI Enhance
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => handleFixGrammar(exp.id, exp.description)}
+                      isLoading={fixingId === exp.id}
+                      disabled={fixingId !== null || enhancingId !== null || !exp.description}
+                      className="text-emerald-700 border-emerald-200/60 bg-emerald-50/60 hover:bg-emerald-50 hover:border-emerald-300 h-8 text-xs rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+                    >
+                      <CheckCircle className="w-3 h-3 mr-2 text-emerald-500" />
+                      Fix Grammar
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => handleEnhance(exp.id, exp.description, exp.position)}
+                      isLoading={enhancingId === exp.id}
+                      disabled={enhancingId !== null || fixingId !== null || !exp.description || !exp.position}
+                      className="text-indigo-700 border-indigo-200/60 bg-indigo-50/60 hover:bg-indigo-50 hover:border-indigo-300 h-8 text-xs rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+                    >
+                      <Wand2 className="w-3 h-3 mr-2 text-indigo-500" />
+                      AI Enhance
+                    </Button>
+                  </div>
                 </div>
                 <Textarea 
                   value={exp.description} 

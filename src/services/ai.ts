@@ -3,15 +3,16 @@ import { ResumeData } from "../types/resume";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-export async function* generateSummaryStream(title: string, experience: string, skills: string): AsyncGenerator<string, void, unknown> {
+export async function* generateSummaryStream(title: string, experience: string, skills: string, tone: string = "Professional"): AsyncGenerator<string, void, unknown> {
   try {
-    const prompt = `You are an expert resume writer. Write a professional, ATS-friendly summary for a resume.
+    const prompt = `You are an expert resume writer. Write a ${tone.toLowerCase()}, ATS-friendly summary for a resume.
     
     Job Title: ${title}
     Experience Level: ${experience}
     Key Skills: ${skills}
+    Tone: ${tone}
     
-    The summary should be 3-4 sentences long, highlighting key achievements, skills, and career goals. It should be impactful and use action verbs. Do not include any introductory text like "Here is a summary", just return the summary text.`;
+    The summary should be 3-4 sentences long in a ${tone.toLowerCase()} tone, highlighting key achievements, skills, and career goals. It should be impactful and use action verbs. Do not include any introductory text like "Here is a summary", just return the summary text.`;
 
     const response = await ai.models.generateContentStream({
       model: "gemini-3-flash-preview",
@@ -56,6 +57,31 @@ export async function* enhanceDescriptionStream(description: string, role: strin
     }
   } catch (error) {
     console.error("Error enhancing description stream:", error);
+    throw error;
+  }
+}
+
+export async function* fixGrammarStream(text: string): AsyncGenerator<string, void, unknown> {
+  try {
+    const prompt = `You are an expert copyeditor. Fix any spelling, punctuation, and grammatical errors in the following text. Do not change the underlying meaning, tone, or formatting (keep any bullet points or line breaks exactly as they are). If the text is already perfect, just return the exact same text.
+
+    Text:
+    ${text}
+    
+    Return ONLY the corrected text.`;
+
+    const response = await ai.models.generateContentStream({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+    });
+
+    for await (const chunk of response) {
+      if (chunk.text) {
+        yield chunk.text;
+      }
+    }
+  } catch (error) {
+    console.error("Error fixing grammar stream:", error);
     throw error;
   }
 }

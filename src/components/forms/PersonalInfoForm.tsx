@@ -13,6 +13,7 @@ export function PersonalInfoForm() {
   const { data, updatePersonalInfo } = useResumeStore();
   const { personalInfo } = data;
   const [isGenerating, setIsGenerating] = useState(false);
+  const [tone, setTone] = useState("Professional");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleGenerateSummary = async () => {
@@ -23,7 +24,7 @@ export function PersonalInfoForm() {
     try {
       updatePersonalInfo({ summary: '' });
       let fullText = '';
-      const stream = generateSummaryStream(personalInfo.title, experienceText, skillsText);
+      const stream = generateSummaryStream(personalInfo.title, experienceText, skillsText, tone);
       for await (const chunk of stream) {
         fullText += chunk;
         updatePersonalInfo({ summary: fullText });
@@ -121,16 +122,28 @@ export function PersonalInfoForm() {
       <div className="space-y-3 pb-6 border-b border-zinc-200/60">
         <div className="flex items-center justify-between">
           <Label htmlFor="summary">Professional Summary</Label>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={handleGenerateSummary}
-            isLoading={isGenerating}
-            className="text-indigo-700 border-indigo-200/60 bg-indigo-50/60 hover:bg-indigo-50 hover:border-indigo-300 h-9 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
-          >
-            <Wand2 className="w-4 h-4 mr-2 text-indigo-500" />
-            AI Generate
-          </Button>
+          <div className="flex items-center gap-2">
+            <select
+              value={tone}
+              onChange={(e) => setTone(e.target.value)}
+              className="h-9 px-3 text-xs border border-zinc-200/80 rounded-lg bg-zinc-50/50 text-zinc-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 max-w-[120px]"
+            >
+              <option value="Professional">Professional</option>
+              <option value="Confident">Confident</option>
+              <option value="Creative">Creative</option>
+              <option value="Enthusiastic">Enthusiastic</option>
+            </select>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleGenerateSummary}
+              isLoading={isGenerating}
+              className="text-indigo-700 border-indigo-200/60 bg-indigo-50/60 hover:bg-indigo-50 hover:border-indigo-300 h-9 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+            >
+              <Wand2 className="w-4 h-4 mr-2 text-indigo-500" />
+              AI Generate
+            </Button>
+          </div>
         </div>
         <Textarea 
           id="summary" 

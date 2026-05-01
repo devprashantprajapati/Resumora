@@ -181,6 +181,44 @@ export const deleteResume = async (resumeId: string): Promise<void> => {
   }
 };
 
+export const duplicateResume = async (originalId: string): Promise<SavedResume | null> => {
+  if (!auth.currentUser) throw new Error('User not authenticated');
+  
+  const path = `resumes`;
+  try {
+    const originalDoc = await getDoc(doc(db, 'resumes', originalId));
+    if (!originalDoc.exists()) {
+      throw new Error('Original resume not found');
+    }
+
+    const originalData = originalDoc.data();
+    const newId = crypto.randomUUID(); // Note: Assumes environment supports this
+    const newTitle = `${originalData.title || 'Untitled'} (Copy)`;
+    
+    const payload = {
+      userId: auth.currentUser.uid,
+      title: newTitle,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      data: originalData.data
+    };
+
+    await setDoc(doc(db, 'resumes', newId), payload);
+
+    return {
+      id: newId,
+      userId: payload.userId,
+      title: newTitle,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      data: JSON.parse(payload.data) as ResumeData
+    };
+  } catch (error) {
+    handleFirestoreError(error, OperationType.CREATE, path);
+    return null;
+  }
+};
+
 export interface PublishedResume {
   slug: string;
   userId: string;
