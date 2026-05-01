@@ -99,16 +99,16 @@ export const exportPDF = async (element: HTMLElement, data: ResumeData) => {
 };
 
 export const exportTXT = (data: ResumeData) => {
-  const { personalInfo, experience, education, skills, projects, certifications } = data;
+  const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
   let txt = `${personalInfo.firstName} ${personalInfo.lastName}\n`;
   if (personalInfo.title) txt += `${personalInfo.title}\n`;
   
   const contact = [personalInfo.email, personalInfo.phone, personalInfo.city, personalInfo.country].filter(Boolean).join(' | ');
   if (contact) txt += `${contact}\n`;
   
-  const linkedin = personalInfo.links.find(l => l.label.toLowerCase() === 'linkedin')?.url;
-  const github = personalInfo.links.find(l => l.label.toLowerCase() === 'github')?.url;
-  const website = personalInfo.links.find(l => l.label.toLowerCase() === 'website' || l.label.toLowerCase() === 'portfolio')?.url;
+  const linkedin = personalInfo.links?.find(l => l.label.toLowerCase() === 'linkedin')?.url;
+  const github = personalInfo.links?.find(l => l.label.toLowerCase() === 'github')?.url;
+  const website = personalInfo.links?.find(l => l.label.toLowerCase() === 'website' || l.label.toLowerCase() === 'portfolio')?.url;
   
   const links = [linkedin, github, website].filter(Boolean).join(' | ');
   if (links) txt += `${links}\n`;
@@ -119,7 +119,7 @@ export const exportTXT = (data: ResumeData) => {
     txt += `SUMMARY\n${'-'.repeat(20)}\n${personalInfo.summary}\n\n`;
   }
 
-  if (experience.length > 0) {
+  if (experience && experience.length > 0) {
     txt += `EXPERIENCE\n${'-'.repeat(20)}\n`;
     experience.forEach(exp => {
       txt += `${exp.position} at ${exp.company}\n`;
@@ -129,7 +129,7 @@ export const exportTXT = (data: ResumeData) => {
     });
   }
 
-  if (education.length > 0) {
+  if (education && education.length > 0) {
     txt += `EDUCATION\n${'-'.repeat(20)}\n`;
     education.forEach(edu => {
       txt += `${edu.degree} in ${edu.field} from ${edu.school}\n`;
@@ -139,12 +139,12 @@ export const exportTXT = (data: ResumeData) => {
     });
   }
 
-  if (skills.length > 0) {
+  if (skills && skills.length > 0) {
     txt += `SKILLS\n${'-'.repeat(20)}\n`;
     txt += skills.map(s => `${s.name} (${s.level})`).join(', ') + '\n\n';
   }
 
-  if (projects.length > 0) {
+  if (settings.showProjects !== false && projects && projects.length > 0) {
     txt += `PROJECTS\n${'-'.repeat(20)}\n`;
     projects.forEach(proj => {
       txt += `${proj.name}`;
@@ -155,12 +155,33 @@ export const exportTXT = (data: ResumeData) => {
     });
   }
 
-  if (certifications.length > 0) {
+  if (settings.showCertifications !== false && certifications && certifications.length > 0) {
     txt += `CERTIFICATIONS\n${'-'.repeat(20)}\n`;
     certifications.forEach(cert => {
       txt += `${cert.name} from ${cert.issuer}\n`;
       if (cert.date) txt += `${cert.date}\n`;
       if (cert.url) txt += `${cert.url}\n`;
+      txt += '\n';
+    });
+  }
+
+  if (settings.showLanguages !== false && languages && languages.length > 0) {
+    txt += `LANGUAGES\n${'-'.repeat(20)}\n`;
+    txt += languages.map(l => `${l.name} (${l.proficiency})`).join(', ') + '\n\n';
+  }
+
+  if (settings.showInterests !== false && interests && interests.length > 0) {
+    txt += `INTERESTS\n${'-'.repeat(20)}\n`;
+    txt += interests.map(i => i.name).join(', ') + '\n\n';
+  }
+
+  if (settings.showReferences !== false && references && references.length > 0) {
+    txt += `REFERENCES\n${'-'.repeat(20)}\n`;
+    references.forEach(ref => {
+      txt += `${ref.name}\n`;
+      if (ref.position && ref.company) txt += `${ref.position} at ${ref.company}\n`;
+      const refContact = [ref.email, ref.phone].filter(Boolean).join(' | ');
+      if (refContact) txt += `${refContact}\n`;
       txt += '\n';
     });
   }
@@ -175,11 +196,11 @@ export const exportTXT = (data: ResumeData) => {
 };
 
 export const exportJSON = (data: ResumeData) => {
-  const { personalInfo, experience, education, skills, projects, certifications } = data;
+  const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
   
-  const linkedin = personalInfo.links.find(l => l.label.toLowerCase() === 'linkedin')?.url;
-  const github = personalInfo.links.find(l => l.label.toLowerCase() === 'github')?.url;
-  const website = personalInfo.links.find(l => l.label.toLowerCase() === 'website' || l.label.toLowerCase() === 'portfolio')?.url;
+  const linkedin = personalInfo.links?.find(l => l.label.toLowerCase() === 'linkedin')?.url;
+  const github = personalInfo.links?.find(l => l.label.toLowerCase() === 'github')?.url;
+  const website = personalInfo.links?.find(l => l.label.toLowerCase() === 'website' || l.label.toLowerCase() === 'portfolio')?.url;
 
   const profiles = [];
   if (linkedin) profiles.push({ network: 'LinkedIn', url: linkedin });
@@ -200,14 +221,14 @@ export const exportJSON = (data: ResumeData) => {
       },
       profiles
     },
-    work: experience.map(exp => ({
+    work: (experience || []).map(exp => ({
       name: exp.company,
       position: exp.position,
       startDate: exp.startDate,
       endDate: exp.endDate,
       summary: exp.description
     })),
-    education: education.map(edu => ({
+    education: (education || []).map(edu => ({
       institution: edu.school,
       area: edu.field,
       studyType: edu.degree,
@@ -215,23 +236,36 @@ export const exportJSON = (data: ResumeData) => {
       endDate: edu.endDate,
       score: edu.description
     })),
-    skills: skills.map(skill => ({
+    skills: (skills || []).map(skill => ({
       name: skill.name,
       level: skill.level
     })),
-    projects: projects.map(proj => ({
+    projects: settings.showProjects !== false ? (projects || []).map(proj => ({
       name: proj.name,
       startDate: proj.startDate,
       endDate: proj.endDate,
       description: proj.description,
       url: proj.url
-    })),
-    certificates: certifications.map(cert => ({
+    })) : [],
+    certificates: settings.showCertifications !== false ? (certifications || []).map(cert => ({
       name: cert.name,
       date: cert.date,
       issuer: cert.issuer,
       url: cert.url
-    }))
+    })) : [],
+    languages: settings.showLanguages !== false ? (languages || []).map(lang => ({
+      language: lang.name,
+      fluency: lang.proficiency
+    })) : [],
+    interests: settings.showInterests !== false ? (interests || []).map(interest => ({
+      name: interest.name
+    })) : [],
+    references: settings.showReferences !== false ? (references || []).map(ref => ({
+      name: ref.name,
+      reference: `${ref.position ? ref.position + ' at ' : ''}${ref.company ? ref.company : ''}`,
+      email: ref.email,
+      phone: ref.phone
+    })) : []
   };
 
   const blob = new Blob([JSON.stringify(jsonResume, null, 2)], { type: 'application/json' });
@@ -244,7 +278,7 @@ export const exportJSON = (data: ResumeData) => {
 };
 
 export const exportDOCX = async (data: ResumeData) => {
-  const { personalInfo, experience, education, skills, projects, certifications } = data;
+  const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
 
   const children: any[] = [];
 
@@ -279,9 +313,9 @@ export const exportDOCX = async (data: ResumeData) => {
     );
   }
 
-  const linkedin = personalInfo.links.find(l => l.label.toLowerCase() === 'linkedin')?.url;
-  const github = personalInfo.links.find(l => l.label.toLowerCase() === 'github')?.url;
-  const website = personalInfo.links.find(l => l.label.toLowerCase() === 'website' || l.label.toLowerCase() === 'portfolio')?.url;
+  const linkedin = personalInfo.links?.find(l => l.label.toLowerCase() === 'linkedin')?.url;
+  const github = personalInfo.links?.find(l => l.label.toLowerCase() === 'github')?.url;
+  const website = personalInfo.links?.find(l => l.label.toLowerCase() === 'website' || l.label.toLowerCase() === 'portfolio')?.url;
 
   // Links
   const links = [linkedin, github, website].filter(Boolean).join(' | ');
@@ -313,7 +347,7 @@ export const exportDOCX = async (data: ResumeData) => {
   }
 
   // Experience
-  if (experience.length > 0) {
+  if (experience && experience.length > 0) {
     children.push(
       new Paragraph({
         text: "Experience",
@@ -353,7 +387,7 @@ export const exportDOCX = async (data: ResumeData) => {
   }
 
   // Education
-  if (education.length > 0) {
+  if (education && education.length > 0) {
     children.push(
       new Paragraph({
         text: "Education",
@@ -384,7 +418,7 @@ export const exportDOCX = async (data: ResumeData) => {
   }
 
   // Skills
-  if (skills.length > 0) {
+  if (skills && skills.length > 0) {
     children.push(
       new Paragraph({
         text: "Skills",
@@ -397,7 +431,7 @@ export const exportDOCX = async (data: ResumeData) => {
   }
 
   // Projects
-  if (projects.length > 0) {
+  if (settings.showProjects !== false && projects && projects.length > 0) {
     children.push(
       new Paragraph({
         text: "Projects",
@@ -438,7 +472,7 @@ export const exportDOCX = async (data: ResumeData) => {
   }
 
   // Certifications
-  if (certifications.length > 0) {
+  if (settings.showCertifications !== false && certifications && certifications.length > 0) {
     children.push(
       new Paragraph({
         text: "Certifications",
@@ -470,6 +504,60 @@ export const exportDOCX = async (data: ResumeData) => {
     });
   }
 
+  // Languages
+  if (settings.showLanguages !== false && languages && languages.length > 0) {
+    children.push(
+      new Paragraph({
+        text: "Languages",
+        heading: HeadingLevel.HEADING_3,
+      })
+    );
+    const langText = languages.map(l => `${l.name} (${l.proficiency})`).join(', ');
+    children.push(new Paragraph({ text: langText }));
+    children.push(new Paragraph({ text: "" }));
+  }
+
+  // Interests
+  if (settings.showInterests !== false && interests && interests.length > 0) {
+    children.push(
+      new Paragraph({
+        text: "Interests",
+        heading: HeadingLevel.HEADING_3,
+      })
+    );
+    const intText = interests.map(i => i.name).join(', ');
+    children.push(new Paragraph({ text: intText }));
+    children.push(new Paragraph({ text: "" }));
+  }
+
+  // References
+  if (settings.showReferences !== false && references && references.length > 0) {
+    children.push(
+      new Paragraph({
+        text: "References",
+        heading: HeadingLevel.HEADING_3,
+      })
+    );
+    references.forEach(ref => {
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({ text: ref.name, bold: true }),
+          ],
+        })
+      );
+      let refTitle = [ref.position, ref.company].filter(Boolean).join(' at ');
+      if (refTitle) {
+        children.push(new Paragraph({ text: refTitle }));
+      }
+      let refContact = [ref.email, ref.phone].filter(Boolean).join(' | ');
+      if (refContact) {
+        children.push(new Paragraph({ text: refContact }));
+      }
+      children.push(new Paragraph({ text: "" }));
+    });
+  }
+
   const doc = new Document({
     sections: [{
       properties: {},
@@ -487,16 +575,16 @@ export const exportDOCX = async (data: ResumeData) => {
 };
 
 export const exportMarkdown = (data: ResumeData) => {
-  const { personalInfo, experience, education, skills, projects, certifications } = data;
+  const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
   let md = `# ${personalInfo.firstName} ${personalInfo.lastName}\n`;
   if (personalInfo.title) md += `**${personalInfo.title}**\n\n`;
   
   const contact = [personalInfo.email, personalInfo.phone, personalInfo.city, personalInfo.country].filter(Boolean).join(' | ');
   if (contact) md += `${contact}\n\n`;
   
-  const linkedin = personalInfo.links.find(l => l.label.toLowerCase() === 'linkedin')?.url;
-  const github = personalInfo.links.find(l => l.label.toLowerCase() === 'github')?.url;
-  const website = personalInfo.links.find(l => l.label.toLowerCase() === 'website' || l.label.toLowerCase() === 'portfolio')?.url;
+  const linkedin = personalInfo.links?.find(l => l.label.toLowerCase() === 'linkedin')?.url;
+  const github = personalInfo.links?.find(l => l.label.toLowerCase() === 'github')?.url;
+  const website = personalInfo.links?.find(l => l.label.toLowerCase() === 'website' || l.label.toLowerCase() === 'portfolio')?.url;
 
   const links = [
     linkedin && `[LinkedIn](${linkedin})`,
@@ -509,7 +597,7 @@ export const exportMarkdown = (data: ResumeData) => {
     md += `## Summary\n${personalInfo.summary}\n\n`;
   }
 
-  if (experience.length > 0) {
+  if (experience && experience.length > 0) {
     md += `## Experience\n`;
     experience.forEach(exp => {
       md += `### ${exp.position} at ${exp.company}\n`;
@@ -518,7 +606,7 @@ export const exportMarkdown = (data: ResumeData) => {
     });
   }
 
-  if (education.length > 0) {
+  if (education && education.length > 0) {
     md += `## Education\n`;
     education.forEach(edu => {
       md += `### ${edu.degree} in ${edu.field} from ${edu.school}\n`;
@@ -527,12 +615,12 @@ export const exportMarkdown = (data: ResumeData) => {
     });
   }
 
-  if (skills.length > 0) {
+  if (skills && skills.length > 0) {
     md += `## Skills\n`;
     md += skills.map(s => `- **${s.name}** (${s.level})`).join('\n') + '\n\n';
   }
 
-  if (projects.length > 0) {
+  if (settings.showProjects !== false && projects && projects.length > 0) {
     md += `## Projects\n`;
     projects.forEach(proj => {
       md += `### ${proj.name}`;
@@ -542,12 +630,33 @@ export const exportMarkdown = (data: ResumeData) => {
     });
   }
 
-  if (certifications.length > 0) {
+  if (settings.showCertifications !== false && certifications && certifications.length > 0) {
     md += `## Certifications\n`;
     certifications.forEach(cert => {
       md += `### ${cert.name} from ${cert.issuer}\n`;
       if (cert.date) md += `*${cert.date}*\n\n`;
       if (cert.url) md += `[Link](${cert.url})\n\n`;
+    });
+  }
+
+  if (settings.showLanguages !== false && languages && languages.length > 0) {
+    md += `## Languages\n`;
+    md += languages.map(l => `- **${l.name}** (${l.proficiency})`).join('\n') + '\n\n';
+  }
+
+  if (settings.showInterests !== false && interests && interests.length > 0) {
+    md += `## Interests\n`;
+    md += interests.map(i => `- ${i.name}`).join('\n') + '\n\n';
+  }
+
+  if (settings.showReferences !== false && references && references.length > 0) {
+    md += `## References\n`;
+    references.forEach(ref => {
+      md += `### ${ref.name}\n`;
+      if (ref.position && ref.company) md += `*${ref.position} at ${ref.company}*\n\n`;
+      if (ref.email) md += `- Email: ${ref.email}\n`;
+      if (ref.phone) md += `- Phone: ${ref.phone}\n`;
+      md += '\n';
     });
   }
 
@@ -561,7 +670,7 @@ export const exportMarkdown = (data: ResumeData) => {
 };
 
 export const exportHTML = (data: ResumeData) => {
-  const { personalInfo, experience, education, skills, projects, certifications } = data;
+  const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
   
   let html = `<!DOCTYPE html>
 <html lang="en">
@@ -592,9 +701,9 @@ export const exportHTML = (data: ResumeData) => {
   const contact = [personalInfo.email, personalInfo.phone, personalInfo.city, personalInfo.country].filter(Boolean).join(' | ');
   if (contact) html += `<div class="contact-info">${contact}</div>`;
   
-  const linkedin = personalInfo.links.find(l => l.label.toLowerCase() === 'linkedin')?.url;
-  const github = personalInfo.links.find(l => l.label.toLowerCase() === 'github')?.url;
-  const website = personalInfo.links.find(l => l.label.toLowerCase() === 'website' || l.label.toLowerCase() === 'portfolio')?.url;
+  const linkedin = personalInfo.links?.find(l => l.label.toLowerCase() === 'linkedin')?.url;
+  const github = personalInfo.links?.find(l => l.label.toLowerCase() === 'github')?.url;
+  const website = personalInfo.links?.find(l => l.label.toLowerCase() === 'website' || l.label.toLowerCase() === 'portfolio')?.url;
 
   const links = [
     linkedin && `<a href="${linkedin}">LinkedIn</a>`,
@@ -607,7 +716,7 @@ export const exportHTML = (data: ResumeData) => {
     html += `<h2>Summary</h2><p>${personalInfo.summary.replace(/\n/g, '<br>')}</p>`;
   }
 
-  if (experience.length > 0) {
+  if (experience && experience.length > 0) {
     html += `<h2>Experience</h2>`;
     experience.forEach(exp => {
       html += `<h3>${exp.position} at ${exp.company}</h3>`;
@@ -616,7 +725,7 @@ export const exportHTML = (data: ResumeData) => {
     });
   }
 
-  if (education.length > 0) {
+  if (education && education.length > 0) {
     html += `<h2>Education</h2>`;
     education.forEach(edu => {
       html += `<h3>${edu.degree} in ${edu.field} from ${edu.school}</h3>`;
@@ -625,7 +734,7 @@ export const exportHTML = (data: ResumeData) => {
     });
   }
 
-  if (skills.length > 0) {
+  if (skills && skills.length > 0) {
     html += `<h2>Skills</h2><ul class="skills-list">`;
     skills.forEach(s => {
       html += `<li class="skill-item"><strong>${s.name}</strong> (${s.level})</li>`;
@@ -633,7 +742,7 @@ export const exportHTML = (data: ResumeData) => {
     html += `</ul>`;
   }
 
-  if (projects.length > 0) {
+  if (settings.showProjects !== false && projects && projects.length > 0) {
     html += `<h2>Projects</h2>`;
     projects.forEach(proj => {
       html += `<h3>${proj.name}${proj.url ? ` - <a href="${proj.url}">Link</a>` : ''}</h3>`;
@@ -642,7 +751,7 @@ export const exportHTML = (data: ResumeData) => {
     });
   }
 
-  if (certifications.length > 0) {
+  if (settings.showCertifications !== false && certifications && certifications.length > 0) {
     html += `<h2>Certifications</h2>`;
     certifications.forEach(cert => {
       html += `<h3>${cert.name} from ${cert.issuer}</h3>`;
@@ -651,7 +760,35 @@ export const exportHTML = (data: ResumeData) => {
     });
   }
 
+  if (settings.showLanguages !== false && languages && languages.length > 0) {
+    html += `<h2>Languages</h2><ul class="skills-list">`;
+    languages.forEach(l => {
+      html += `<li class="skill-item"><strong>${l.name}</strong> (${l.proficiency})</li>`;
+    });
+    html += `</ul>`;
+  }
+
+  if (settings.showInterests !== false && interests && interests.length > 0) {
+    html += `<h2>Interests</h2><ul class="skills-list">`;
+    interests.forEach(i => {
+      html += `<li class="skill-item">${i.name}</li>`;
+    });
+    html += `</ul>`;
+  }
+
+  if (settings.showReferences !== false && references && references.length > 0) {
+    html += `<h2>References</h2>`;
+    references.forEach(ref => {
+      html += `<h3>${ref.name}</h3>`;
+      if (ref.position && ref.company) html += `<div class="date">${ref.position} at ${ref.company}</div>`;
+      if (ref.email) html += `<div>Email: ${ref.email}</div>`;
+      if (ref.phone) html += `<div>Phone: ${ref.phone}</div>`;
+      html += `<br>`;
+    });
+  }
+
   html += `\n</body>\n</html>`;
+
 
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);

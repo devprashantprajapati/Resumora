@@ -1,10 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getPublishedResume, incrementResumeViews, updateViewTime, PublishedResume } from '@/lib/resumeService';
 import { ModernTemplate } from '@/components/preview/templates/ModernTemplate';
 import { MinimalTemplate } from '@/components/preview/templates/MinimalTemplate';
 import { CorporateTemplate } from '@/components/preview/templates/CorporateTemplate';
 import { CreativeTemplate } from '@/components/preview/templates/CreativeTemplate';
+import { ElegantTemplate } from '@/components/preview/templates/ElegantTemplate';
+import { TechTemplate } from '@/components/preview/templates/TechTemplate';
+import { ExecutiveTemplate } from '@/components/preview/templates/ExecutiveTemplate';
+import { PremiumTemplate } from '@/components/preview/templates/PremiumTemplate';
+import { AcademicTemplate } from '@/components/preview/templates/AcademicTemplate';
+import { StudioTemplate } from '@/components/preview/templates/StudioTemplate';
 import { Loader2 } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 
@@ -97,12 +103,15 @@ export function PublicResume() {
   const renderTemplate = () => {
     const props = { data: resume.data };
     switch (resume.data.settings.template) {
-      case 'minimal':
-        return <MinimalTemplate {...props} />;
-      case 'corporate':
-        return <CorporateTemplate {...props} />;
-      case 'creative':
-        return <CreativeTemplate {...props} />;
+      case 'minimal': return <MinimalTemplate {...props} />;
+      case 'corporate': return <CorporateTemplate {...props} />;
+      case 'creative': return <CreativeTemplate {...props} />;
+      case 'elegant': return <ElegantTemplate {...props} />;
+      case 'tech': return <TechTemplate {...props} />;
+      case 'executive': return <ExecutiveTemplate {...props} />;
+      case 'premium': return <PremiumTemplate {...props} />;
+      case 'academic': return <AcademicTemplate {...props} />;
+      case 'studio': return <StudioTemplate {...props} />;
       case 'modern':
       default:
         return <ModernTemplate {...props} />;
@@ -113,12 +122,12 @@ export function PublicResume() {
     <div className="min-h-screen bg-zinc-100 py-8 px-4 sm:px-8 flex flex-col items-center">
       <div className="w-full max-w-[210mm] mb-6 flex justify-between items-center">
         <Logo />
-        <a 
-          href="/" 
+        <Link 
+          to="/" 
           className="text-sm font-medium text-indigo-600 hover:text-indigo-700 bg-white px-4 py-2 rounded-full shadow-sm border border-zinc-200"
         >
           Create your own resume
-        </a>
+        </Link>
       </div>
       
       <div className="w-full max-w-[210mm] bg-white shadow-2xl rounded-sm overflow-hidden" style={{ minHeight: '297mm' }}>

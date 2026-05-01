@@ -108,7 +108,7 @@ export function AnalyticsDashboard() {
           <Logo />
           <Link to="/" className="flex items-center text-sm font-medium text-zinc-600 hover:text-zinc-900 bg-white px-4 py-2 rounded-full shadow-sm border border-zinc-200">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Editor
+            Back to Dashboard
           </Link>
         </div>
 
