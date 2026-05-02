@@ -32,15 +32,6 @@ export function Dashboard() {
     return () => window.removeEventListener('click', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      loadResumes();
-    } else {
-      setIsLoading(false);
-      setResumes([]);
-    }
-  }, [user]);
-
   const loadResumes = async () => {
     setIsLoading(true);
     try {
@@ -52,6 +43,15 @@ export function Dashboard() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      loadResumes();
+    } else {
+      setIsLoading(false);
+      setResumes([]);
+    }
+  }, [user]);
 
   const handleCreateNew = async () => {
     if (!user) {

@@ -18,9 +18,15 @@ export function PublicResume() {
   const { slug } = useParams<{ slug: string }>();
   const [resume, setResume] = useState<PublishedResume | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const errorState = useState<string | null>(null);
+  const error = errorState[0];
+  const setError = errorState[1];
   const viewIdRef = useRef<string | null>(null);
-  const startTimeRef = useRef<number>(Date.now());
+  const startTimeRef = useRef<number>(0);
+
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+  }, []);
 
   useEffect(() => {
     const fetchResume = async () => {

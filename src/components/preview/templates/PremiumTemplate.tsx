@@ -2,7 +2,7 @@ import { useResumeStore } from '@/store/useResumeStore';
 import { Mail, Phone, MapPin, Link as LinkIcon, Briefcase, GraduationCap, Award, Code, User, Globe, Heart, Star } from 'lucide-react';
 import { ResumeData } from '@/types/resume';
 
-export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
+const PremiumTemplate = ({ data: propData }: { data?: ResumeData }) => {
   const storeData = useResumeStore(state => state.data);
   const data = propData || storeData;
   const { personalInfo, experience, education, skills, projects, certifications, languages, interests, references, settings } = data;
@@ -30,7 +30,7 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
   const bodyAlignClass = settings.bodyAlignment === 'justify' ? 'text-justify' : 'text-left';
 
   // Helper for rendering section headers
-  const SectionHeader = ({ title, icon: Icon }: { title: string, icon: any }) => (
+  const renderSectionHeader = (title: string, Icon: any) => (
     <div className="flex items-center gap-3 mb-4 border-b pb-2" style={{ borderColor: `${color}40` }}>
       <div className="p-2 rounded-lg text-white" style={{ backgroundColor: color }}>
         <Icon className="w-4 h-4" />
@@ -95,7 +95,7 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Summary */}
           {personalInfo.summary && (
             <section>
-              <SectionHeader title="Professional Summary" icon={User} />
+              {renderSectionHeader("Professional Summary", User)}
               <p className={`text-[15px] leading-relaxed text-zinc-600 ${bodyAlignClass}`}>{personalInfo.summary}</p>
             </section>
           )}
@@ -103,7 +103,7 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Experience */}
           {experience.length > 0 && (
             <section>
-              <SectionHeader title="Experience" icon={Briefcase} />
+              {renderSectionHeader("Experience", Briefcase)}
               <div className={spacing.spaceY}>
                 {experience.map(exp => (
                   <div key={exp.id} className="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:rounded-full before:bg-zinc-300 after:absolute after:left-[3px] after:top-4 after:bottom-[-16px] after:w-0.5 after:bg-zinc-200 last:after:hidden">
@@ -126,7 +126,7 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Projects */}
           {projects.length > 0 && (
             <section>
-              <SectionHeader title="Projects" icon={Code} />
+              {renderSectionHeader("Projects", Code)}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {projects.map(project => (
                   <div key={project.id} className="bg-white p-5 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md transition-shadow">
@@ -152,7 +152,7 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Skills */}
           {skills.length > 0 && (
             <section>
-              <SectionHeader title="Skills" icon={Star} />
+              {renderSectionHeader("Skills", Star)}
               <div className="flex flex-wrap gap-2">
                 {skills.map(skill => (
                   <div key={skill.id} className={`px-3 py-1.5 text-sm font-medium text-white shadow-sm ${getBorderRadius('badge')}`} style={{ backgroundColor: color }}>
@@ -167,7 +167,7 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Education */}
           {education.length > 0 && (
             <section>
-              <SectionHeader title="Education" icon={GraduationCap} />
+              {renderSectionHeader("Education", GraduationCap)}
               <div className="space-y-5">
                 {education.map(edu => (
                   <div key={edu.id} className="bg-zinc-50 p-4 rounded-xl border border-zinc-100">
@@ -186,7 +186,7 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Certifications */}
           {certifications.length > 0 && (
             <section>
-              <SectionHeader title="Certifications" icon={Award} />
+              {renderSectionHeader("Certifications", Award)}
               <div className="space-y-4">
                 {certifications.map(cert => (
                   <div key={cert.id} className="flex gap-3">
@@ -204,7 +204,7 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Languages */}
           {languages.length > 0 && (
             <section>
-              <SectionHeader title="Languages" icon={Globe} />
+              {renderSectionHeader("Languages", Globe)}
               <div className="space-y-3">
                 {languages.map(lang => (
                   <div key={lang.id} className="flex items-center justify-between">
@@ -219,7 +219,7 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
           {/* Interests */}
           {interests.length > 0 && (
             <section>
-              <SectionHeader title="Interests" icon={Heart} />
+              {renderSectionHeader("Interests", Heart)}
               <div className="flex flex-wrap gap-2">
                 {interests.map((interest) => (
                   <span key={interest.id} className="text-sm text-zinc-600 bg-white border border-zinc-200 px-3 py-1 rounded-full shadow-sm">
@@ -233,4 +233,6 @@ export function PremiumTemplate({ data: propData }: { data?: ResumeData }) {
       </div>
     </div>
   );
-}
+};
+
+export { PremiumTemplate };

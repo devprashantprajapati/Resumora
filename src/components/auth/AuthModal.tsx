@@ -13,10 +13,6 @@ export function AuthModal() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
-  // Validation states
-  const [passwordStrength, setPasswordStrength] = useState(0);
-  const [emailError, setEmailError] = useState('');
-
   // Reset state when modal opens/closes
   useEffect(() => {
     if (isAuthModalOpen) {
@@ -24,29 +20,17 @@ export function AuthModal() {
       setEmail('');
       setPassword('');
       setIsLogin(true);
-      setEmailError('');
-      setPasswordStrength(0);
     }
   }, [isAuthModalOpen]);
 
-  // Real-time password validation
-  useEffect(() => {
-    let strength = 0;
-    if (password.length >= 8) strength += 1;
-    if (/[A-Z]/.test(password)) strength += 1;
-    if (/[0-9]/.test(password)) strength += 1;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
-    setPasswordStrength(strength);
-  }, [password]);
+  // Derived state
+  let passwordStrength = 0;
+  if (password.length >= 8) passwordStrength += 1;
+  if (/[A-Z]/.test(password)) passwordStrength += 1;
+  if (/[0-9]/.test(password)) passwordStrength += 1;
+  if (/[^A-Za-z0-9]/.test(password)) passwordStrength += 1;
 
-  // Real-time email validation
-  useEffect(() => {
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setEmailError('Please enter a valid email address');
-    } else {
-      setEmailError('');
-    }
-  }, [email]);
+  const emailError = email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'Please enter a valid email address' : '';
 
   const handleForgotPassword = async (e: React.MouseEvent) => {
     e.preventDefault();
