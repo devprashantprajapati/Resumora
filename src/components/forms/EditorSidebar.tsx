@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { PersonalInfoForm } from './PersonalInfoForm';
 import { ExperienceForm } from './ExperienceForm';
 import { EducationForm } from './EducationForm';
@@ -10,13 +10,15 @@ import { InterestsForm } from './InterestsForm';
 import { ReferencesForm } from './ReferencesForm';
 import { SettingsForm } from './SettingsForm';
 import { AIToolsForm } from './AIToolsForm';
-import { User, Briefcase, GraduationCap, Wrench, FolderGit2, Award, Palette, RotateCcw, Languages, Heart, Users, Bot } from 'lucide-react';
+import { LayoutForm } from './LayoutForm';
+import { CustomSectionForm } from './CustomSectionForm';
+import { User, Briefcase, GraduationCap, Wrench, FolderGit2, Award, Palette, RotateCcw, Languages, Heart, Users, Bot, LayoutTemplate, FilePlus2 } from 'lucide-react';
 import { useResumeStore } from '@/store/useResumeStore';
 import { Button } from '../ui/Button';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const CONTENT_SECTIONS = [
+const STATIC_CONTENT_SECTIONS = [
   { id: 'personal', label: 'Personal Info', icon: User, component: PersonalInfoForm },
   { id: 'experience', label: 'Experience', icon: Briefcase, component: ExperienceForm },
   { id: 'education', label: 'Education', icon: GraduationCap, component: EducationForm },
@@ -26,18 +28,32 @@ const CONTENT_SECTIONS = [
   { id: 'languages', label: 'Languages', icon: Languages, component: LanguagesForm },
   { id: 'interests', label: 'Interests', icon: Heart, component: InterestsForm },
   { id: 'references', label: 'References', icon: Users, component: ReferencesForm },
-  { id: 'ai-tools', label: 'AI Career Tools', icon: Bot, component: AIToolsForm },
 ];
 
 const SETTINGS_SECTION = { id: 'settings', label: 'Design & Settings', icon: Palette, component: SettingsForm };
 
-const ALL_SECTIONS = [...CONTENT_SECTIONS, SETTINGS_SECTION];
-
 export function EditorSidebar() {
-  const [activeSection, setActiveSection] = useState(CONTENT_SECTIONS[0].id);
+  const { data } = useResumeStore();
+  const [activeSection, setActiveSection] = useState(STATIC_CONTENT_SECTIONS[0].id);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const activeItemRef = useRef<HTMLButtonElement>(null);
 
+  const CONTENT_SECTIONS = useMemo(() => {
+    const customTabs = (data.customSections || []).map(cs => ({
+      id: `custom_${cs.id}`,
+      label: cs.name || 'Custom Section',
+      icon: FilePlus2,
+      component: () => <CustomSectionForm sectionId={cs.id} />
+    }));
+    return [
+      ...STATIC_CONTENT_SECTIONS,
+      ...customTabs,
+      { id: 'layout', label: 'Layout & Sections', icon: LayoutTemplate, component: LayoutForm },
+      { id: 'ai-tools', label: 'AI Career Tools', icon: Bot, component: AIToolsForm },
+    ];
+  }, [data.customSections]);
+
+  const ALL_SECTIONS = [...CONTENT_SECTIONS, SETTINGS_SECTION];
   const ActiveComponent = ALL_SECTIONS.find(s => s.id === activeSection)?.component || PersonalInfoForm;
 
   useEffect(() => {
@@ -234,7 +250,7 @@ export function EditorSidebar() {
             </AnimatePresence>
             
             {/* Navigation Buttons */}
-            <div className="mt-12 pt-8 border-t border-zinc-200/60 flex items-center justify-between pb-16 md:pb-0">
+            <div className="mt-12 pt-8 border-t border-zinc-200/60 flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between pb-16 md:pb-0">
               {(() => {
                 const currentIndex = ALL_SECTIONS.findIndex(s => s.id === activeSection);
                 const prevSection = currentIndex > 0 ? ALL_SECTIONS[currentIndex - 1] : null;
@@ -242,24 +258,26 @@ export function EditorSidebar() {
                 
                 return (
                   <>
-                    <div>
+                    <div className="flex-1">
                       {prevSection && (
                         <Button 
                           variant="outline" 
                           onClick={() => setActiveSection(prevSection.id)}
-                          className="text-zinc-600"
+                          className="w-full sm:w-auto h-auto py-3 px-6 text-zinc-600 group"
                         >
-                          &larr; Back to {prevSection.label}
+                          <span className="mr-2 transform group-hover:-translate-x-1 transition-transform">&larr;</span>
+                          <span className="truncate">Back<span className="hidden sm:inline"> to {prevSection.label}</span></span>
                         </Button>
                       )}
                     </div>
-                    <div>
+                    <div className="flex-1 flex justify-end">
                       {nextSection ? (
                         <Button 
                           onClick={() => setActiveSection(nextSection.id)}
-                          className="bg-zinc-900 hover:bg-zinc-800 text-white"
+                          className="w-full sm:w-auto h-auto py-3 px-6 bg-zinc-900 hover:bg-zinc-800 text-white shadow-md group"
                         >
-                          Proceed to {nextSection.label} &rarr;
+                          <span className="truncate">Proceed<span className="hidden sm:inline"> to {nextSection.label}</span></span>
+                          <span className="ml-2 transform group-hover:translate-x-1 transition-transform">&rarr;</span>
                         </Button>
                       ) : (
                         <Button 
@@ -269,9 +287,10 @@ export function EditorSidebar() {
                             const previewBtn = document.querySelector('button:has(.lucide-eye)') as HTMLButtonElement;
                             if (previewBtn) previewBtn.click();
                           }}
-                          className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                          className="w-full sm:w-auto h-auto py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md group border-none ring-0 focus-visible:ring-offset-2"
                         >
-                          View Resume Preview &rarr;
+                          View Resume Preview 
+                          <span className="ml-2 transform group-hover:translate-x-1 transition-transform">&rarr;</span>
                         </Button>
                       )}
                     </div>
@@ -279,6 +298,7 @@ export function EditorSidebar() {
                 );
               })()}
             </div>
+
           </div>
         </div>
       </div>

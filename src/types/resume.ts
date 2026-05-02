@@ -68,6 +68,17 @@ export type ResumeData = {
     email: string;
     phone: string;
   }[];
+  customSections?: {
+    id: string;
+    name: string;
+    items: {
+      id: string;
+      title: string;
+      subtitle: string;
+      date: string;
+      description: string;
+    }[];
+  }[];
   settings: {
     template: 'modern' | 'minimal' | 'corporate' | 'creative' | 'elegant' | 'tech' | 'executive' | 'premium' | 'academic' | 'studio';
     color: string;
@@ -89,6 +100,7 @@ export type ResumeData = {
     headerAlignment: 'left' | 'center' | 'right';
     bodyAlignment: 'left' | 'justify';
     publishedSlug?: string;
+    sectionOrder?: string[];
   };
 };
 
@@ -113,6 +125,7 @@ export const emptyResumeData: ResumeData = {
   languages: [],
   interests: [],
   references: [],
+  customSections: [],
   settings: {
     template: 'modern',
     color: '#3b82f6',
@@ -133,6 +146,7 @@ export const emptyResumeData: ResumeData = {
     paperSize: 'a4',
     headerAlignment: 'left',
     bodyAlignment: 'left',
+    sectionOrder: ['experience', 'projects', 'skills', 'education', 'certifications', 'languages', 'interests', 'references']
   }
 };
 
@@ -228,6 +242,7 @@ export const initialResumeData: ResumeData = {
       phone: '+1 (555) 987-6543'
     }
   ],
+  customSections: [],
   settings: {
     template: 'modern',
     color: '#3b82f6', // blue-500
@@ -248,5 +263,6 @@ export const initialResumeData: ResumeData = {
     paperSize: 'a4',
     headerAlignment: 'left',
     bodyAlignment: 'left',
+    sectionOrder: ['experience', 'projects', 'skills', 'education', 'certifications', 'languages', 'interests', 'references']
   }
 };

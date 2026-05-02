@@ -29,6 +29,12 @@ interface ResumeStore {
   updateReference: (id: string, ref: Partial<ResumeData['references'][0]>) => void;
   addReference: (ref: ResumeData['references'][0]) => void;
   removeReference: (id: string) => void;
+  addCustomSection: (section: NonNullable<ResumeData['customSections']>[0]) => void;
+  updateCustomSection: (id: string, section: Partial<NonNullable<ResumeData['customSections']>[0]>) => void;
+  removeCustomSection: (id: string) => void;
+  addCustomSectionItem: (sectionId: string, item: NonNullable<ResumeData['customSections']>[0]['items'][0]) => void;
+  updateCustomSectionItem: (sectionId: string, itemId: string, item: Partial<NonNullable<ResumeData['customSections']>[0]['items'][0]>) => void;
+  removeCustomSectionItem: (sectionId: string, itemId: string) => void;
   updateSettings: (settings: Partial<ResumeData['settings']>) => void;
   updateData: (newData: Partial<ResumeData>) => void;
   resetData: () => void;
@@ -167,6 +173,68 @@ export const useResumeStore = create<ResumeStore>()(
         set((state) => ({
           data: { ...state.data, references: state.data.references.filter((r) => r.id !== id) },
         })),
+      addCustomSection: (section) =>
+        set((state) => ({
+          data: { 
+            ...state.data, 
+            customSections: [...(state.data.customSections || []), section],
+            settings: {
+              ...state.data.settings,
+              sectionOrder: [...(state.data.settings.sectionOrder || []), `custom_${section.id}`]
+            }
+          },
+        })),
+      updateCustomSection: (id, section) =>
+        set((state) => ({
+          data: {
+            ...state.data,
+            customSections: (state.data.customSections || []).map((s) => (s.id === id ? { ...s, ...section } : s)),
+          },
+        })),
+      removeCustomSection: (id) =>
+        set((state) => ({
+          data: { 
+            ...state.data, 
+            customSections: (state.data.customSections || []).filter((s) => s.id !== id),
+            settings: {
+              ...state.data.settings,
+              sectionOrder: (state.data.settings.sectionOrder || []).filter(s => s !== `custom_${id}`)
+            }
+          },
+        })),
+      addCustomSectionItem: (sectionId, item) =>
+        set((state) => ({
+          data: {
+            ...state.data,
+            customSections: (state.data.customSections || []).map((s) => 
+              s.id === sectionId ? { ...s, items: [...s.items, item] } : s
+            ),
+          },
+        })),
+      updateCustomSectionItem: (sectionId, itemId, item) =>
+        set((state) => ({
+          data: {
+            ...state.data,
+            customSections: (state.data.customSections || []).map((s) => 
+              s.id === sectionId ? { 
+                ...s, 
+                items: s.items.map(i => i.id === itemId ? { ...i, ...item } : i) 
+              } : s
+            ),
+          },
+        })),
+      removeCustomSectionItem: (sectionId, itemId) =>
+        set((state) => ({
+          data: {
+            ...state.data,
+            customSections: (state.data.customSections || []).map((s) => 
+              s.id === sectionId ? { 
+                ...s, 
+                items: s.items.filter(i => i.id !== itemId) 
+              } : s
+            ),
+          },
+        })),
       updateSettings: (settings) =>
         set((state) => ({
           data: { ...state.data, settings: { ...state.data.settings, ...settings } },
@@ -222,6 +290,7 @@ export const useResumeStore = create<ResumeStore>()(
             languages: persistedState.data?.languages || currentState.data.languages || [],
             interests: persistedState.data?.interests || currentState.data.interests || [],
             references: persistedState.data?.references || currentState.data.references || [],
+            customSections: persistedState.data?.customSections || currentState.data.customSections || [],
             settings: {
               ...currentState.data.settings,
               ...(persistedState.data?.settings || {}),

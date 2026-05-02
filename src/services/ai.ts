@@ -377,6 +377,39 @@ export async function tailorResumeData(resumeContent: string, jobDescription: st
   }
 }
 
+export async function translateResumeData(resumeData: ResumeData, targetLanguage: string): Promise<ResumeData> {
+  try {
+    const prompt = `You are an expert professional translator and resume writer. 
+    Translate the following Resume JSON data into ${targetLanguage}.
+    
+    IMPORTANT INSTRUCTIONS:
+    - Return ONLY the exact SAME JSON structure, just translated.
+    - DO NOT change IDs or structural attributes.
+    - Translate all user-facing content (names of skills, descriptions, summaries, positions, degrees, etc.).
+    - Ensure the tone remains professional and culturally appropriate for business in that language.
+    - If a proper noun (like a company name "Google" or technology "React") shouldn't be translated, keep it as is.
+    
+    Resume JSON:
+    ${JSON.stringify(resumeData)}
+    
+    Return the translated JSON object.`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
+    });
+
+    const jsonStr = response.text?.trim() || "{}";
+    return JSON.parse(jsonStr) as ResumeData;
+  } catch (error) {
+    console.error("Error translating resume data:", error);
+    throw error;
+  }
+}
+
 export async function structureResumeData(rawText: string): Promise<Partial<ResumeData>> {
   try {
     const prompt = `You are an expert resume parser. Extract the information from the following raw resume text (which might be a LinkedIn PDF export or a standard resume) and structure it into a JSON object.

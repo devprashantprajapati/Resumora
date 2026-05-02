@@ -4,17 +4,21 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
 import { Textarea } from '../ui/Textarea';
-import { analyzeJobMatch, generateCoverLetterStream, generateInterviewPrep, tailorResumeData, JobMatchResult, InterviewPrepResult } from '@/services/ai';
+import { analyzeJobMatch, generateCoverLetterStream, generateInterviewPrep, tailorResumeData, translateResumeData, JobMatchResult, InterviewPrepResult } from '@/services/ai';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, FileText, Target, CheckCircle2, XCircle, Search, Lightbulb, Copy, Check, ChevronDown, CheckSquare, MessageSquare, Wand2 } from 'lucide-react';
+import { Bot, FileText, Target, CheckCircle2, XCircle, Search, Lightbulb, Copy, Check, ChevronDown, CheckSquare, MessageSquare, Wand2, Globe } from 'lucide-react';
 
 export function AIToolsForm() {
   const { data, updateData } = useResumeStore();
-  const [activeTab, setActiveTab] = useState<'match' | 'coverletter' | 'interview'>('match');
+  const [activeTab, setActiveTab] = useState<'match' | 'coverletter' | 'interview' | 'translate'>('match');
   const [jobDescription, setJobDescription] = useState('');
   const [companyName, setCompanyName] = useState('');
   
+  // Translation State
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [targetLanguage, setTargetLanguage] = useState('');
+
   // Job Match State
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isTailoring, setIsTailoring] = useState(false);
@@ -152,6 +156,28 @@ export function AIToolsForm() {
     }
   };
 
+  const handleTranslate = async () => {
+    if (!targetLanguage.trim()) {
+      toast.error('Please enter a target language');
+      return;
+    }
+
+    setIsTranslating(true);
+    try {
+      const translatedData = await translateResumeData(data, targetLanguage);
+      updateData(translatedData);
+      toast.success(`Resume successfully translated to ${targetLanguage}!`);
+    } catch (error: any) {
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', { description: 'Please wait a moment before trying again.' });
+      } else {
+        toast.error('Failed to translate resume');
+      }
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
   const copyCoverLetter = () => {
     navigator.clipboard.writeText(coverLetter);
     setCopiedCL(true);
@@ -179,6 +205,12 @@ export function AIToolsForm() {
           className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'interview' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-zinc-500 hover:text-zinc-700'}`}
         >
           Interview Prep
+        </button>
+        <button
+          onClick={() => setActiveTab('translate')}
+          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'translate' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-zinc-500 hover:text-zinc-700'}`}
+        >
+          Translate
         </button>
       </div>
 
@@ -339,6 +371,48 @@ export function AIToolsForm() {
                 </div>
               </motion.div>
             )}
+          </div>
+        )}
+
+        {activeTab === 'translate' && (
+          <div className="space-y-6">
+            <div className="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 p-6 rounded-2xl">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-zinc-900">One-Click Translation</h3>
+                  <p className="text-sm text-zinc-500">Translate your entire resume into any language instantly.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Target Language <span className="text-red-500">*</span></Label>
+                <Input 
+                  value={targetLanguage}
+                  onChange={(e) => setTargetLanguage(e.target.value)}
+                  placeholder="e.g. Spanish, German, French..."
+                  className="pro-input bg-white h-12"
+                />
+              </div>
+              
+              <Button 
+                onClick={handleTranslate} 
+                isLoading={isTranslating} 
+                disabled={!targetLanguage.trim()} 
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-12 shadow-sm font-medium"
+              >
+                {!isTranslating && <Wand2 className="w-4 h-4 mr-2" />}
+                Translate Resume
+              </Button>
+              
+              <p className="text-xs text-zinc-500 mt-2 text-center">
+                This will automatically translate all text fields across your entire resume into the specified language.
+              </p>
+            </div>
           </div>
         )}
       </div>
