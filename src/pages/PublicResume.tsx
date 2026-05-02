@@ -18,9 +18,7 @@ export function PublicResume() {
   const { slug } = useParams<{ slug: string }>();
   const [resume, setResume] = useState<PublishedResume | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const errorState = useState<string | null>(null);
-  const error = errorState[0];
-  const setError = errorState[1];
+  const [error, setError] = useState<string | null>(null);
   const viewIdRef = useRef<string | null>(null);
   const startTimeRef = useRef<number>(0);
 

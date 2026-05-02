@@ -1,4 +1,4 @@
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, TabStopType, TabStopPosition, BorderStyle, ISectionOptions } from 'docx';
 import { ResumeData } from '@/types/resume';
 import domtoimage from 'dom-to-image-more';
 import { jsPDF } from 'jspdf';
@@ -31,8 +31,6 @@ export const exportPDF = async (element: HTMLElement, data: ResumeData) => {
     document.body.appendChild(clone);
     
     // FIX FOR BLACK LINES: Tailwind sets global border-style: solid with border-width: 0.
-    // dom-to-image sometimes misinterprets this and draws thick black lines.
-    // We explicitly set border-style: none on elements that have 0px border width.
     const originalElements = [element, ...Array.from(element.querySelectorAll('*'))];
     const clonedElements = [clone, ...Array.from(clone.querySelectorAll('*'))];
     
@@ -81,16 +79,22 @@ export const exportPDF = async (element: HTMLElement, data: ResumeData) => {
     const imgRatio = imgProps.width / imgProps.height;
     
     let finalWidth = pdfWidth;
-    let finalHeight = pdfHeight;
+    let finalHeight = (imgProps.height * pdfWidth) / imgProps.width;
     
-    // Ensure the image fits perfectly without distortion
-    if (imgRatio > pdfRatio) {
-      finalHeight = pdfWidth / imgRatio;
-    } else {
-      finalWidth = pdfHeight * imgRatio;
+    // Handle multi-page PDF rendering correctly without shrinking vertically
+    let heightLeft = finalHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, finalWidth, finalHeight, undefined, 'FAST');
+    heightLeft -= pdfHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - finalHeight; // Move image up
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, finalWidth, finalHeight, undefined, 'FAST');
+      heightLeft -= pdfHeight;
     }
     
-    pdf.addImage(imgData, 'PNG', 0, 0, finalWidth, finalHeight, undefined, 'FAST');
     pdf.save(`${data.personalInfo.firstName || 'My'}_${data.personalInfo.lastName || 'Resume'}.pdf`.replace(/\s+/g, '_'));
   } catch (error) {
     console.error('Error generating PDF:', error);
@@ -357,16 +361,13 @@ export const exportDOCX = async (data: ResumeData) => {
     experience.forEach(exp => {
       children.push(
         new Paragraph({
-          children: [
-            new TextRun({ text: exp.position, bold: true }),
-            new TextRun({ text: ` at ${exp.company}` }),
+          tabStops: [
+            { type: TabStopType.RIGHT, position: TabStopPosition.MAX }
           ],
-        })
-      );
-      children.push(
-        new Paragraph({
           children: [
-            new TextRun({ text: `${exp.startDate || 'Start'} - ${exp.endDate || 'Present'}`, italics: true }),
+            new TextRun({ text: exp.position, bold: true, size: 24 }),
+            new TextRun({ text: ` at ${exp.company}`, size: 24 }),
+            new TextRun({ text: `\t${exp.startDate || 'Start'} - ${exp.endDate || 'Present'}`, italics: true, color: "666666" }),
           ],
         })
       );
@@ -397,16 +398,13 @@ export const exportDOCX = async (data: ResumeData) => {
     education.forEach(edu => {
       children.push(
         new Paragraph({
-          children: [
-            new TextRun({ text: `${edu.degree} in ${edu.field}`, bold: true }),
-            new TextRun({ text: ` from ${edu.school}` }),
+          tabStops: [
+            { type: TabStopType.RIGHT, position: TabStopPosition.MAX }
           ],
-        })
-      );
-      children.push(
-        new Paragraph({
           children: [
-            new TextRun({ text: `${edu.startDate || 'Start'} - ${edu.endDate || 'Present'}`, italics: true }),
+            new TextRun({ text: `${edu.degree} in ${edu.field}`, bold: true, size: 24 }),
+            new TextRun({ text: ` from ${edu.school}`, size: 24 }),
+            new TextRun({ text: `\t${edu.startDate || 'Start'} - ${edu.endDate || 'Present'}`, italics: true, color: "666666" }),
           ],
         })
       );
@@ -425,8 +423,22 @@ export const exportDOCX = async (data: ResumeData) => {
         heading: HeadingLevel.HEADING_3,
       })
     );
-    const skillText = skills.map(s => `${s.name} (${s.level})`).join(', ');
-    children.push(new Paragraph({ text: skillText }));
+    const skillCategories = skills.reduce((acc, skill) => {
+      acc[skill.level] = acc[skill.level] || [];
+      acc[skill.level].push(skill.name);
+      return acc;
+    }, {} as Record<string, string[]>);
+    
+    Object.entries(skillCategories).forEach(([level, items]) => {
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({ text: `${level}: `, bold: true }),
+            new TextRun({ text: items.join(', ') })
+          ]
+        })
+      );
+    });
     children.push(new Paragraph({ text: "" }));
   }
 
@@ -440,20 +452,17 @@ export const exportDOCX = async (data: ResumeData) => {
     );
     projects.forEach(proj => {
       const projTitle = [
-        new TextRun({ text: proj.name, bold: true })
+        new TextRun({ text: proj.name, bold: true, size: 24 })
       ];
       if (proj.url) {
         projTitle.push(new TextRun({ text: ` - ${proj.url}` }));
       }
-      children.push(new Paragraph({ children: projTitle }));
+      projTitle.push(new TextRun({ text: `\t${proj.startDate || 'Start'} - ${proj.endDate || 'Present'}`, italics: true, color: "666666" }));
       
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun({ text: `${proj.startDate || 'Start'} - ${proj.endDate || 'Present'}`, italics: true }),
-          ],
-        })
-      );
+      children.push(new Paragraph({ 
+        tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+        children: projTitle 
+      }));
       
       if (proj.description) {
         proj.description.split('\n').forEach(line => {
@@ -480,23 +489,19 @@ export const exportDOCX = async (data: ResumeData) => {
       })
     );
     certifications.forEach(cert => {
+      const certTitle = [
+        new TextRun({ text: cert.name, bold: true, size: 24 }),
+        new TextRun({ text: ` from ${cert.issuer}`, size: 24 }),
+      ];
+      if (cert.date) {
+        certTitle.push(new TextRun({ text: `\t${cert.date}`, italics: true, color: "666666" }));
+      }
       children.push(
         new Paragraph({
-          children: [
-            new TextRun({ text: cert.name, bold: true }),
-            new TextRun({ text: ` from ${cert.issuer}` }),
-          ],
+          tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+          children: certTitle,
         })
       );
-      if (cert.date) {
-        children.push(
-          new Paragraph({
-            children: [
-              new TextRun({ text: cert.date, italics: true }),
-            ],
-          })
-        );
-      }
       if (cert.url) {
         children.push(new Paragraph({ text: cert.url }));
       }
@@ -512,7 +517,7 @@ export const exportDOCX = async (data: ResumeData) => {
         heading: HeadingLevel.HEADING_3,
       })
     );
-    const langText = languages.map(l => `${l.name} (${l.proficiency})`).join(', ');
+    const langText = languages.map(l => `${l.name} (${l.proficiency})`).join(' • ');
     children.push(new Paragraph({ text: langText }));
     children.push(new Paragraph({ text: "" }));
   }
@@ -525,7 +530,7 @@ export const exportDOCX = async (data: ResumeData) => {
         heading: HeadingLevel.HEADING_3,
       })
     );
-    const intText = interests.map(i => i.name).join(', ');
+    const intText = interests.map(i => i.name).join(' • ');
     children.push(new Paragraph({ text: intText }));
     children.push(new Paragraph({ text: "" }));
   }
@@ -542,15 +547,15 @@ export const exportDOCX = async (data: ResumeData) => {
       children.push(
         new Paragraph({
           children: [
-            new TextRun({ text: ref.name, bold: true }),
+            new TextRun({ text: ref.name, bold: true, size: 24 }),
           ],
         })
       );
-      let refTitle = [ref.position, ref.company].filter(Boolean).join(' at ');
+      const refTitle = [ref.position, ref.company].filter(Boolean).join(' at ');
       if (refTitle) {
         children.push(new Paragraph({ text: refTitle }));
       }
-      let refContact = [ref.email, ref.phone].filter(Boolean).join(' | ');
+      const refContact = [ref.email, ref.phone].filter(Boolean).join(' | ');
       if (refContact) {
         children.push(new Paragraph({ text: refContact }));
       }
@@ -559,10 +564,66 @@ export const exportDOCX = async (data: ResumeData) => {
   }
 
   const doc = new Document({
+    styles: {
+      default: {
+        document: {
+          run: {
+            font: "Helvetica",
+            size: 22,
+            color: "333333",
+          },
+        },
+      },
+      paragraphStyles: [
+        {
+          id: "Heading1",
+          name: "Heading 1",
+          basedOn: "Normal",
+          next: "Normal",
+          run: { font: "Helvetica", size: 48, bold: true, color: "111111" },
+          paragraph: { alignment: AlignmentType.CENTER, spacing: { after: 120 } },
+        },
+        {
+          id: "Heading2",
+          name: "Heading 2",
+          basedOn: "Normal",
+          next: "Normal",
+          run: { font: "Helvetica", size: 28, bold: true, color: "333333" },
+          paragraph: { alignment: AlignmentType.CENTER, spacing: { after: 240 } },
+        },
+        {
+          id: "Heading3",
+          name: "Heading 3",
+          basedOn: "Normal",
+          next: "Normal",
+          run: { font: "Helvetica", size: 28, bold: true, color: "111111" },
+          paragraph: {
+            spacing: { before: 240, after: 120 },
+            border: {
+              bottom: {
+                color: "E5E7EB",
+                space: 1,
+                style: BorderStyle.SINGLE,
+                size: 6,
+              },
+            },
+          },
+        },
+      ]
+    },
     sections: [{
-      properties: {},
+      properties: {
+        page: {
+          margin: {
+            top: 720,    // 0.5 inch
+            right: 720,
+            bottom: 720,
+            left: 720,
+          },
+        },
+      },
       children: children,
-    }],
+    } as ISectionOptions],
   });
 
   const blob = await Packer.toBlob(doc);
@@ -679,26 +740,73 @@ export const exportHTML = (data: ResumeData) => {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${personalInfo.firstName} ${personalInfo.lastName} - Resume</title>
 <style>
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 2rem; }
-  h1 { color: #2c3e50; margin-bottom: 0.5rem; }
-  h2 { color: #34495e; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; margin-top: 2rem; }
-  h3 { color: #2c3e50; margin-bottom: 0.2rem; }
-  .contact-info { color: #7f8c8d; margin-bottom: 1rem; }
-  .date { color: #7f8c8d; font-style: italic; font-size: 0.9rem; margin-bottom: 0.5rem; }
-  .description { margin-top: 0.5rem; }
-  a { color: #3498db; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .skills-list { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; list-style: none; }
-  .skill-item { background: #f1f2f6; padding: 0.2rem 0.8rem; border-radius: 15px; font-size: 0.9rem; }
+  :root {
+    --primary: #2563eb;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --bg-main: #ffffff;
+    --bg-muted: #f3f4f6;
+  }
+  * { box-sizing: border-box; }
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6; 
+    color: var(--text-main); 
+    background: var(--bg-muted);
+    margin: 0;
+    padding: 2rem;
+  }
+  .page {
+    max-width: 850px;
+    margin: 0 auto;
+    background: var(--bg-main);
+    padding: 3rem 4rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  header { text-align: center; margin-bottom: 2.5rem; }
+  h1 { color: #111; margin: 0 0 0.5rem 0; font-size: 2.5rem; letter-spacing: -0.025em; }
+  h2 { 
+    color: #111; 
+    border-bottom: 2px solid var(--border); 
+    padding-bottom: 0.5rem; 
+    margin: 2.5rem 0 1.5rem 0;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .title { font-size: 1.25rem; color: var(--primary); font-weight: 500; margin-bottom: 1rem; }
+  .contact-info { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .contact-info a { color: var(--text-muted); text-decoration: none; }
+  .contact-info a:hover { color: var(--primary); }
+  
+  .section-item { margin-bottom: 1.5rem; }
+  .item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.25rem; }
+  h3 { color: #111; margin: 0; font-size: 1.1rem; }
+  .date { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; white-space: nowrap; margin-left: 1rem; }
+  .description { margin-top: 0.5rem; color: #374151; }
+  .description p { margin: 0 0 0.5rem 0; }
+  
+  .skills-list { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; list-style: none; margin: 0; }
+  .skill-item { background: var(--bg-muted); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; color: #374151; border: 1px solid var(--border); }
+  
+  @media print {
+    body { background: white; padding: 0; }
+    .page { box-shadow: none; padding: 0; max-width: 100%; border-radius: 0; }
+    @page { margin: 0.5in; }
+  }
 </style>
 </head>
 <body>
+<div class="page">
+  <header>
 `;
 
   html += `<h1>${personalInfo.firstName} ${personalInfo.lastName}</h1>`;
-  if (personalInfo.title) html += `<h3>${personalInfo.title}</h3>`;
+  if (personalInfo.title) html += `<div class="title">${personalInfo.title}</div>`;
   
-  const contact = [personalInfo.email, personalInfo.phone, personalInfo.city, personalInfo.country].filter(Boolean).join(' | ');
+  const contact = [personalInfo.email, personalInfo.phone, personalInfo.city, personalInfo.country].filter(Boolean).join(' &bull; ');
   if (contact) html += `<div class="contact-info">${contact}</div>`;
   
   const linkedin = personalInfo.links?.find(l => l.label.toLowerCase() === 'linkedin')?.url;
@@ -709,35 +817,45 @@ export const exportHTML = (data: ResumeData) => {
     linkedin && `<a href="${linkedin}">LinkedIn</a>`,
     github && `<a href="${github}">GitHub</a>`,
     website && `<a href="${website}">Website</a>`
-  ].filter(Boolean).join(' | ');
+  ].filter(Boolean).join(' &bull; ');
   if (links) html += `<div class="contact-info">${links}</div>`;
+  html += `</header>`;
 
   if (personalInfo.summary) {
-    html += `<h2>Summary</h2><p>${personalInfo.summary.replace(/\n/g, '<br>')}</p>`;
+    html += `<h2>Summary</h2><div class="description"><p>${personalInfo.summary.replace(/\n/g, '</p><p>')}</p></div>`;
   }
 
   if (experience && experience.length > 0) {
     html += `<h2>Experience</h2>`;
     experience.forEach(exp => {
-      html += `<h3>${exp.position} at ${exp.company}</h3>`;
-      html += `<div class="date">${exp.startDate || 'Start'} - ${exp.endDate || 'Present'}</div>`;
-      if (exp.description) html += `<div class="description">${exp.description.replace(/\n/g, '<br>')}</div>`;
+      html += `<div class="section-item">
+        <div class="item-header">
+          <h3><strong>${exp.position}</strong>, ${exp.company}</h3>
+          <div class="date">${exp.startDate || 'Start'} &ndash; ${exp.endDate || 'Present'}</div>
+        </div>`;
+      if (exp.description) html += `<div class="description"><p>${exp.description.replace(/\n/g, '</p><p>')}</p></div>`;
+      html += `</div>`;
     });
   }
 
   if (education && education.length > 0) {
     html += `<h2>Education</h2>`;
     education.forEach(edu => {
-      html += `<h3>${edu.degree} in ${edu.field} from ${edu.school}</h3>`;
-      html += `<div class="date">${edu.startDate || 'Start'} - ${edu.endDate || 'Present'}</div>`;
-      if (edu.description) html += `<div class="description">${edu.description.replace(/\n/g, '<br>')}</div>`;
+      html += `<div class="section-item">
+        <div class="item-header">
+          <h3><strong>${edu.degree} in ${edu.field}</strong>, ${edu.school}</h3>
+          <div class="date">${edu.startDate || 'Start'} &ndash; ${edu.endDate || 'Present'}</div>
+        </div>`;
+      if (edu.description) html += `<div class="description"><p>${edu.description.replace(/\n/g, '</p><p>')}</p></div>`;
+      html += `</div>`;
     });
   }
 
   if (skills && skills.length > 0) {
-    html += `<h2>Skills</h2><ul class="skills-list">`;
+    html += `<h2>Skills</h2>`;
+    html += `<ul class="skills-list">`;
     skills.forEach(s => {
-      html += `<li class="skill-item"><strong>${s.name}</strong> (${s.level})</li>`;
+      html += `<li class="skill-item"><strong>${s.name}</strong> ${s.level !== 'Beginner' ? `<span style="color:#6b7280">(${s.level})</span>` : ''}</li>`;
     });
     html += `</ul>`;
   }
@@ -745,31 +863,40 @@ export const exportHTML = (data: ResumeData) => {
   if (settings.showProjects !== false && projects && projects.length > 0) {
     html += `<h2>Projects</h2>`;
     projects.forEach(proj => {
-      html += `<h3>${proj.name}${proj.url ? ` - <a href="${proj.url}">Link</a>` : ''}</h3>`;
-      html += `<div class="date">${proj.startDate || 'Start'} - ${proj.endDate || 'Present'}</div>`;
-      if (proj.description) html += `<div class="description">${proj.description.replace(/\n/g, '<br>')}</div>`;
+      html += `<div class="section-item">
+        <div class="item-header">
+          <h3><strong>${proj.name}</strong>${proj.url ? ` &bull; <a href="${proj.url}" target="_blank" style="font-weight:normal; font-size:0.9em;">View Link</a>` : ''}</h3>
+          <div class="date">${proj.startDate || 'Start'} &ndash; ${proj.endDate || 'Present'}</div>
+        </div>`;
+      if (proj.description) html += `<div class="description"><p>${proj.description.replace(/\n/g, '</p><p>')}</p></div>`;
+      html += `</div>`;
     });
   }
 
   if (settings.showCertifications !== false && certifications && certifications.length > 0) {
     html += `<h2>Certifications</h2>`;
     certifications.forEach(cert => {
-      html += `<h3>${cert.name} from ${cert.issuer}</h3>`;
-      if (cert.date) html += `<div class="date">${cert.date}</div>`;
-      if (cert.url) html += `<a href="${cert.url}">Link</a>`;
+      html += `<div class="section-item">
+        <div class="item-header">
+          <h3><strong>${cert.name}</strong>, ${cert.issuer}${cert.url ? ` &bull; <a href="${cert.url}" target="_blank" style="font-weight:normal; font-size:0.9em;">View Link</a>` : ''}</h3>
+          ${cert.date ? `<div class="date">${cert.date}</div>` : ''}
+        </div>
+      </div>`;
     });
   }
 
   if (settings.showLanguages !== false && languages && languages.length > 0) {
-    html += `<h2>Languages</h2><ul class="skills-list">`;
+    html += `<h2>Languages</h2>`;
+    html += `<ul class="skills-list">`;
     languages.forEach(l => {
-      html += `<li class="skill-item"><strong>${l.name}</strong> (${l.proficiency})</li>`;
+      html += `<li class="skill-item"><strong>${l.name}</strong> <span style="color:#6b7280">(${l.proficiency})</span></li>`;
     });
     html += `</ul>`;
   }
 
   if (settings.showInterests !== false && interests && interests.length > 0) {
-    html += `<h2>Interests</h2><ul class="skills-list">`;
+    html += `<h2>Interests</h2>`;
+    html += `<ul class="skills-list" style="margin-bottom: 2rem;">`;
     interests.forEach(i => {
       html += `<li class="skill-item">${i.name}</li>`;
     });
@@ -778,17 +905,22 @@ export const exportHTML = (data: ResumeData) => {
 
   if (settings.showReferences !== false && references && references.length > 0) {
     html += `<h2>References</h2>`;
+    html += `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">`;
     references.forEach(ref => {
-      html += `<h3>${ref.name}</h3>`;
-      if (ref.position && ref.company) html += `<div class="date">${ref.position} at ${ref.company}</div>`;
-      if (ref.email) html += `<div>Email: ${ref.email}</div>`;
-      if (ref.phone) html += `<div>Phone: ${ref.phone}</div>`;
-      html += `<br>`;
+      html += `<div>
+        <h3 style="margin-bottom: 0.25rem;">${ref.name}</h3>`;
+      if (ref.position && ref.company) html += `<div style="color:var(--text-muted); font-size:0.9rem;">${ref.position}, ${ref.company}</div>`;
+      if (ref.email) html += `<div style="font-size:0.9rem;"><a href="mailto:${ref.email}" style="color:#374151; text-decoration:none;">${ref.email}</a></div>`;
+      if (ref.phone) html += `<div style="font-size:0.9rem;">${ref.phone}</div>`;
+      html += `</div>`;
     });
+    html += `</div>`;
   }
 
-  html += `\n</body>\n</html>`;
-
+  html += `
+</div>
+</body>
+</html>`;
 
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);

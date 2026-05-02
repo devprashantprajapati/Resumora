@@ -168,6 +168,7 @@ export function AIToolsForm() {
       updateData(translatedData);
       toast.success(`Resume successfully translated to ${targetLanguage}!`);
     } catch (error: any) {
+      console.error("Translation error:", error);
       if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
         toast.error('AI Rate Limit Exceeded', { description: 'Please wait a moment before trying again.' });
       } else {

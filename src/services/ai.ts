@@ -105,6 +105,20 @@ export async function suggestSkills(title: string): Promise<string[]> {
   }
 }
 
+function parseJsonResponse(text?: string): any {
+  if (!text) return {};
+  let cleaned = text.trim();
+  if (cleaned.startsWith("```json")) {
+    cleaned = cleaned.substring(7);
+  } else if (cleaned.startsWith("```")) {
+    cleaned = cleaned.substring(3);
+  }
+  if (cleaned.endsWith("```")) {
+    cleaned = cleaned.substring(0, cleaned.length - 3);
+  }
+  return JSON.parse(cleaned.trim());
+}
+
 export interface JobMatchResult {
   score: number;
   matchingKeywords: string[];
@@ -147,8 +161,7 @@ export async function analyzeJobMatch(resumeContent: string, jobDescription: str
       },
     });
 
-    const jsonStr = response.text?.trim() || "{}";
-    return JSON.parse(jsonStr) as JobMatchResult;
+    return parseJsonResponse(response.text) as JobMatchResult;
   } catch (error) {
     console.error("Error analyzing job match:", error);
     throw error;
@@ -255,8 +268,7 @@ export async function generateInterviewPrep(resumeContent: string, jobDescriptio
       }
     });
 
-    const jsonStr = response.text?.trim() || "{}";
-    return JSON.parse(jsonStr) as InterviewPrepResult;
+    return parseJsonResponse(response.text) as InterviewPrepResult;
   } catch (error) {
     console.error("Error generating interview prep:", error);
     throw error;
@@ -369,8 +381,7 @@ export async function tailorResumeData(resumeContent: string, jobDescription: st
       }
     });
 
-    const jsonStr = response.text?.trim() || "{}";
-    return JSON.parse(jsonStr);
+    return parseJsonResponse(response.text);
   } catch (error) {
     console.error("Error tailoring resume data:", error);
     throw error;
@@ -402,8 +413,7 @@ export async function translateResumeData(resumeData: ResumeData, targetLanguage
       }
     });
 
-    const jsonStr = response.text?.trim() || "{}";
-    return JSON.parse(jsonStr) as ResumeData;
+    return parseJsonResponse(response.text) as ResumeData;
   } catch (error) {
     console.error("Error translating resume data:", error);
     throw error;
@@ -561,8 +571,7 @@ export async function structureResumeData(rawText: string): Promise<Partial<Resu
       },
     });
 
-    const jsonStr = response.text?.trim() || "{}";
-    return JSON.parse(jsonStr);
+    return parseJsonResponse(response.text);
   } catch (error) {
     console.error("Error structuring resume data:", error);
     throw error;

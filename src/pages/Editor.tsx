@@ -67,7 +67,7 @@ export function Editor() {
     };
 
     loadUserResume();
-  }, [user, id]);
+  }, [user, id, updateData]);
 
   // Auto-sync draft resume to cloud when logged in
   useEffect(() => {
