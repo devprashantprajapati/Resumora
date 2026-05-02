@@ -118,6 +118,37 @@ export function PublicResume() {
     }
   };
 
+  const renderVideoPitch = () => {
+    const url = resume.data.settings.videoPitchUrl;
+    if (!url) return null;
+
+    let embedUrl = url;
+    if (url.includes('youtube.com/watch?v=')) {
+      embedUrl = url.replace('watch?v=', 'embed/');
+    } else if (url.includes('youtu.be/')) {
+      embedUrl = url.replace('youtu.be/', 'youtube.com/embed/');
+    } else if (url.includes('loom.com/share/')) {
+      embedUrl = url.replace('share/', 'embed/');
+    }
+
+    return (
+      <div className="w-full max-w-[210mm] bg-white shadow-xl rounded-2xl overflow-hidden mb-8 border border-zinc-200 p-6">
+        <h3 className="text-xl font-bold text-zinc-900 mb-4 flex items-center gap-2">
+          <span className="text-2xl">👋</span> Video Introduction
+        </h3>
+        <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-zinc-100 border border-zinc-200">
+          <iframe 
+            src={embedUrl} 
+            className="absolute top-0 left-0 w-full h-full"
+            frameBorder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowFullScreen
+          ></iframe>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-zinc-100 py-8 px-4 sm:px-8 flex flex-col items-center">
       <div className="w-full max-w-[210mm] mb-6 flex justify-between items-center">
@@ -130,6 +161,8 @@ export function PublicResume() {
         </Link>
       </div>
       
+      {renderVideoPitch()}
+
       <div className="w-full max-w-[210mm] bg-white shadow-2xl rounded-sm overflow-hidden" style={{ minHeight: '297mm' }}>
         {renderTemplate()}
       </div>

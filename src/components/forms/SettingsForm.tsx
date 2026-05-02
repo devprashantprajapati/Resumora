@@ -169,7 +169,7 @@ export function SettingsForm() {
               style={{ fontFamily: font.value }}
             >
               <span className="text-lg">{font.name}</span>
-              <span className="block text-xs text-zinc-400 mt-1 font-sans">The quick brown fox jumps over the lazy dog</span>
+              <span className="block text-xs text-zinc-400 mt-1">The quick brown fox jumps over the lazy dog</span>
             </button>
           ))}
         </div>
@@ -190,7 +190,7 @@ export function SettingsForm() {
               style={{ fontFamily: font.value }}
             >
               <span className="text-lg font-bold">{font.name}</span>
-              <span className="block text-xs text-zinc-400 mt-1 font-sans">Heading Style Preview</span>
+              <span className="block text-xs text-zinc-400 mt-1">Heading Style Preview</span>
             </button>
           ))}
         </div>
@@ -402,6 +402,45 @@ export function SettingsForm() {
               </button>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div className="space-y-4 pt-8 mt-8 border-t border-zinc-200/60">
+        <Label className="text-base font-semibold text-zinc-900">Advanced Features</Label>
+        
+        {/* QR Code Toggle */}
+        <div className="flex items-center justify-between p-4 bg-white border border-zinc-200/60 rounded-xl shadow-sm">
+          <div>
+            <h4 className="font-medium text-zinc-900">QR Code</h4>
+            <p className="text-sm text-zinc-500 max-w-sm">Add a QR code linking to your published resume URL directly onto your physical resume PDF.</p>
+          </div>
+          <button
+            onClick={() => updateSettings({ showQrCode: !settings.showQrCode })}
+            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+              settings.showQrCode ? 'bg-indigo-600' : 'bg-zinc-300'
+            }`}
+          >
+            <span
+              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                settings.showQrCode ? 'translate-x-5' : 'translate-x-0'
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Video Pitch URL */}
+        <div className="p-4 bg-white border border-zinc-200/60 rounded-xl shadow-sm space-y-3">
+          <div className="space-y-0.5">
+            <h4 className="font-medium text-zinc-900">Video Pitch Embed</h4>
+            <p className="text-sm text-zinc-500">Add a YouTube or Loom URL to embed a video on your published resume webpage.</p>
+          </div>
+          <input
+            type="url"
+            value={settings.videoPitchUrl || ''}
+            onChange={(e) => updateSettings({ videoPitchUrl: e.target.value })}
+            placeholder="https://youtu.be/..."
+            className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors"
+          />
         </div>
       </div>
       

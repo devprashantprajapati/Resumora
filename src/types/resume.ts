@@ -101,6 +101,8 @@ export type ResumeData = {
     bodyAlignment: 'left' | 'justify';
     publishedSlug?: string;
     sectionOrder?: string[];
+    showQrCode?: boolean;
+    videoPitchUrl?: string;
   };
 };
 
@@ -146,7 +148,9 @@ export const emptyResumeData: ResumeData = {
     paperSize: 'a4',
     headerAlignment: 'left',
     bodyAlignment: 'left',
-    sectionOrder: ['experience', 'projects', 'skills', 'education', 'certifications', 'languages', 'interests', 'references']
+    sectionOrder: ['experience', 'projects', 'skills', 'education', 'certifications', 'languages', 'interests', 'references'],
+    showQrCode: false,
+    videoPitchUrl: ''
   }
 };
 
@@ -263,6 +267,8 @@ export const initialResumeData: ResumeData = {
     paperSize: 'a4',
     headerAlignment: 'left',
     bodyAlignment: 'left',
-    sectionOrder: ['experience', 'projects', 'skills', 'education', 'certifications', 'languages', 'interests', 'references']
+    sectionOrder: ['experience', 'projects', 'skills', 'education', 'certifications', 'languages', 'interests', 'references'],
+    showQrCode: false,
+    videoPitchUrl: ''
   }
 };
