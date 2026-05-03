@@ -78,8 +78,8 @@ export const exportPDF = async (element: HTMLElement, data: ResumeData) => {
     const pdfRatio = pdfWidth / pdfHeight;
     const imgRatio = imgProps.width / imgProps.height;
     
-    let finalWidth = pdfWidth;
-    let finalHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    const finalWidth = pdfWidth;
+    const finalHeight = (imgProps.height * pdfWidth) / imgProps.width;
     
     // Handle multi-page PDF rendering correctly without shrinking vertically
     let heightLeft = finalHeight;
