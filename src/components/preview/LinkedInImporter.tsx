@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export function LinkedInImporter() {
   const [isImporting, setIsImporting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { updateData } = useResumeStore();
   const [mounted, setMounted] = useState(false);
@@ -19,23 +20,81 @@ export function LinkedInImporter() {
     setMounted(true);
   }, []);
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const processFile = async (file: File) => {
+    if (file.type !== 'application/pdf') {
+      toast.error('Please upload a valid PDF file.');
+      return;
+    }
 
     setIsImporting(true);
     try {
-      const text = await extractTextFromPDF(file);
-      const structuredData = await structureResumeData(text);
+      let text = '';
+      try {
+        text = await extractTextFromPDF(file);
+      } catch (err) {
+        console.warn('PDF.js text extraction failed:', err);
+      }
+      
+      let base64 = '';
+      try {
+        const buffer = await file.arrayBuffer();
+        base64 = btoa(
+          new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
+      } catch (err) {
+        console.warn('Failed to convert to base64:', err);
+      }
+
+      if (!text && !base64) {
+        throw new Error("Could not extract any text from the PDF. The file might be scanned or image-based.");
+      }
+      console.log("Extracted PDF Text Length:", text.length, "Base64 Length:", base64.length);
+      
+      const structuredData = await structureResumeData(text, base64);
+      console.log("Structured Data Keys:", Object.keys(structuredData));
+      
       updateData(structuredData);
-      toast.success('LinkedIn profile imported successfully!');
+      toast.success(`LinkedIn profile imported successfully!`);
       setIsOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Import error:', error);
-      toast.error('Failed to import LinkedIn profile. Please try again.');
+      if (error?.message?.includes('429') || error?.message?.toLowerCase().includes('rate')) {
+        toast.error('AI Rate Limit Exceeded', { description: 'Please wait a moment before trying again.' });
+      } else {
+        toast.error(`Failed to import LinkedIn profile: ${error?.message || 'Unknown error'}`);
+      }
     } finally {
       setIsImporting(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      await processFile(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    if (isImporting) return;
+    
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      await processFile(file);
     }
   };
 
@@ -84,7 +143,15 @@ export function LinkedInImporter() {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center justify-center border-2 border-dashed border-zinc-300 rounded-xl p-8 bg-zinc-50 hover:bg-zinc-100 transition-colors group cursor-pointer" onClick={() => !isImporting && fileInputRef.current?.click()}>
+                <div 
+                  className={`flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-8 transition-colors group cursor-pointer
+                    ${isDragging ? 'border-[#0A66C2] bg-blue-50' : 'border-zinc-300 bg-zinc-50 hover:bg-zinc-100'}
+                  `}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => !isImporting && fileInputRef.current?.click()}
+                >
                   <input
                     type="file"
                     ref={fileInputRef}

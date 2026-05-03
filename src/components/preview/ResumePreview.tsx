@@ -19,7 +19,6 @@ import { useReactToPrint } from 'react-to-print';
 import { ATSChecker } from './ATSChecker';
 import { CoverLetterGenerator } from './CoverLetterGenerator';
 import { InterviewPrepGenerator } from './InterviewPrepGenerator';
-import { ResumeImporter } from './ResumeImporter';
 import { LinkedInImporter } from './LinkedInImporter';
 import { PublishModal } from './PublishModal';
 import { Logo } from '../Logo';
@@ -177,7 +176,6 @@ export function ResumePreview() {
               <ATSChecker />
               <CoverLetterGenerator />
               <InterviewPrepGenerator />
-              <ResumeImporter />
               <LinkedInImporter />
               <PublishModal />
             </div>

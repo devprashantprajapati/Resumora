@@ -420,18 +420,27 @@ export async function translateResumeData(resumeData: ResumeData, targetLanguage
   }
 }
 
-export async function structureResumeData(rawText: string): Promise<Partial<ResumeData>> {
+export async function structureResumeData(rawText: string, pdfBase64?: string): Promise<Partial<ResumeData>> {
   try {
-    const prompt = `You are an expert resume parser. Extract the information from the following raw resume text (which might be a LinkedIn PDF export or a standard resume) and structure it into a JSON object.
+    const prompt = `You are an expert resume parser. Extract the information from the following raw resume (which might be a LinkedIn PDF export or a standard resume) and structure it into a JSON object.
     
-    Raw Resume Text:
-    ${rawText}
+    ${rawText ? `Raw Resume Text:\n${rawText}` : 'Process the attached PDF document to extract the resume details.'}
     
     Extract all possible fields including personal info, experience, education, skills, projects, certifications, languages, interests, and references. Ensure dates are in YYYY-MM format if possible.`;
 
+    const contents: any[] = [prompt];
+    if (pdfBase64) {
+      contents.push({
+        inlineData: {
+          data: pdfBase64,
+          mimeType: "application/pdf"
+        }
+      });
+    }
+
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: prompt,
+      contents,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -571,7 +580,27 @@ export async function structureResumeData(rawText: string): Promise<Partial<Resu
       },
     });
 
-    return parseJsonResponse(response.text);
+    const parsedData = parseJsonResponse(response.text);
+    
+    // Ensure all items have IDs
+    const listKeys = ['experience', 'education', 'skills', 'projects', 'certifications', 'languages', 'interests', 'references'];
+    listKeys.forEach(key => {
+      if (Array.isArray(parsedData[key])) {
+        parsedData[key] = parsedData[key].map((item: any) => ({
+          ...item,
+          id: item.id || crypto.randomUUID()
+        }));
+      }
+    });
+    
+    if (parsedData.personalInfo?.links && Array.isArray(parsedData.personalInfo.links)) {
+        parsedData.personalInfo.links = parsedData.personalInfo.links.map((link: any) => ({
+            ...link,
+            id: link.id || crypto.randomUUID()
+        }));
+    }
+
+    return parsedData;
   } catch (error) {
     console.error("Error structuring resume data:", error);
     throw error;
