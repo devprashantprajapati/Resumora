@@ -61,7 +61,13 @@ export function PublishModal() {
       if (error.message.includes('already taken')) {
         toast.error('This URL is already taken. Please choose another one.');
       } else {
-        toast.error('Failed to publish resume. Please try again.');
+        // Attempt to parse our custom Firestore error JSON to extract the exact error
+        try {
+          const errObj = JSON.parse(error.message);
+          toast.error(`Failed to publish: ${errObj.error}`);
+        } catch {
+          toast.error(`Failed to publish: ${error.message || 'Unknown error'}`);
+        }
       }
     } finally {
       setIsPublishing(false);

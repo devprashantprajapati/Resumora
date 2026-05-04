@@ -110,17 +110,13 @@ service cloud.firestore {
     }
 
     function isValidResumeView(data) {
-      let hasValidLocation = !('location' in data) || (data.location is string && data.location.size() <= 200);
-      let hasValidUserAgent = !('userAgent' in data) || (data.userAgent is string && data.userAgent.size() <= 500);
-      let hasValidTimeSpent = !('timeSpent' in data) || (data.timeSpent is number && data.timeSpent >= 0);
-      
       return data.keys().hasAll(['publishedResumeId', 'viewedAt']) &&
              data.keys().hasOnly(['publishedResumeId', 'viewedAt', 'location', 'userAgent', 'timeSpent']) &&
              data.publishedResumeId is string && data.publishedResumeId.size() > 0 &&
              data.viewedAt is timestamp &&
-             hasValidLocation &&
-             hasValidUserAgent &&
-             hasValidTimeSpent;
+             (!('location' in data) || (data.location is string && data.location.size() <= 200)) &&
+             (!('userAgent' in data) || (data.userAgent is string && data.userAgent.size() <= 500)) &&
+             (!('timeSpent' in data) || (data.timeSpent is number && data.timeSpent >= 0));
     }
 
     // ===============================================================
