@@ -3,8 +3,8 @@ import {createRoot} from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Dashboard } from './pages/Dashboard';
 import { Editor } from './pages/Editor';
-import { PublicResume } from './pages/PublicResume.tsx';
-import { AnalyticsDashboard } from './pages/AnalyticsDashboard.tsx';
+import { PublicResume } from './pages/PublicResume';
+import { AnalyticsDashboard } from './pages/AnalyticsDashboard';
 import './index.css';
 import { AuthProvider } from './contexts/AuthContext';
 

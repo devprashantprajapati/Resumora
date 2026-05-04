@@ -77,10 +77,6 @@ service cloud.firestore {
         request.resource.data[field].size() <= maxLen;
     }
     
-    // Validate that the document contains only the allowed fields
-    function hasOnlyAllowedFields(fields) {
-      return request.resource.data.keys().hasOnly(fields);
-    }
     
     // Validate that the document hasn't changed in the fields that are not allowed to be changed
     function areImmutableFieldsUnchanged(fields) {
@@ -92,7 +88,8 @@ service cloud.firestore {
     // ===============================================================
     
     function isValidResume(data) {
-      return hasOnlyAllowedFields(['userId', 'title', 'createdAt', 'updatedAt', 'data']) &&
+      let requiredFields = ['userId', 'title', 'createdAt', 'updatedAt', 'data'];
+      return data.keys().hasAll(requiredFields) && data.size() == 5 &&
              data.userId is string && data.userId.size() > 0 && data.userId.size() < 128 &&
              data.title is string && data.title.size() > 0 && data.title.size() <= 100 &&
              data.createdAt is timestamp &&
@@ -101,7 +98,8 @@ service cloud.firestore {
     }
 
     function isValidPublishedResume(data) {
-      return hasOnlyAllowedFields(['userId', 'slug', 'data', 'publishedAt', 'views']) &&
+      let requiredFields = ['userId', 'slug', 'data', 'publishedAt', 'views'];
+      return data.keys().hasAll(requiredFields) && data.size() == 5 &&
              data.userId is string && data.userId.size() > 0 && data.userId.size() < 128 &&
              data.slug is string && data.slug.size() > 0 && data.slug.size() <= 100 &&
              data.data is string && data.data.size() > 0 && data.data.size() <= 1000000 &&
@@ -111,7 +109,10 @@ service cloud.firestore {
 
     function isValidResumeView(data) {
       return data.keys().hasAll(['publishedResumeId', 'viewedAt']) &&
-             data.keys().hasOnly(['publishedResumeId', 'viewedAt', 'location', 'userAgent', 'timeSpent']) &&
+             data.size() <= 5 &&
+             (!('location' in data) || data.keys().hasAll(['location'])) &&
+             (!('userAgent' in data) || data.keys().hasAll(['userAgent'])) &&
+             (!('timeSpent' in data) || data.keys().hasAll(['timeSpent'])) &&
              data.publishedResumeId is string && data.publishedResumeId.size() > 0 &&
              data.viewedAt is timestamp &&
              (!('location' in data) || (data.location is string && data.location.size() <= 200)) &&
