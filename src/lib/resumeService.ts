@@ -241,12 +241,12 @@ export const publishResume = async (slug: string, data: ResumeData): Promise<voi
     }
     
     const payload: any = {
-      userId: auth.currentUser.uid,
-      slug: slug,
       data: JSON.stringify(data),
     };
 
     if (!docSnap.exists()) {
+      payload.userId = auth.currentUser.uid;
+      payload.slug = slug;
       payload.publishedAt = serverTimestamp();
       payload.views = 0;
     }

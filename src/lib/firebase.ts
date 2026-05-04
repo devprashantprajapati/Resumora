@@ -19,9 +19,9 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase services
 export const auth = getAuth(app);
 
-// If using custom Firebase (Vercel), use default database. 
-// If using AI Studio, use the specific databaseId.
-const databaseId = import.meta.env.VITE_FIREBASE_PROJECT_ID ? undefined : defaultFirebaseConfig.firestoreDatabaseId;
+// If using custom Firebase (Vercel), use VITE_FIREBASE_DATABASE_ID if provided.
+// Otherwise, safely fallback to the generated AI studio databaseId.
+const databaseId = import.meta.env.VITE_FIREBASE_DATABASE_ID || defaultFirebaseConfig.firestoreDatabaseId;
 
 // Initialize Firestore with offline persistence
 export const db = initializeFirestore(app, {
