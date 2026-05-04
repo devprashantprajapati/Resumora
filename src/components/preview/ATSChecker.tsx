@@ -68,7 +68,7 @@ export function ATSChecker() {
       <Button 
         onClick={() => setIsOpen(true)}
         onPointerDown={(e) => e.stopPropagation()}
-        className="group relative overflow-hidden bg-white/90 backdrop-blur-xl hover:bg-white text-zinc-900 border border-zinc-200/80 shadow-sm hover:shadow-md rounded-full h-8 md:h-9 px-2 md:px-3 transition-all duration-300 flex items-center gap-1.5 md:gap-2 active:scale-95"
+        className="group relative overflow-hidden bg-white/90 backdrop-blur-xl hover:bg-white text-zinc-900 border border-zinc-200/80 shadow-sm hover:shadow-md rounded-full h-8 md:h-10 px-2 md:px-3 transition-all duration-300 flex items-center gap-1.5 md:gap-2 active:scale-95"
       >
         <div className="relative flex items-center justify-center w-6 h-6 md:w-6 md:h-6">
           <svg viewBox="0 0 32 32" className="w-full h-full -rotate-90 drop-shadow-sm">
