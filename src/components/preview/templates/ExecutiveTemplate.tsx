@@ -1,6 +1,7 @@
 import { useResumeStore } from '@/store/useResumeStore';
 import { Mail, Phone, MapPin, Link as LinkIcon } from 'lucide-react';
 import { ResumeData } from '@/types/resume';
+import { ResumeQRCode } from '@/components/ui/ResumeQRCode';
 
 export function ExecutiveTemplate({ data: propData }: { data?: ResumeData }) {
   const storeData = useResumeStore(state => state.data);
@@ -22,7 +23,7 @@ export function ExecutiveTemplate({ data: propData }: { data?: ResumeData }) {
   const bodyAlignClass = settings.bodyAlignment === 'justify' ? 'text-justify' : 'text-left';
 
   return (
-    <div className="w-full h-full bg-white text-zinc-900 flex flex-col" style={{ fontFamily: settings.font }}>
+    <div className="relative w-full h-full bg-white text-zinc-900 flex flex-col" style={{ fontFamily: settings.font }}>
       <header className="text-white p-10 flex flex-col md:flex-row items-center md:items-start gap-8" style={{ backgroundColor: color }}>
         {settings.showPhoto && personalInfo.photoUrl && (
           <img src={personalInfo.photoUrl} alt="Profile" className="w-32 h-32 object-cover rounded-sm shadow-lg border-2 border-white/20 shrink-0" />

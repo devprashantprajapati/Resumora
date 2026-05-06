@@ -1,6 +1,7 @@
 import { useResumeStore } from '@/store/useResumeStore';
 import { Mail, Phone, MapPin, Link as LinkIcon, Briefcase, GraduationCap, Code, Award, Languages, Heart, Users } from 'lucide-react';
 import { ResumeData } from '@/types/resume';
+import { ResumeQRCode } from '@/components/ui/ResumeQRCode';
 
 export function StudioTemplate({ data: propData }: { data?: ResumeData }) {
   const storeData = useResumeStore(state => state.data);

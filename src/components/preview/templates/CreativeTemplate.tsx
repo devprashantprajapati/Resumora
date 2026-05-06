@@ -1,6 +1,7 @@
 import { useResumeStore } from '@/store/useResumeStore';
 import { Mail, Phone, MapPin, Link as LinkIcon } from 'lucide-react';
 import { ResumeData } from '@/types/resume';
+import { ResumeQRCode } from '@/components/ui/ResumeQRCode';
 
 export function CreativeTemplate({ data: propData }: { data?: ResumeData }) {
   const storeData = useResumeStore(state => state.data);
@@ -41,7 +42,7 @@ export function CreativeTemplate({ data: propData }: { data?: ResumeData }) {
   const bodyAlignClass = settings.bodyAlignment === 'justify' ? 'text-justify' : 'text-left';
 
   return (
-    <div className="w-full h-full bg-white text-zinc-900 leading-relaxed flex" style={{ fontFamily: settings.font }}>
+    <div className="relative w-full h-full bg-white text-zinc-900 leading-relaxed flex" style={{ fontFamily: settings.font }}>
       {/* Left Sidebar */}
       <div className={`w-1/3 p-6 text-white h-full min-h-[297mm]`} style={{ backgroundColor: color }}>
         <div className={`flex flex-col ${alignment} mb-8`}>

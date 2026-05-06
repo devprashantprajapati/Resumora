@@ -1,7 +1,7 @@
 import { useResumeStore } from '@/store/useResumeStore';
 import { Mail, Phone, MapPin, Link as LinkIcon } from 'lucide-react';
 import { ResumeData } from '@/types/resume';
-import { QRCodeSVG } from 'qrcode.react';
+import { ResumeQRCode } from '@/components/ui/ResumeQRCode';
 
 export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
   const storeData = useResumeStore(state => state.data);
@@ -276,7 +276,7 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
   // Let's just map all sections linearly for a true layout reflection, but wait, `Modern` template is designed for `grid-cols-3`.
   
   return (
-    <div className="w-full h-full bg-white text-zinc-900 leading-relaxed" style={{ fontFamily: settings.font }}>
+    <div className="relative w-full h-full bg-white text-zinc-900 leading-relaxed" style={{ fontFamily: settings.font }}>
       {/* Header */}
       <header className={`flex ${settings.headerAlignment === 'center' ? 'flex-col text-center' : settings.headerAlignment === 'right' ? 'flex-row-reverse text-right' : 'flex-row text-left'} items-center gap-8 pb-10 border-b-2`} style={{ borderColor: color }}>
         {settings.showPhoto && personalInfo.photoUrl && (
@@ -307,12 +307,9 @@ export function ModernTemplate({ data: propData }: { data?: ResumeData }) {
             ))}
           </div>
         </div>
-        {settings.showQrCode && settings.publishedSlug && (
-          <div className="flex flex-col items-center gap-1.5 opacity-90 shrink-0 bg-white p-2 border border-zinc-100 rounded-lg shadow-sm">
-            <QRCodeSVG value={`${window.location.origin}/r/${settings.publishedSlug}`} size={64} fgColor={color} />
-            <span className="text-[9px] font-medium text-zinc-500 uppercase tracking-wider">Scan Me</span>
-          </div>
-        )}
+        <div className="absolute top-8 right-8 z-10 hidden sm:block print:block">
+          <ResumeQRCode settings={settings} color={color} />
+        </div>
       </header>
 
       {/* Summary */}

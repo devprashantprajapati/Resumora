@@ -1,6 +1,7 @@
 import { useResumeStore } from '@/store/useResumeStore';
 import { Mail, Phone, MapPin, Link as LinkIcon, Terminal, Code2, Database, Cpu } from 'lucide-react';
 import { ResumeData } from '@/types/resume';
+import { ResumeQRCode } from '@/components/ui/ResumeQRCode';
 
 export function TechTemplate({ data: propData }: { data?: ResumeData }) {
   const storeData = useResumeStore(state => state.data);
@@ -22,7 +23,7 @@ export function TechTemplate({ data: propData }: { data?: ResumeData }) {
   const bodyAlignClass = settings.bodyAlignment === 'justify' ? 'text-justify' : 'text-left';
 
   return (
-    <div className="w-full h-full bg-white text-zinc-800 leading-relaxed border-l-8" style={{ fontFamily: settings.font, borderColor: color }}>
+    <div className="relative w-full h-full bg-white text-zinc-800 leading-relaxed border-l-8" style={{ fontFamily: settings.font, borderColor: color }}>
       <div className="p-8 pb-0">
         <header className="flex flex-col md:flex-row justify-between items-start gap-6 border-b-2 pb-8" style={{ borderColor: `${color}30` }}>
           <div className="flex-1">

@@ -1,5 +1,6 @@
 import { useResumeStore } from '@/store/useResumeStore';
 import { ResumeData } from '@/types/resume';
+import { ResumeQRCode } from '@/components/ui/ResumeQRCode';
 
 export function CorporateTemplate({ data: propData }: { data?: ResumeData }) {
   const storeData = useResumeStore(state => state.data);
@@ -46,7 +47,8 @@ export function CorporateTemplate({ data: propData }: { data?: ResumeData }) {
   const bodyAlignClass = settings.bodyAlignment === 'justify' ? 'text-justify' : 'text-left';
 
   return (
-    <div className="w-full h-full bg-white text-zinc-900 leading-relaxed" style={{ fontFamily: settings.font }}>
+    <div className="relative w-full h-full bg-white text-zinc-900 leading-relaxed" style={{ fontFamily: settings.font }}>
+      <div className="absolute top-8 right-8 z-10 hidden sm:block print:block"><ResumeQRCode settings={settings} color={settings.color || '#18181b'} /></div>
       {/* Header */}
       <header className={`flex flex-col ${alignment} ${spacing.pb} border-b-4 ${spacing.mb}`} style={{ borderColor: color }}>
         {settings.showPhoto && personalInfo.photoUrl && (

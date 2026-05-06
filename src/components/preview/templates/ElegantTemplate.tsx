@@ -1,6 +1,7 @@
 import { useResumeStore } from '@/store/useResumeStore';
 import { Mail, Phone, MapPin, Link as LinkIcon } from 'lucide-react';
 import { ResumeData } from '@/types/resume';
+import { ResumeQRCode } from '@/components/ui/ResumeQRCode';
 
 export function ElegantTemplate({ data: propData }: { data?: ResumeData }) {
   const storeData = useResumeStore(state => state.data);
@@ -22,7 +23,7 @@ export function ElegantTemplate({ data: propData }: { data?: ResumeData }) {
   const bodyAlignClass = settings.bodyAlignment === 'justify' ? 'text-justify' : 'text-left';
 
   return (
-    <div className="w-full h-full bg-[#faf9f6] text-zinc-900 leading-relaxed" style={{ fontFamily: settings.font }}>
+    <div className="relative w-full h-full bg-[#faf9f6] text-zinc-900 leading-relaxed" style={{ fontFamily: settings.font }}>
       <div className="border-b-[3px] pb-10 mb-10" style={{ borderColor: color }}>
         <header className="text-center">
           {settings.showPhoto && personalInfo.photoUrl && (

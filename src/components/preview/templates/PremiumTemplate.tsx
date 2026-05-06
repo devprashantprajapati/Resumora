@@ -1,6 +1,7 @@
 import { useResumeStore } from '@/store/useResumeStore';
 import { Mail, Phone, MapPin, Link as LinkIcon, Briefcase, GraduationCap, Award, Code, User, Globe, Heart, Star } from 'lucide-react';
 import { ResumeData } from '@/types/resume';
+import { ResumeQRCode } from '@/components/ui/ResumeQRCode';
 
 const PremiumTemplate = ({ data: propData }: { data?: ResumeData }) => {
   const storeData = useResumeStore(state => state.data);
@@ -42,7 +43,7 @@ const PremiumTemplate = ({ data: propData }: { data?: ResumeData }) => {
   );
 
   return (
-    <div className="w-full h-full bg-[#fcfcfc] text-zinc-800 flex flex-col" style={{ fontFamily: settings.font }}>
+    <div className="relative w-full h-full bg-[#fcfcfc] text-zinc-800 flex flex-col" style={{ fontFamily: settings.font }}>
       {/* Top Header */}
       <header className="relative overflow-hidden bg-zinc-900 text-white px-10 py-12 flex flex-col md:flex-row items-center md:items-start gap-8">
         {/* Decorative background element */}
