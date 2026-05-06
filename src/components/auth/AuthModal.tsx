@@ -73,10 +73,12 @@ export function AuthModal() {
         toast.success('Account created successfully!');
       }
     } catch (error: any) {
+      console.error(error);
       let message = 'An error occurred. Please try again.';
       if (error.code === 'auth/email-already-in-use') message = 'This email is already registered.';
       if (error.code === 'auth/invalid-credential') message = 'Invalid email or password.';
       if (error.code === 'auth/weak-password') message = 'Password is too weak.';
+      if (error.code === 'auth/operation-not-allowed') message = 'Email/Password sign-in is not enabled in Firebase. Please enable it in the Firebase Console.';
       toast.error(message);
     } finally {
       setIsLoading(false);
