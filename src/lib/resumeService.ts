@@ -227,6 +227,27 @@ export interface PublishedResume {
   views: number;
 }
 
+export const checkSlugAvailability = async (slug: string): Promise<boolean> => {
+  if (!slug) return false;
+  if (!auth.currentUser) return false;
+    
+  try {
+    const docRef = doc(db, 'published_resumes', slug);
+    const docSnap = await getDoc(docRef);
+    
+    // If it doesn't exist, it's available
+    if (!docSnap.exists()) {
+      return true;
+    }
+    
+    // If it exists, it's available only if the current user owns it
+    return docSnap.data().userId === auth.currentUser.uid;
+  } catch (error) {
+    console.error('Error checking slug:', error);
+    return false; // Safely assume not available on error
+  }
+};
+
 export const publishResume = async (slug: string, data: ResumeData): Promise<void> => {
   if (!auth.currentUser) throw new Error('User not authenticated');
   

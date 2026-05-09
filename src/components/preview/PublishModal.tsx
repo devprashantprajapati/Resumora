@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Globe, Loader2, Copy, Check, BarChart3, ExternalLink, X, Rocket, Sparkles, CheckCircle2, LogIn } from 'lucide-react';
+import { Globe, Loader2, Copy, Check, BarChart3, ExternalLink, X, Rocket, Sparkles, CheckCircle2, LogIn, AlertCircle } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
 import { useResumeStore } from '@/store/useResumeStore';
-import { publishResume } from '@/lib/resumeService';
+import { publishResume, checkSlugAvailability } from '@/lib/resumeService';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -18,6 +18,8 @@ export function PublishModal() {
   const [publishedUrl, setPublishedUrl] = useState(data.settings.publishedSlug ? `${window.location.origin}/p/${data.settings.publishedSlug}` : '');
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
+  const [isSlugAvailable, setIsSlugAvailable] = useState<boolean | null>(null);
   const { user, openAuthModal } = useAuth();
 
   useEffect(() => {
@@ -28,8 +30,37 @@ export function PublishModal() {
     if (data.settings.publishedSlug) {
       setSlug(data.settings.publishedSlug);
       setPublishedUrl(`${window.location.origin}/p/${data.settings.publishedSlug}`);
+      setIsSlugAvailable(true);
     }
   }, [data.settings.publishedSlug]);
+
+  useEffect(() => {
+    if (!slug) {
+      setIsSlugAvailable(null);
+      return;
+    }
+    
+    // If it's already their published slug, it's available
+    if (slug === data.settings.publishedSlug) {
+      setIsSlugAvailable(true);
+      return;
+    }
+
+    const checkAvailability = async () => {
+      setIsCheckingAvailability(true);
+      try {
+        const available = await checkSlugAvailability(slug);
+        setIsSlugAvailable(available);
+      } catch (error) {
+        setIsSlugAvailable(null);
+      } finally {
+        setIsCheckingAvailability(false);
+      }
+    };
+
+    const timer = setTimeout(checkAvailability, 500);
+    return () => clearTimeout(timer);
+  }, [slug, data.settings.publishedSlug]);
 
   const handlePublish = async () => {
     if (!user) {
@@ -200,7 +231,13 @@ export function PublishModal() {
 
                   <div className="space-y-3 pt-4">
                     <Label className="text-sm font-semibold text-zinc-900 ml-1">Claim your custom URL</Label>
-                    <div className="flex items-center bg-zinc-50 border-2 border-zinc-200 rounded-2xl overflow-hidden focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all duration-300">
+                    <div className={`flex items-center bg-zinc-50 border-2 overflow-hidden transition-all duration-300 rounded-2xl focus-within:ring-4 ${
+                      isSlugAvailable === false 
+                        ? 'border-red-300 focus-within:border-red-500 focus-within:ring-red-500/10 bg-red-50/30' 
+                        : isSlugAvailable === true && slug !== data.settings.publishedSlug
+                        ? 'border-emerald-300 focus-within:border-emerald-500 focus-within:ring-emerald-500/10 bg-emerald-50/30'
+                        : 'border-zinc-200 focus-within:border-indigo-500 focus-within:ring-indigo-500/10'
+                    }`}>
                       <div className="px-4 py-4 bg-zinc-100/80 text-zinc-500 text-sm font-medium border-r border-zinc-200 select-none flex items-center gap-2 shrink-0">
                         <Globe className="w-4 h-4" />
                         <span className="hidden sm:inline">{window.location.host}/p/</span>
@@ -210,19 +247,37 @@ export function PublishModal() {
                         value={slug}
                         onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                         placeholder="johndoe"
-                        className="flex-1 px-4 py-4 bg-transparent outline-none text-zinc-900 font-bold placeholder:text-zinc-300 placeholder:font-medium w-full min-w-0"
+                        className={`flex-1 px-4 py-4 bg-transparent outline-none font-bold placeholder:font-medium w-full min-w-0 ${
+                           isSlugAvailable === false ? 'text-red-900 placeholder:text-red-300' : 'text-zinc-900 placeholder:text-zinc-300'
+                        }`}
                       />
+                      <div className="pr-4 shrink-0 flex items-center">
+                        {isCheckingAvailability ? (
+                          <Loader2 className="w-5 h-5 text-zinc-400 animate-spin" />
+                        ) : isSlugAvailable === false ? (
+                          <AlertCircle className="w-5 h-5 text-red-500" />
+                        ) : isSlugAvailable === true && slug ? (
+                          <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                        ) : null}
+                      </div>
                     </div>
-                    <p className="text-xs text-zinc-500 ml-1 flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
-                      Only lowercase letters, numbers, and hyphens.
-                    </p>
+                    {isSlugAvailable === false ? (
+                      <p className="text-xs font-medium text-red-500 ml-1 flex items-center gap-1.5 animate-in slide-in-from-top-1 -mt-1">
+                        <AlertCircle className="w-3.5 h-3.5" />
+                        This URL is already taken by another user.
+                      </p>
+                    ) : (
+                      <p className="text-xs text-zinc-500 ml-1 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                        Only lowercase letters, numbers, and hyphens.
+                      </p>
+                    )}
                   </div>
 
                   <div className="pt-6">
                     <Button 
                       onClick={handlePublish} 
-                      disabled={isPublishing || !slug.trim()}
+                      disabled={isPublishing || !slug.trim() || isCheckingAvailability || isSlugAvailable === false}
                       className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white py-6 rounded-2xl text-lg font-bold shadow-xl shadow-indigo-500/25 transition-all active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100"
                     >
                       {isPublishing ? (
