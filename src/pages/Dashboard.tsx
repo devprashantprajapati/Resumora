@@ -6,7 +6,7 @@ import { getUserResumes, saveResume, deleteResume, renameResume, duplicateResume
 import { emptyResumeData } from '../types/resume';
 import { Logo } from '../components/Logo';
 import { Button } from '../components/ui/Button';
-import { Plus, FileText, MoreVertical, Trash2, Edit2, Loader2, User as UserIcon, LogOut, Copy } from 'lucide-react';
+import { Plus, FileText, MoreVertical, Trash2, Edit2, Loader2, User as UserIcon, LogOut, Copy, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { AuthModal } from '../components/auth/AuthModal';
@@ -337,6 +337,29 @@ export function Dashboard() {
           </div>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="mt-auto relative z-20 shrink-0">
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-100/80 to-transparent pointer-events-none" />
+        <div className="relative border-t border-zinc-200/60 bg-white/50 backdrop-blur-md">
+          <div className="max-w-4xl w-full mx-auto px-6 py-6 md:py-8 flex flex-col items-center justify-center gap-2">
+            <span className="text-zinc-500 font-medium text-[13px]">
+              © {new Date().getFullYear()} Resumora. All rights reserved.
+            </span>
+            <div className="flex items-center gap-3 text-[13px]">
+              <a href="#" className="text-zinc-500 hover:text-indigo-600 transition-colors font-medium">Privacy Policy</a>
+              <a 
+                href="https://devprashantprajapati.netlify.app/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-zinc-700 font-semibold hover:text-indigo-600 transition-colors md:ml-1"
+              >
+                Made by Prashant Prajapati
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
