@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { useResumeStore } from '@/store/useResumeStore';
-import { emptyResumeData } from '@/types/resume';
-import { Label } from '../ui/Label';
-import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
-import { RotateCcw, AlertTriangle, Cloud, LogOut, LogIn } from 'lucide-react';
+import { RotateCcw, AlertTriangle, Cloud, LogOut, LogIn, Check, Sparkles, Wand2, Type, LayoutTemplate, Box, AlignLeft, Calendar } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { saveResume } from '@/lib/resumeService';
 import { toast } from 'sonner';
@@ -34,6 +31,74 @@ const FONTS = [
   { name: 'Fira Code', value: '"Fira Code", monospace' },
   { name: 'Space Grotesk', value: '"Space Grotesk", sans-serif' },
 ];
+
+function SettingCard({ title, icon: Icon, children, description }: { title: string, icon?: React.ElementType, children: React.ReactNode, description?: string }) {
+  return (
+    <div className="group p-6 sm:p-8 bg-white/80 backdrop-blur-xl rounded-[2rem] border border-zinc-200/80 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-zinc-300/80 transition-all duration-500 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      <div className="relative z-10">
+        <div className="flex items-center gap-4 mb-2">
+          {Icon && (
+            <div className="p-2.5 bg-zinc-100/80 text-zinc-600 group-hover:bg-indigo-50 group-hover:text-indigo-600 rounded-2xl transition-colors duration-500 shadow-sm">
+              <Icon className="w-5 h-5" />
+            </div>
+          )}
+          <div>
+            <h3 className="text-[1.1rem] font-bold text-zinc-900 tracking-tight">{title}</h3>
+            {description && <p className="text-[13px] text-zinc-500 font-medium mt-0.5">{description}</p>}
+          </div>
+        </div>
+        <div className="mt-8">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SegmentedControl({ options, value, onChange, style }: { options: readonly string[], value: string, onChange: (val: string) => void, style?: React.CSSProperties }) {
+  return (
+    <div className="flex bg-zinc-100/80 p-1.5 rounded-[1.1rem] border border-zinc-200/80 shadow-inner" style={style}>
+      {options.map((opt) => (
+        <button
+          key={opt}
+          onClick={() => onChange(opt)}
+          className={`relative flex-1 py-3 text-[13px] capitalize rounded-xl transition-all duration-300 ease-out font-bold tracking-wide ${
+            value === opt
+              ? 'bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08)] text-indigo-700 ring-1 ring-zinc-200/50 scale-[1.02]'
+              : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
+          }`}
+        >
+          {opt}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function QuickToggle({ label, description, checked, onChange }: { label: string, description: string, checked: boolean, onChange: (checked: boolean) => void }) {
+  return (
+    <div className="flex sm:items-center justify-between flex-col sm:flex-row gap-4 p-5 bg-zinc-50/80 hover:bg-white border text-left border-zinc-200/80 rounded-[1.5rem] transition-all duration-300 hover:shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:border-zinc-300 cursor-pointer group" onClick={() => onChange(!checked)}>
+      <div>
+        <h4 className="font-bold text-[14px] text-zinc-900 group-hover:text-indigo-700 transition-colors tracking-tight">{label}</h4>
+        <p className="text-[13px] text-zinc-500 mt-1 font-medium leading-relaxed">{description}</p>
+      </div>
+      <div
+        className={`relative inline-flex h-7 w-12 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none ${
+          checked ? 'bg-indigo-600 shadow-inner' : 'bg-zinc-300'
+        }`}
+      >
+        <span
+          className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-sm ring-0 transition duration-300 ease-in-out flex items-center justify-center ${
+            checked ? 'translate-x-5' : 'translate-x-0'
+          }`}
+        >
+          {checked && <Check className="w-4 h-4 text-indigo-600 stroke-[3]" />}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export function SettingsForm() {
   const { data, updateSettings, resetData } = useResumeStore();
@@ -73,290 +138,286 @@ export function SettingsForm() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Cloud Sync</Label>
-        <div className="p-4 bg-zinc-50/80 rounded-2xl border border-zinc-200/60 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-zinc-600">
-            {user ? (
-              <>Signed in as <span className="font-semibold text-zinc-900">{user.email}</span></>
-            ) : (
-              'Sign in to save your resume to the cloud and access it from anywhere.'
-            )}
+    <div className="space-y-8 pb-10">
+      
+      {/* Cloud Sync Banner */}
+      <div className="relative overflow-hidden p-6 sm:p-8 bg-gradient-to-br from-indigo-900 via-indigo-800 to-violet-900 rounded-[2rem] text-white shadow-xl shadow-indigo-900/20">
+        <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+          <Cloud className="w-48 h-48 -mt-10 -mr-10 transform rotate-12" />
+        </div>
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="space-y-1.5">
+            <h3 className="text-xl font-bold flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-indigo-300" />
+              Cloud Sync Workspace
+            </h3>
+            <p className="text-indigo-200/80 text-sm max-w-sm">
+              {user 
+                ? `Logged in as ${user.email}. Your progress is safe with us.` 
+                : 'Sign in to seamlessly save and access your resume securely from anywhere.'}
+            </p>
           </div>
-          <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-3 shrink-0">
             {user ? (
               <>
                 <Button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="flex-1 sm:flex-none flex items-center gap-2 bg-indigo-600 text-white hover:bg-indigo-700"
+                  className="bg-white text-indigo-900 hover:bg-zinc-100 font-semibold px-6 py-5 rounded-xl shadow-lg shadow-black/10 transition-all active:scale-95"
                 >
-                  <Cloud className="w-4 h-4" />
-                  {isSaving ? 'Saving...' : 'Save to Cloud'}
+                  {isSaving ? 'Syncing...' : 'Sync to Cloud'}
                 </Button>
-                <Button
-                  variant="outline"
+                <button
                   onClick={logout}
-                  className="px-3 text-zinc-600 hover:text-zinc-900"
+                  className="p-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors"
                   title="Log out"
                 >
-                  <LogOut className="w-4 h-4" />
-                </Button>
+                  <LogOut className="w-5 h-5" />
+                </button>
               </>
             ) : (
               <Button
                 onClick={openAuthModal}
-                variant="outline"
-                className="w-full sm:w-auto flex items-center gap-2"
+                className="bg-white text-indigo-900 hover:bg-indigo-50 font-semibold px-6 py-5 rounded-xl shadow-lg border-0 transition-all active:scale-95 flex items-center gap-2"
               >
                 <LogIn className="w-4 h-4" />
-                Sign in to Save
+                Sign in to Sync
               </Button>
             )}
           </div>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Template</Label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <SettingCard title="Template Design" icon={LayoutTemplate} description="Choose a distinctive layout that fits your industry.">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {(['modern', 'minimal', 'corporate', 'creative', 'elegant', 'tech', 'executive', 'premium', 'academic', 'studio'] as const).map((template) => (
             <button
               key={template}
               onClick={() => updateSettings({ template })}
-              className={`p-4 rounded-[1rem] border-2 text-center capitalize transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+              className={`relative overflow-hidden px-4 py-8 rounded-[1.5rem] border-2 text-center capitalize transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] group ${
                 settings.template === template
-                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 font-semibold shadow-md shadow-indigo-200/50 scale-[1.02] ring-1 ring-indigo-600/30 ring-offset-1'
-                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-600 shadow-sm hover:shadow-md hover:scale-[1.01]'
+                  ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-lg shadow-indigo-200/50 ring-4 ring-indigo-600/10 scale-[1.02]'
+                  : 'border-zinc-200/80 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 hover:shadow-md hover:-translate-y-0.5 text-zinc-600'
               }`}
             >
-              {template}
+              {settings.template === template && (
+                <div className="absolute top-4 right-4 text-indigo-600 bg-indigo-100 p-1 rounded-full animate-in zoom-in">
+                  <Check className="w-3.5 h-3.5 stroke-[3]" />
+                </div>
+              )}
+              <span className={`font-bold tracking-tight text-[15px] ${settings.template === template ? 'text-indigo-700' : 'text-zinc-700 group-hover:text-zinc-900'}`}>{template}</span>
             </button>
           ))}
         </div>
-      </div>
+      </SettingCard>
 
-      <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Accent Color</Label>
-        <div className="flex flex-wrap gap-4 p-4 bg-white/50 rounded-2xl border border-zinc-200/60">
+      <SettingCard title="Color Identity" icon={Wand2} description="Select a dominant color to highlight key elements and section headers.">
+        <div className="flex flex-wrap gap-4 pt-2">
           {COLORS.map((color) => (
             <button
               key={color.value}
               onClick={() => updateSettings({ color: color.value })}
-              className={`w-10 h-10 rounded-full border-2 transition-all duration-200 shadow-sm ${
-                settings.color === color.value ? 'border-indigo-600 scale-110 ring-4 ring-indigo-600/10' : 'border-transparent hover:scale-110'
+              className={`relative w-12 h-12 rounded-full transition-all duration-300 shadow-sm flex items-center justify-center group ${
+                settings.color === color.value ? 'scale-110 ring-[3px] ring-offset-4 ring-offset-zinc-50 shadow-md' : 'hover:scale-110 hover:shadow-md ring-1 ring-black/5 hover:ring-black/20 ring-offset-0'
               }`}
-              style={{ backgroundColor: color.value }}
+              style={{ 
+                backgroundColor: color.value,
+                ...(settings.color === color.value ? { '--tw-ring-color': color.value } as any : {})
+              }}
               title={color.name}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Typography (Body Font)</Label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {FONTS.map((font) => (
-            <button
-              key={font.value}
-              onClick={() => updateSettings({ font: font.value })}
-              className={`p-4 rounded-[1rem] border-2 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-                settings.font === font.value
-                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 shadow-md shadow-indigo-200/50 scale-[1.02] ring-1 ring-indigo-600/30 ring-offset-1'
-                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-700 shadow-sm hover:shadow-md hover:scale-[1.01]'
-              }`}
-              style={{ fontFamily: font.value }}
             >
-              <span className="text-lg">{font.name}</span>
-              <span className="block text-xs text-zinc-400 mt-1">The quick brown fox jumps over the lazy dog</span>
+               {settings.color === color.value && (
+                  <Check className="w-5 h-5 text-white drop-shadow-md animate-in zoom-in stroke-[3]" />
+               )}
+               {!settings.color && color.value === '#3b82f6' && (
+                  <Check className="w-5 h-5 text-white drop-shadow-md animate-in zoom-in stroke-[3]" />
+               )}
             </button>
           ))}
         </div>
-      </div>
+      </SettingCard>
 
-      <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Typography (Heading Font)</Label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {FONTS.map((font) => (
-            <button
-              key={font.value}
-              onClick={() => updateSettings({ headingFont: font.value })}
-              className={`p-4 rounded-[1rem] border-2 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-                (settings.headingFont || settings.font) === font.value
-                  ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 shadow-md shadow-indigo-200/50 scale-[1.02] ring-1 ring-indigo-600/30 ring-offset-1'
-                  : 'border-zinc-200/60 bg-white/60 backdrop-blur-sm hover:bg-white hover:border-zinc-300 text-zinc-700 shadow-sm hover:shadow-md hover:scale-[1.01]'
-              }`}
-              style={{ fontFamily: font.value }}
-            >
-              <span className="text-lg font-bold">{font.name}</span>
-              <span className="block text-xs text-zinc-400 mt-1">Heading Style Preview</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <Label className="text-base font-semibold text-zinc-900">Font Size</Label>
-          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-            {(['small', 'medium', 'large'] as const).map((size) => (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <SettingCard title="Body Typography" icon={Type} description="The font used for descriptions and regular text.">
+          <div className="flex flex-col gap-3">
+            {FONTS.map((font) => (
               <button
-                key={size}
-                onClick={() => updateSettings({ fontSize: size })}
-                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                  settings.fontSize === size
-                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
+                key={font.value}
+                onClick={() => updateSettings({ font: font.value })}
+                className={`p-4 rounded-[1.2rem] border-2 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden group ${
+                  settings.font === font.value
+                    ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-md ring-2 ring-indigo-600/10'
+                    : 'border-zinc-200/60 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 text-zinc-700 hover:shadow-sm'
                 }`}
+                style={{ fontFamily: font.value }}
               >
-                {size}
+                {settings.font === font.value && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-600 bg-indigo-100 p-1.5 rounded-full animate-in zoom-in">
+                    <Check className="w-4 h-4 stroke-[3]" />
+                  </div>
+                )}
+                <span className="text-[1.1rem] font-bold block">{font.name}</span>
+                <span className={`block mt-1 text-[13px] tracking-wide ${settings.font === font.value ? 'text-indigo-600/70' : 'text-zinc-500'}`}>The quick brown fox jumps over the lazy dog.</span>
               </button>
             ))}
           </div>
-        </div>
+        </SettingCard>
 
-        <div className="space-y-4">
-          <Label className="text-base font-semibold text-zinc-900">Line Height</Label>
-          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-            {(['tight', 'normal', 'loose'] as const).map((lh) => (
+        <SettingCard title="Heading Typography" icon={Type} description="The font used for your name and section titles.">
+          <div className="flex flex-col gap-3">
+            {FONTS.map((font) => (
               <button
-                key={lh}
-                onClick={() => updateSettings({ lineHeight: lh })}
-                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                  (settings.lineHeight || 'normal') === lh
-                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
+                key={font.value}
+                onClick={() => updateSettings({ headingFont: font.value })}
+                className={`p-4 rounded-[1.2rem] border-2 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden group ${
+                  (settings.headingFont || settings.font) === font.value
+                    ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-md ring-2 ring-indigo-600/10'
+                    : 'border-zinc-200/60 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 text-zinc-700 hover:shadow-sm'
                 }`}
+                style={{ fontFamily: font.value }}
               >
-                {lh}
+                {(settings.headingFont || settings.font) === font.value && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-600 bg-indigo-100 p-1.5 rounded-full animate-in zoom-in">
+                    <Check className="w-4 h-4 stroke-[3]" />
+                  </div>
+                )}
+                <span className="text-[1.3rem] font-black block tracking-tight">{font.name}</span>
+                <span className={`block mt-1 text-[13px] tracking-wide font-medium ${((settings.headingFont || settings.font) === font.value) ? 'text-indigo-600/70' : 'text-zinc-500'}`}>Heading Style Preview</span>
               </button>
             ))}
           </div>
-        </div>
+        </SettingCard>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <Label className="text-base font-semibold text-zinc-900">Spacing & Density</Label>
-          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-            {(['compact', 'normal', 'relaxed'] as const).map((spacing) => (
-              <button
-                key={spacing}
-                onClick={() => updateSettings({ spacing })}
-                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                  settings.spacing === spacing
-                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-                }`}
-              >
-                {spacing}
-              </button>
-            ))}
+      <SettingCard title="Optimization & Localization" icon={Sparkles} description="Language and parsing optimizations.">
+        <div className="space-y-6">
+           <QuickToggle
+             label="ATS Optimization Mode"
+             description="Strips complex formatting and columns to ensure maximum compatibility with Applicant Tracking Systems."
+             checked={settings.isAtsOptimized || false}
+             onChange={(checked) => updateSettings({ isAtsOptimized: checked })}
+           />
+           
+           <div>
+              <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Document Language (Localization)</h4>
+              <SegmentedControl 
+                options={['en', 'es', 'fr', 'de']} 
+                value={settings.documentLanguage || 'en'} 
+                onChange={(val) => updateSettings({ documentLanguage: val as any })} 
+              />
+           </div>
+        </div>
+      </SettingCard>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <SettingCard title="Sizing" icon={Box} description="Adjust font size and line height.">
+          <div className="space-y-6">
+             <div>
+                <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Font Size</h4>
+                <SegmentedControl 
+                  options={['small', 'medium', 'large']} 
+                  value={settings.fontSize || 'medium'} 
+                  onChange={(val) => updateSettings({ fontSize: val as any })} 
+                />
+             </div>
+             <div>
+                <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Line Height</h4>
+                <SegmentedControl 
+                  options={['tight', 'normal', 'loose']} 
+                  value={settings.lineHeight || 'normal'} 
+                  onChange={(val) => updateSettings({ lineHeight: val as any })} 
+                />
+             </div>
           </div>
-        </div>
+        </SettingCard>
 
-        <div className="space-y-4">
-          <Label className="text-base font-semibold text-zinc-900">Page Margins</Label>
-          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-            {(['small', 'medium', 'large'] as const).map((margin) => (
-              <button
-                key={margin}
-                onClick={() => updateSettings({ margins: margin })}
-                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                  (settings.margins || 'medium') === margin
-                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-                }`}
-              >
-                {margin}
-              </button>
-            ))}
+        <SettingCard title="Layout Density" icon={AlignLeft} description="Control spacing, margins, and borders.">
+          <div className="space-y-6">
+             <div>
+                <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Spacing & Density</h4>
+                <SegmentedControl 
+                  options={['compact', 'normal', 'relaxed']} 
+                  value={settings.spacing || 'normal'} 
+                  onChange={(val) => updateSettings({ spacing: val as any })} 
+                />
+             </div>
+             <div>
+                <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Page Margins</h4>
+                <SegmentedControl 
+                  options={['small', 'medium', 'large']} 
+                  value={settings.margins || 'medium'} 
+                  onChange={(val) => updateSettings({ margins: val as any })} 
+                />
+             </div>
           </div>
-        </div>
+        </SettingCard>
       </div>
 
-      <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Element Styling (Borders)</Label>
-        <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-          {(['sharp', 'rounded', 'pill'] as const).map((radius) => (
-            <button
-              key={radius}
-              onClick={() => updateSettings({ borderRadius: radius })}
-              className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                settings.borderRadius === radius
-                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                  : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-              }`}
-            >
-              {radius}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <Label className="text-base font-semibold text-zinc-900">Header Alignment</Label>
-          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-            {(['left', 'center', 'right'] as const).map((alignment) => (
-              <button
-                key={alignment}
-                onClick={() => updateSettings({ headerAlignment: alignment })}
-                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                  settings.headerAlignment === alignment
-                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-                }`}
-              >
-                {alignment}
-              </button>
-            ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <SettingCard title="Alignment & Shape" icon={LayoutTemplate} description="Refine borders and text alignment.">
+          <div className="space-y-6">
+             <div>
+                <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Element Corners</h4>
+                <SegmentedControl 
+                  options={['sharp', 'rounded', 'pill']} 
+                  value={settings.borderRadius || 'rounded'} 
+                  onChange={(val) => updateSettings({ borderRadius: val as any })} 
+                />
+             </div>
+             <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Headers</h4>
+                  <SegmentedControl 
+                    options={['left', 'center', 'right']} 
+                    value={settings.headerAlignment || 'left'} 
+                    onChange={(val) => updateSettings({ headerAlignment: val as any })} 
+                    style={{ width: '142px' }}
+                  />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Body Text</h4>
+                  <SegmentedControl 
+                    options={['left', 'justify']} 
+                    value={settings.bodyAlignment || 'left'} 
+                    onChange={(val) => updateSettings({ bodyAlignment: val as any })} 
+                  />
+                </div>
+             </div>
+             <div>
+                <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Photo Shape</h4>
+                <SegmentedControl 
+                  options={['circle', 'square', 'rounded']} 
+                  value={settings.photoShape || 'circle'} 
+                  onChange={(val) => updateSettings({ photoShape: val as any })} 
+                />
+             </div>
           </div>
-        </div>
+        </SettingCard>
 
-        <div className="space-y-4">
-          <Label className="text-base font-semibold text-zinc-900">Body Text Alignment</Label>
-          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-            {(['left', 'justify'] as const).map((alignment) => (
-              <button
-                key={alignment}
-                onClick={() => updateSettings({ bodyAlignment: alignment })}
-                className={`flex-1 py-2.5 text-sm capitalize rounded-lg transition-all duration-300 ${
-                  settings.bodyAlignment === alignment
-                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-                }`}
-              >
-                {alignment}
-              </button>
-            ))}
+        <SettingCard title="Format & Meta" icon={Calendar} description="Date formatting and paper sizing.">
+          <div className="space-y-6">
+             <div>
+                <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Date Format</h4>
+                <SegmentedControl 
+                  options={['MM/YYYY', 'MMM YYYY', 'YYYY', 'Month YYYY']} 
+                  value={settings.dateFormat || 'MMM YYYY'} 
+                  onChange={(val) => updateSettings({ dateFormat: val as any })} 
+                />
+             </div>
+             <div>
+                <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Paper Size</h4>
+                <SegmentedControl 
+                  options={['a4', 'letter']} 
+                  value={settings.paperSize || 'a4'} 
+                  onChange={(val) => updateSettings({ paperSize: val as any })} 
+                />
+             </div>
           </div>
-        </div>
+        </SettingCard>
       </div>
 
-      <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Date Format</Label>
-        <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-          {(['MM/YYYY', 'MMM YYYY', 'YYYY', 'Month YYYY'] as const).map((format) => (
-            <button
-              key={format}
-              onClick={() => updateSettings({ dateFormat: format })}
-              className={`flex-1 py-2.5 text-sm rounded-lg transition-all duration-300 ${
-                (settings.dateFormat || 'MMM YYYY') === format
-                  ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                  : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-              }`}
-            >
-              {format === 'MM/YYYY' ? '08/2023' : format === 'MMM YYYY' ? 'Aug 2023' : format === 'YYYY' ? '2023' : 'August 2023'}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <Label className="text-base font-semibold text-zinc-900">Section Visibility</Label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <SettingCard title="Section Visibility" icon={Check} description="Toggle optional sections on or off.">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {[
             { key: 'showPhoto', label: 'Profile Photo' },
             { key: 'showReferences', label: 'References' },
@@ -370,109 +431,121 @@ export function SettingsForm() {
               <button
                 key={key}
                 onClick={() => updateSettings({ [key]: !isVisible })}
-                className={`p-3 rounded-xl border-2 text-center transition-all duration-300 ${
+                className={`px-4 py-6 rounded-[1.5rem] border-2 text-center transition-all duration-300 relative group overflow-hidden ${
                   isVisible
-                    ? 'border-indigo-600 bg-indigo-50/80 text-indigo-700 font-semibold shadow-sm'
-                    : 'border-zinc-200/60 bg-white/60 text-zinc-400 hover:border-zinc-300'
+                    ? 'border-indigo-600 bg-indigo-50/50 shadow-md shadow-indigo-100/50 ring-4 ring-indigo-600/10 scale-[1.02]'
+                    : 'border-zinc-200/80 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 hover:shadow-md hover:-translate-y-0.5'
                 }`}
               >
-                <div className="text-sm">{label}</div>
-                <div className="text-xs mt-1 opacity-70">{isVisible ? 'Visible' : 'Hidden'}</div>
+                {isVisible && (
+                  <div className="absolute top-3 right-3 bg-indigo-100 text-indigo-600 p-1 rounded-full animate-in zoom-in">
+                    <Check className="w-3 h-3 stroke-[3]" />
+                  </div>
+                )}
+                <div className={`font-bold text-[15px] tracking-tight ${isVisible ? 'text-indigo-700' : 'text-zinc-700'}`}>{label}</div>
+                <div className={`text-[11px] font-bold mt-1.5 uppercase tracking-widest ${isVisible ? 'text-indigo-500' : 'text-zinc-400'}`}>{isVisible ? 'Visible' : 'Hidden'}</div>
               </button>
             );
           })}
         </div>
-      </div>
+      </SettingCard>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <Label className="text-base font-semibold text-zinc-900">Paper Size</Label>
-          <div className="flex bg-zinc-100/80 p-1.5 rounded-xl border border-zinc-200/60 shadow-inner">
-            {(['a4', 'letter'] as const).map((size) => (
-              <button
-                key={size}
-                onClick={() => updateSettings({ paperSize: size })}
-                className={`flex-1 py-2.5 text-sm uppercase rounded-lg transition-all duration-300 ${
-                  settings.paperSize === size
-                    ? 'bg-white shadow-md text-indigo-700 font-bold ring-1 ring-indigo-200/50 scale-[1.02]'
-                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-200/50'
-                }`}
-              >
-                {size}
-              </button>
-            ))}
+      <SettingCard title="Advanced Modules & Publishing" icon={Sparkles} description="Enhance your published resume with rich media links and customize the web player.">
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <QuickToggle
+               label="Publish QR Code"
+               description="Add a scannable QR code directly on your PDF resume linking to your live web version."
+               checked={settings.showQrCode || false}
+               onChange={(checked) => updateSettings({ showQrCode: checked })}
+            />
+            <QuickToggle
+               label="Resumora Watermark"
+               description='Display a small "Created with Resumora" watermark at the bottom of your resume.'
+               checked={settings.showWatermark !== false}
+               onChange={(checked) => updateSettings({ showWatermark: checked })}
+            />
+            <QuickToggle
+               label="Page Numbers"
+               description="Show page numbers at the bottom of multi-page resumes."
+               checked={settings.showPageNumbers || false}
+               onChange={(checked) => updateSettings({ showPageNumbers: checked })}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-5 bg-zinc-50/80 border border-zinc-200/80 rounded-[1.5rem] transition-colors hover:bg-zinc-50 space-y-4">
+              <div>
+                <h4 className="font-semibold text-[15px] text-zinc-900">Video Pitch Embed URL</h4>
+                <p className="text-[13px] text-zinc-500 mt-1 leading-relaxed">Include a YouTube or Loom URL to feature a video introduction on your published resume.</p>
+              </div>
+              <input
+                type="url"
+                value={settings.videoPitchUrl || ''}
+                onChange={(e) => updateSettings({ videoPitchUrl: e.target.value })}
+                placeholder="https://youtu.be/..."
+                className="w-full rounded-xl border border-zinc-300/80 bg-white px-4 py-3 text-[14px] text-zinc-900 font-medium focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all shadow-sm placeholder:font-normal"
+              />
+            </div>
+            
+            <div className="p-6 bg-zinc-50/80 border border-zinc-200/80 rounded-[1.5rem] space-y-6">
+               <div>
+                  <h4 className="font-semibold text-[15px] text-zinc-900 mb-4 block">Web Publish Theme</h4>
+                  <SegmentedControl 
+                    options={['light', 'dark', 'system']} 
+                    value={settings.publishTheme || 'light'} 
+                    onChange={(val) => updateSettings({ publishTheme: val as any })} 
+                  />
+               </div>
+               <div>
+                 <h4 className="font-semibold text-[15px] text-zinc-900 mb-4 block">Web Publish Animation</h4>
+                 <SegmentedControl 
+                   options={['fade', 'slide', 'none']} 
+                   value={settings.publishAnimation || 'fade'} 
+                   onChange={(val) => updateSettings({ publishAnimation: val as any })} 
+                 />
+               </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="space-y-4 pt-8 mt-8 border-t border-zinc-200/60">
-        <Label className="text-base font-semibold text-zinc-900">Advanced Features</Label>
-        
-        {/* QR Code Toggle */}
-        <div className="flex items-center justify-between p-4 bg-white border border-zinc-200/60 rounded-xl shadow-sm">
-          <div>
-            <h4 className="font-medium text-zinc-900">QR Code</h4>
-            <p className="text-sm text-zinc-500 max-w-sm">Add a QR code linking to your published resume URL directly onto your physical resume PDF.</p>
+      </SettingCard>
+      
+      <div className="pt-6">
+        <div className="p-6 sm:p-8 relative overflow-hidden bg-white/80 border border-red-200/60 shadow-[0_8px_30px_rgb(220,38,38,0.04)] rounded-[2rem] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent pointer-events-none" />
+          <div className="relative z-10">
+            <h3 className="text-[1.1rem] font-bold text-red-600 flex items-center gap-2 tracking-tight">
+              <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+              Reset Workspace
+            </h3>
+            <p className="text-[13px] font-medium text-red-900/60 mt-1 max-w-lg leading-relaxed">
+              This will permanently delete all your local resume progress and reset the editor to a clean state. This action cannot be undone.
+            </p>
           </div>
-          <button
-            onClick={() => updateSettings({ showQrCode: !settings.showQrCode })}
-            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-              settings.showQrCode ? 'bg-indigo-600' : 'bg-zinc-300'
+          <Button 
+            variant={isConfirmingReset ? "danger" : "outline"}
+            onClick={handleReset} 
+            className={`relative z-10 w-full sm:w-auto transition-all py-3 flex items-center gap-2 px-6 font-bold tracking-wide rounded-xl duration-300 ${
+              isConfirmingReset 
+                ? "bg-red-600 hover:bg-red-700 text-white border-red-600 shadow-lg shadow-red-600/30 ring-4 ring-red-600/10 scale-[1.02]" 
+                : "text-red-700 bg-white/80 backdrop-blur border-red-200 hover:bg-red-50 hover:border-red-300 shadow-sm"
             }`}
           >
-            <span
-              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                settings.showQrCode ? 'translate-x-5' : 'translate-x-0'
-              }`}
-            />
-          </button>
-        </div>
-
-        {/* Video Pitch URL */}
-        <div className="p-4 bg-white border border-zinc-200/60 rounded-xl shadow-sm space-y-3">
-          <div className="space-y-0.5">
-            <h4 className="font-medium text-zinc-900">Video Pitch Embed</h4>
-            <p className="text-sm text-zinc-500">Add a YouTube or Loom URL to embed a video on your published resume webpage.</p>
-          </div>
-          <input
-            type="url"
-            value={settings.videoPitchUrl || ''}
-            onChange={(e) => updateSettings({ videoPitchUrl: e.target.value })}
-            placeholder="https://youtu.be/..."
-            className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-zinc-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors"
-          />
+            {isConfirmingReset ? (
+              <>
+                <AlertTriangle className="w-4 h-4" />
+                Click again to confirm
+              </>
+            ) : (
+              <>
+                <RotateCcw className="w-4 h-4" />
+                Clear Local Data
+              </>
+            )}
+          </Button>
         </div>
       </div>
-      
-      <div className="pt-8 mt-8 border-t border-zinc-200/60">
-          <div className="space-y-4">
-            <Label className="text-base font-semibold text-red-600">Danger Zone</Label>
-            <p className="text-sm text-zinc-500">
-              This action will permanently delete all your resume data. This cannot be undone.
-            </p>
-            <Button 
-              variant={isConfirmingReset ? "danger" : "outline"}
-              onClick={handleReset} 
-              className={`w-full sm:w-auto transition-all duration-200 ${
-                isConfirmingReset 
-                  ? "bg-red-600 hover:bg-red-700 text-white border-red-600" 
-                  : "text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
-              }`}
-            >
-              {isConfirmingReset ? (
-                <>
-                  <AlertTriangle className="w-4 h-4 mr-2" />
-                  Click again to confirm
-                </>
-              ) : (
-                <>
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  Clear All Data
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
     </div>
   );
 }
+

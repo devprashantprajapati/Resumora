@@ -201,24 +201,6 @@ export function ResumePreview() {
                       </div>
                       <div className="grid gap-1">
                         <button
-                          onClick={() => { 
-                            const id = toast.loading('Preparing native PDF...');
-                            try {
-                              handlePrint();
-                              toast.success('Print dialog opened', { id });
-                            } catch (e) {
-                              toast.error('Failed to open print dialog', { id });
-                            }
-                            setIsExportMenuOpen(false); 
-                          }}
-                          className="w-full flex items-center px-4 py-3 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-2xl transition-all duration-300 group text-left font-semibold hover:shadow-sm"
-                        >
-                          <div className="w-9 h-9 rounded-xl bg-green-100/80 flex items-center justify-center mr-3 group-hover:scale-110 group-hover:bg-green-200/80 transition-all duration-300 shadow-sm">
-                            <Printer className="w-4.5 h-4.5 text-green-600" />
-                          </div>
-                          Print / Native PDF
-                        </button>
-                        <button
                           onClick={async () => {
                             const id = toast.loading('Generating image-based PDF...');
                             try {
@@ -404,12 +386,23 @@ export function ResumePreview() {
                 }}
               >
                 {/* Watermark */}
-                <div id="resume-watermark" className="absolute bottom-6 right-8 pointer-events-none select-none opacity-[0.06] group-hover/paper:opacity-[0.12] transition-opacity duration-700 flex items-center gap-2">
-                  <Logo className="scale-75 origin-right" showText={false} />
-                  <span className="text-[12px] font-black tracking-[0.4em] uppercase text-zinc-900">Resumora</span>
-                </div>
+                {data.settings.showWatermark !== false && (
+                  <div id="resume-watermark" className="absolute bottom-6 right-8 pointer-events-none select-none opacity-[0.06] group-hover/paper:opacity-[0.12] transition-opacity duration-700 flex items-center gap-2">
+                    <Logo className="scale-75 origin-right" showText={false} />
+                    <span className="text-[12px] font-black tracking-[0.4em] uppercase text-zinc-900">Resumora</span>
+                  </div>
+                )}
                 
-                {getTemplate()}
+                {/* Page Numbering (Proxy for single page preview) */}
+                {data.settings.showPageNumbers && (
+                  <div className="absolute bottom-6 left-0 right-0 text-center pointer-events-none select-none opacity-40">
+                    <span className="text-[11px] font-medium text-zinc-500">1</span>
+                  </div>
+                )}
+                
+                <div className={cn(data.settings.isAtsOptimized && "grayscale [&_*]:!text-black [&_*]:!border-black/20 [&_svg]:hidden")}>
+                  {getTemplate()}
+                </div>
               </div>
             </TransformComponent>
           </div>

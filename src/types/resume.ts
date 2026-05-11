@@ -103,6 +103,13 @@ export type ResumeData = {
     sectionOrder?: string[];
     showQrCode?: boolean;
     videoPitchUrl?: string;
+    documentLanguage?: string;
+    isAtsOptimized?: boolean;
+    showPageNumbers?: boolean;
+    showWatermark?: boolean;
+    publishTheme?: 'light' | 'dark' | 'system';
+    publishAnimation?: 'fade' | 'slide' | 'none';
+    photoShape?: 'circle' | 'square' | 'rounded';
   };
 };
 
@@ -150,7 +157,14 @@ export const emptyResumeData: ResumeData = {
     bodyAlignment: 'left',
     sectionOrder: ['experience', 'projects', 'skills', 'education', 'certifications', 'languages', 'interests', 'references'],
     showQrCode: false,
-    videoPitchUrl: ''
+    videoPitchUrl: '',
+    documentLanguage: 'en',
+    isAtsOptimized: false,
+    showPageNumbers: false,
+    showWatermark: true,
+    publishTheme: 'light',
+    publishAnimation: 'fade',
+    photoShape: 'circle'
   }
 };
 
@@ -269,6 +283,13 @@ export const initialResumeData: ResumeData = {
     bodyAlignment: 'left',
     sectionOrder: ['experience', 'projects', 'skills', 'education', 'certifications', 'languages', 'interests', 'references'],
     showQrCode: false,
-    videoPitchUrl: ''
+    videoPitchUrl: '',
+    documentLanguage: 'en',
+    isAtsOptimized: false,
+    showPageNumbers: false,
+    showWatermark: true,
+    publishTheme: 'light',
+    publishAnimation: 'fade',
+    photoShape: 'circle'
   }
 };
