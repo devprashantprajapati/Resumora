@@ -5,6 +5,22 @@ import { RotateCcw, AlertTriangle, Cloud, LogOut, LogIn, Check, Sparkles, Wand2,
 import { useAuth } from '@/contexts/AuthContext';
 import { saveResume } from '@/lib/resumeService';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+
+const containerVariants: any = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants: any = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
 const COLORS = [
   { name: 'Blue', value: '#3b82f6' },
@@ -138,10 +154,10 @@ export function SettingsForm() {
   };
 
   return (
-    <div className="space-y-8 pb-10">
+    <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-8 pb-10">
       
       {/* Cloud Sync Banner */}
-      <div className="relative overflow-hidden p-6 sm:p-8 bg-gradient-to-br from-indigo-900 via-indigo-800 to-violet-900 rounded-[2rem] text-white shadow-xl shadow-indigo-900/20">
+      <motion.div variants={itemVariants} className="relative overflow-hidden p-6 sm:p-8 bg-gradient-to-br from-indigo-900 via-indigo-800 to-violet-900 rounded-[2rem] text-white shadow-xl shadow-indigo-900/20">
         <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
           <Cloud className="w-48 h-48 -mt-10 -mr-10 transform rotate-12" />
         </div>
@@ -186,58 +202,62 @@ export function SettingsForm() {
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <SettingCard title="Template Design" icon={LayoutTemplate} description="Choose a distinctive layout that fits your industry.">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {(['modern', 'minimal', 'corporate', 'creative', 'elegant', 'tech', 'executive', 'premium', 'academic', 'studio'] as const).map((template) => (
-            <button
-              key={template}
-              onClick={() => updateSettings({ template })}
-              className={`relative overflow-hidden px-4 py-8 rounded-[1.5rem] border-2 text-center capitalize transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] group ${
-                settings.template === template
-                  ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-lg shadow-indigo-200/50 ring-4 ring-indigo-600/10 scale-[1.02]'
-                  : 'border-zinc-200/80 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 hover:shadow-md hover:-translate-y-0.5 text-zinc-600'
-              }`}
-            >
-              {settings.template === template && (
-                <div className="absolute top-4 right-4 text-indigo-600 bg-indigo-100 p-1 rounded-full animate-in zoom-in">
-                  <Check className="w-3.5 h-3.5 stroke-[3]" />
-                </div>
-              )}
-              <span className={`font-bold tracking-tight text-[15px] ${settings.template === template ? 'text-indigo-700' : 'text-zinc-700 group-hover:text-zinc-900'}`}>{template}</span>
-            </button>
-          ))}
-        </div>
-      </SettingCard>
+      <motion.div variants={itemVariants}>
+        <SettingCard title="Template Design" icon={LayoutTemplate} description="Choose a distinctive layout that fits your industry.">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {(['modern', 'minimal', 'corporate', 'creative', 'elegant', 'tech', 'executive', 'premium', 'academic', 'studio'] as const).map((template) => (
+              <button
+                key={template}
+                onClick={() => updateSettings({ template })}
+                className={`relative overflow-hidden px-4 py-8 rounded-[1.5rem] border-2 text-center capitalize transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] group ${
+                  settings.template === template
+                    ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-lg shadow-indigo-200/50 ring-4 ring-indigo-600/10 scale-[1.02]'
+                    : 'border-zinc-200/80 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 hover:shadow-md hover:-translate-y-0.5 text-zinc-600'
+                }`}
+              >
+                {settings.template === template && (
+                  <div className="absolute top-4 right-4 text-indigo-600 bg-indigo-100 p-1 rounded-full animate-in zoom-in">
+                    <Check className="w-3.5 h-3.5 stroke-[3]" />
+                  </div>
+                )}
+                <span className={`font-bold tracking-tight text-[15px] ${settings.template === template ? 'text-indigo-700' : 'text-zinc-700 group-hover:text-zinc-900'}`}>{template}</span>
+              </button>
+            ))}
+          </div>
+        </SettingCard>
+      </motion.div>
 
-      <SettingCard title="Color Identity" icon={Wand2} description="Select a dominant color to highlight key elements and section headers.">
-        <div className="flex flex-wrap gap-4 pt-2">
-          {COLORS.map((color) => (
-            <button
-              key={color.value}
-              onClick={() => updateSettings({ color: color.value })}
-              className={`relative w-12 h-12 rounded-full transition-all duration-300 shadow-sm flex items-center justify-center group ${
-                settings.color === color.value ? 'scale-110 ring-[3px] ring-offset-4 ring-offset-zinc-50 shadow-md' : 'hover:scale-110 hover:shadow-md ring-1 ring-black/5 hover:ring-black/20 ring-offset-0'
-              }`}
-              style={{ 
-                backgroundColor: color.value,
-                ...(settings.color === color.value ? { '--tw-ring-color': color.value } as any : {})
-              }}
-              title={color.name}
-            >
-               {settings.color === color.value && (
-                  <Check className="w-5 h-5 text-white drop-shadow-md animate-in zoom-in stroke-[3]" />
-               )}
-               {!settings.color && color.value === '#3b82f6' && (
-                  <Check className="w-5 h-5 text-white drop-shadow-md animate-in zoom-in stroke-[3]" />
-               )}
-            </button>
-          ))}
-        </div>
-      </SettingCard>
+      <motion.div variants={itemVariants}>
+        <SettingCard title="Color Identity" icon={Wand2} description="Select a dominant color to highlight key elements and section headers.">
+          <div className="flex flex-wrap gap-4 pt-2">
+            {COLORS.map((color) => (
+              <button
+                key={color.value}
+                onClick={() => updateSettings({ color: color.value })}
+                className={`relative w-12 h-12 rounded-full transition-all duration-300 shadow-sm flex items-center justify-center group ${
+                  settings.color === color.value ? 'scale-110 ring-[3px] ring-offset-4 ring-offset-zinc-50 shadow-md' : 'hover:scale-110 hover:shadow-md ring-1 ring-black/5 hover:ring-black/20 ring-offset-0'
+                }`}
+                style={{ 
+                  backgroundColor: color.value,
+                  ...(settings.color === color.value ? { '--tw-ring-color': color.value } as any : {})
+                }}
+                title={color.name}
+              >
+                 {settings.color === color.value && (
+                    <Check className="w-5 h-5 text-white drop-shadow-md animate-in zoom-in stroke-[3]" />
+                 )}
+                 {!settings.color && color.value === '#3b82f6' && (
+                    <Check className="w-5 h-5 text-white drop-shadow-md animate-in zoom-in stroke-[3]" />
+                 )}
+              </button>
+            ))}
+          </div>
+        </SettingCard>
+      </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <SettingCard title="Body Typography" icon={Type} description="The font used for descriptions and regular text.">
           <div className="flex flex-col gap-3">
             {FONTS.map((font) => (
@@ -287,29 +307,31 @@ export function SettingsForm() {
             ))}
           </div>
         </SettingCard>
-      </div>
+      </motion.div>
 
-      <SettingCard title="Optimization & Localization" icon={Sparkles} description="Language and parsing optimizations.">
-        <div className="space-y-6">
-           <QuickToggle
-             label="ATS Optimization Mode"
-             description="Strips complex formatting and columns to ensure maximum compatibility with Applicant Tracking Systems."
-             checked={settings.isAtsOptimized || false}
-             onChange={(checked) => updateSettings({ isAtsOptimized: checked })}
-           />
-           
-           <div>
-              <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Document Language (Localization)</h4>
-              <SegmentedControl 
-                options={['en', 'es', 'fr', 'de']} 
-                value={settings.documentLanguage || 'en'} 
-                onChange={(val) => updateSettings({ documentLanguage: val as any })} 
-              />
-           </div>
-        </div>
-      </SettingCard>
+      <motion.div variants={itemVariants}>
+        <SettingCard title="Optimization & Localization" icon={Sparkles} description="Language and parsing optimizations.">
+          <div className="space-y-6">
+             <QuickToggle
+               label="ATS Optimization Mode"
+               description="Strips complex formatting and columns to ensure maximum compatibility with Applicant Tracking Systems."
+               checked={settings.isAtsOptimized || false}
+               onChange={(checked) => updateSettings({ isAtsOptimized: checked })}
+             />
+             
+             <div>
+                <h4 className="font-semibold text-[14px] text-zinc-900 mb-3 block tracking-tight">Document Language (Localization)</h4>
+                <SegmentedControl 
+                  options={['en', 'es', 'fr', 'de']} 
+                  value={settings.documentLanguage || 'en'} 
+                  onChange={(val) => updateSettings({ documentLanguage: val as any })} 
+                />
+             </div>
+          </div>
+        </SettingCard>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <SettingCard title="Sizing" icon={Box} description="Adjust font size and line height.">
           <div className="space-y-6">
              <div>
@@ -351,9 +373,9 @@ export function SettingsForm() {
              </div>
           </div>
         </SettingCard>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <SettingCard title="Alignment & Shape" icon={LayoutTemplate} description="Refine borders and text alignment.">
           <div className="space-y-6">
              <div>
@@ -370,8 +392,8 @@ export function SettingsForm() {
                   <SegmentedControl 
                     options={['left', 'center', 'right']} 
                     value={settings.headerAlignment || 'left'} 
-                    onChange={(val) => updateSettings({ headerAlignment: val as any })} 
-                    style={{ width: '142px' }}
+                    onChange={(val) => updateSettings({ headerAlignment: val as any })}
+                    style={{ width: '140px' }}
                   />
                 </div>
                 <div>
@@ -379,7 +401,8 @@ export function SettingsForm() {
                   <SegmentedControl 
                     options={['left', 'justify']} 
                     value={settings.bodyAlignment || 'left'} 
-                    onChange={(val) => updateSettings({ bodyAlignment: val as any })} 
+                    onChange={(val) => updateSettings({ bodyAlignment: val as any })}
+                    style={{ width: '140px' }}
                   />
                 </div>
              </div>
@@ -414,103 +437,107 @@ export function SettingsForm() {
              </div>
           </div>
         </SettingCard>
-      </div>
+      </motion.div>
 
-      <SettingCard title="Section Visibility" icon={Check} description="Toggle optional sections on or off.">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {[
-            { key: 'showPhoto', label: 'Profile Photo' },
-            { key: 'showReferences', label: 'References' },
-            { key: 'showInterests', label: 'Interests' },
-            { key: 'showLanguages', label: 'Languages' },
-            { key: 'showCertifications', label: 'Certifications' },
-            { key: 'showProjects', label: 'Projects' },
-          ].map(({ key, label }) => {
-            const isVisible = settings[key as keyof typeof settings] !== false;
-            return (
-              <button
-                key={key}
-                onClick={() => updateSettings({ [key]: !isVisible })}
-                className={`px-4 py-6 rounded-[1.5rem] border-2 text-center transition-all duration-300 relative group overflow-hidden ${
-                  isVisible
-                    ? 'border-indigo-600 bg-indigo-50/50 shadow-md shadow-indigo-100/50 ring-4 ring-indigo-600/10 scale-[1.02]'
-                    : 'border-zinc-200/80 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 hover:shadow-md hover:-translate-y-0.5'
-                }`}
-              >
-                {isVisible && (
-                  <div className="absolute top-3 right-3 bg-indigo-100 text-indigo-600 p-1 rounded-full animate-in zoom-in">
-                    <Check className="w-3 h-3 stroke-[3]" />
-                  </div>
-                )}
-                <div className={`font-bold text-[15px] tracking-tight ${isVisible ? 'text-indigo-700' : 'text-zinc-700'}`}>{label}</div>
-                <div className={`text-[11px] font-bold mt-1.5 uppercase tracking-widest ${isVisible ? 'text-indigo-500' : 'text-zinc-400'}`}>{isVisible ? 'Visible' : 'Hidden'}</div>
-              </button>
-            );
-          })}
-        </div>
-      </SettingCard>
-
-      <SettingCard title="Advanced Modules & Publishing" icon={Sparkles} description="Enhance your published resume with rich media links and customize the web player.">
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <QuickToggle
-               label="Publish QR Code"
-               description="Add a scannable QR code directly on your PDF resume linking to your live web version."
-               checked={settings.showQrCode || false}
-               onChange={(checked) => updateSettings({ showQrCode: checked })}
-            />
-            <QuickToggle
-               label="Resumora Watermark"
-               description='Display a small "Created with Resumora" watermark at the bottom of your resume.'
-               checked={settings.showWatermark !== false}
-               onChange={(checked) => updateSettings({ showWatermark: checked })}
-            />
-            <QuickToggle
-               label="Page Numbers"
-               description="Show page numbers at the bottom of multi-page resumes."
-               checked={settings.showPageNumbers || false}
-               onChange={(checked) => updateSettings({ showPageNumbers: checked })}
-            />
+      <motion.div variants={itemVariants}>
+        <SettingCard title="Section Visibility" icon={Check} description="Toggle optional sections on or off.">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {[
+              { key: 'showPhoto', label: 'Profile Photo' },
+              { key: 'showReferences', label: 'References' },
+              { key: 'showInterests', label: 'Interests' },
+              { key: 'showLanguages', label: 'Languages' },
+              { key: 'showCertifications', label: 'Certifications' },
+              { key: 'showProjects', label: 'Projects' },
+            ].map(({ key, label }) => {
+              const isVisible = settings[key as keyof typeof settings] !== false;
+              return (
+                <button
+                  key={key}
+                  onClick={() => updateSettings({ [key]: !isVisible })}
+                  className={`px-4 py-6 rounded-[1.5rem] border-2 text-center transition-all duration-300 relative group overflow-hidden ${
+                    isVisible
+                      ? 'border-indigo-600 bg-indigo-50/50 shadow-md shadow-indigo-100/50 ring-4 ring-indigo-600/10 scale-[1.02]'
+                      : 'border-zinc-200/80 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 hover:shadow-md hover:-translate-y-0.5'
+                  }`}
+                >
+                  {isVisible && (
+                    <div className="absolute top-3 right-3 bg-indigo-100 text-indigo-600 p-1 rounded-full animate-in zoom-in">
+                      <Check className="w-3 h-3 stroke-[3]" />
+                    </div>
+                  )}
+                  <div className={`font-bold text-[15px] tracking-tight ${isVisible ? 'text-indigo-700' : 'text-zinc-700'}`}>{label}</div>
+                  <div className={`text-[11px] font-bold mt-1.5 uppercase tracking-widest ${isVisible ? 'text-indigo-500' : 'text-zinc-400'}`}>{isVisible ? 'Visible' : 'Hidden'}</div>
+                </button>
+              );
+            })}
           </div>
+        </SettingCard>
+      </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-5 bg-zinc-50/80 border border-zinc-200/80 rounded-[1.5rem] transition-colors hover:bg-zinc-50 space-y-4">
-              <div>
-                <h4 className="font-semibold text-[15px] text-zinc-900">Video Pitch Embed URL</h4>
-                <p className="text-[13px] text-zinc-500 mt-1 leading-relaxed">Include a YouTube or Loom URL to feature a video introduction on your published resume.</p>
-              </div>
-              <input
-                type="url"
-                value={settings.videoPitchUrl || ''}
-                onChange={(e) => updateSettings({ videoPitchUrl: e.target.value })}
-                placeholder="https://youtu.be/..."
-                className="w-full rounded-xl border border-zinc-300/80 bg-white px-4 py-3 text-[14px] text-zinc-900 font-medium focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all shadow-sm placeholder:font-normal"
+      <motion.div variants={itemVariants}>
+        <SettingCard title="Advanced Modules & Publishing" icon={Sparkles} description="Enhance your published resume with rich media links and customize the web player.">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <QuickToggle
+                 label="Publish QR Code"
+                 description="Add a scannable QR code directly on your PDF resume linking to your live web version."
+                 checked={settings.showQrCode || false}
+                 onChange={(checked) => updateSettings({ showQrCode: checked })}
+              />
+              <QuickToggle
+                 label="Resumora Watermark"
+                 description='Display a small "Created with Resumora" watermark at the bottom of your resume.'
+                 checked={settings.showWatermark !== false}
+                 onChange={(checked) => updateSettings({ showWatermark: checked })}
+              />
+              <QuickToggle
+                 label="Page Numbers"
+                 description="Show page numbers at the bottom of multi-page resumes."
+                 checked={settings.showPageNumbers || false}
+                 onChange={(checked) => updateSettings({ showPageNumbers: checked })}
               />
             </div>
-            
-            <div className="p-6 bg-zinc-50/80 border border-zinc-200/80 rounded-[1.5rem] space-y-6">
-               <div>
-                  <h4 className="font-semibold text-[15px] text-zinc-900 mb-4 block">Web Publish Theme</h4>
-                  <SegmentedControl 
-                    options={['light', 'dark', 'system']} 
-                    value={settings.publishTheme || 'light'} 
-                    onChange={(val) => updateSettings({ publishTheme: val as any })} 
-                  />
-               </div>
-               <div>
-                 <h4 className="font-semibold text-[15px] text-zinc-900 mb-4 block">Web Publish Animation</h4>
-                 <SegmentedControl 
-                   options={['fade', 'slide', 'none']} 
-                   value={settings.publishAnimation || 'fade'} 
-                   onChange={(val) => updateSettings({ publishAnimation: val as any })} 
-                 />
-               </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="p-5 bg-zinc-50/80 border border-zinc-200/80 rounded-[1.5rem] transition-colors hover:bg-zinc-50 space-y-4">
+                <div>
+                  <h4 className="font-semibold text-[15px] text-zinc-900">Video Pitch Embed URL</h4>
+                  <p className="text-[13px] text-zinc-500 mt-1 leading-relaxed">Include a YouTube or Loom URL to feature a video introduction on your published resume.</p>
+                </div>
+                <input
+                  type="url"
+                  value={settings.videoPitchUrl || ''}
+                  onChange={(e) => updateSettings({ videoPitchUrl: e.target.value })}
+                  placeholder="https://youtu.be/..."
+                  className="w-full rounded-xl border border-zinc-300/80 bg-white px-4 py-3 text-[14px] text-zinc-900 font-medium focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all shadow-sm placeholder:font-normal"
+                />
+              </div>
+              
+              <div className="p-6 bg-zinc-50/80 border border-zinc-200/80 rounded-[1.5rem] space-y-6">
+                 <div>
+                    <h4 className="font-semibold text-[15px] text-zinc-900 mb-4 block">Web Publish Theme</h4>
+                    <SegmentedControl 
+                      options={['light', 'dark', 'system']} 
+                      value={settings.publishTheme || 'light'} 
+                      onChange={(val) => updateSettings({ publishTheme: val as any })} 
+                    />
+                 </div>
+                 <div>
+                   <h4 className="font-semibold text-[15px] text-zinc-900 mb-4 block">Web Publish Animation</h4>
+                   <SegmentedControl 
+                     options={['fade', 'slide', 'none']} 
+                     value={settings.publishAnimation || 'fade'} 
+                     onChange={(val) => updateSettings({ publishAnimation: val as any })} 
+                   />
+                 </div>
+              </div>
             </div>
           </div>
-        </div>
-      </SettingCard>
+        </SettingCard>
+      </motion.div>
       
-      <div className="pt-6">
+      <motion.div variants={itemVariants} className="pt-6">
         <div className="p-6 sm:p-8 relative overflow-hidden bg-white/80 border border-red-200/60 shadow-[0_8px_30px_rgb(220,38,38,0.04)] rounded-[2rem] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent pointer-events-none" />
           <div className="relative z-10">
@@ -544,8 +571,8 @@ export function SettingsForm() {
             )}
           </Button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
