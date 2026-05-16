@@ -7,6 +7,7 @@ import { PublicResume } from './pages/PublicResume';
 import { AnalyticsDashboard } from './pages/AnalyticsDashboard';
 import './index.css';
 import { AuthProvider } from './contexts/AuthContext';
+import { Analytics } from '@vercel/analytics/react';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/analytics/:slug" element={<AnalyticsDashboard />} />
         </Routes>
       </BrowserRouter>
+      <Analytics />
     </AuthProvider>
   </StrictMode>,
 );
