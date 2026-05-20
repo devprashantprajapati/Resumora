@@ -5,6 +5,7 @@ import { X, Search, Briefcase, MapPin, Building, ExternalLink, Loader2, Globe, T
 import { Button } from '../ui/Button';
 import { useResumeStore } from '@/store/useResumeStore';
 import { searchJobsStream, JobOpportunity } from '@/services/ai';
+import { toast } from 'sonner';
 
 const LOADING_STEPS = [
   "Analyzing resume structure...",
@@ -58,8 +59,9 @@ export function JobSearchGenerator() {
       for await (const job of stream) {
         setJobs(prev => [...prev, job]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching jobs:', error);
+      toast.error(error?.message || 'Failed to search jobs. Please try again.');
     } finally {
       setIsLoading(false);
     }

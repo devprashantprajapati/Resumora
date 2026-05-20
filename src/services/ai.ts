@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { ResumeData } from "../types/resume";
 import { v4 as uuidv4 } from "uuid";
+import { parse } from 'partial-json';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -442,61 +443,60 @@ export async function* searchJobsStream(resumeContent: string): AsyncGenerator<J
     
     Resume Content:
     ${resumeContent}
-    
-    IMPORTANT MUST FOLLOW INSTRUCTION: You MUST return the output strictly as JSONL (JSON Lines). Do NOT wrap the output in a JSON array. Do NOT output any markdown blocks (like \`\`\`json). 
-    You must output exactly one valid JSON object per line.
-    
-    Each JSON object line must have this exact schema:
-    {"title":"...","company":"...","location":"...","description":"...","applyLink":"...","matchScore":85,"salaryRange":"...","jobType":"...","topSkills":["..."],"matchReason":"..."}
     `;
 
     const response = await ai.models.generateContentStream({
       model: "gemini-3.1-pro-preview",
       contents: prompt,
       config: {
-        tools: [{ googleSearch: {} }]
+        tools: [{ googleSearch: {} }],
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              title: { type: Type.STRING },
+              company: { type: Type.STRING },
+              location: { type: Type.STRING },
+              description: { type: Type.STRING },
+              applyLink: { type: Type.STRING },
+              matchScore: { type: Type.INTEGER },
+              salaryRange: { type: Type.STRING },
+              jobType: { type: Type.STRING },
+              topSkills: { type: Type.ARRAY, items: { type: Type.STRING } },
+              matchReason: { type: Type.STRING }
+            },
+            required: ["title", "company", "location", "description", "applyLink", "matchScore", "salaryRange", "jobType", "topSkills", "matchReason"]
+          }
+        }
       }
     });
 
     let buffer = "";
+    let yieldedCount = 0;
+    
     for await (const chunk of response) {
       if (chunk.text) {
         buffer += chunk.text;
-        let newlineIndex;
-        while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
-          let line = buffer.slice(0, newlineIndex).trim();
-          buffer = buffer.slice(newlineIndex + 1);
-          
-          // Remove any accidental markdown backticks from the line
-          if (line.startsWith('```json')) line = line.replace(/^```json/g, '').trim();
-          if (line.startsWith('```')) line = line.replace(/^```/g, '').trim();
-          if (line.endsWith('```')) line = line.replace(/```$/g, '').trim();
-
-          if (line.startsWith('{') && line.endsWith('}')) {
-             try {
-                const job = JSON.parse(line) as JobOpportunity;
-                yield job;
-             } catch(e) {
-                // ignore incomplete/malformed line
-             }
+        try {
+          const parsedArray = parse(buffer) as JobOpportunity[];
+          if (Array.isArray(parsedArray)) {
+            while (yieldedCount < parsedArray.length) {
+              const job = parsedArray[yieldedCount];
+              // Only yield if the job object has the required fields (to ignore partially typed first keys)
+              if (job && job.title && job.company && job.applyLink) {
+                 yield job;
+                 yieldedCount++;
+              } else {
+                 break; // Wait for more chunks to complete this object
+              }
+            }
           }
+        } catch (e) {
+          // partial-json usually handles errors, but just in case
         }
       }
-    }
-    
-    // Check remaining buffer
-    let remainingLine = buffer.trim();
-    if (remainingLine.startsWith('```json')) remainingLine = remainingLine.replace(/^```json/g, '').trim();
-    if (remainingLine.startsWith('```')) remainingLine = remainingLine.replace(/^```/g, '').trim();
-    if (remainingLine.endsWith('```')) remainingLine = remainingLine.replace(/```$/g, '').trim();
-
-    if (remainingLine.startsWith('{') && remainingLine.endsWith('}')) {
-       try {
-          const job = JSON.parse(remainingLine) as JobOpportunity;
-          yield job;
-       } catch(e) {
-          // Ignore parse errors from partial or malformed lines
-       }
     }
   } catch (error) {
     console.error("Error streaming jobs:", error);
