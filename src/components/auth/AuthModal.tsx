@@ -92,7 +92,15 @@ export function AuthModal() {
       toast.success('Successfully signed in with Google!');
     } catch (error: any) {
       if (error.message !== 'cancelled') {
-        toast.error('Failed to sign in with Google.');
+        if (error.code === 'auth/network-request-failed') {
+          toast.error('Google Sign-In blocked by your browser settings. Try clicking "Open new tab" ↗️ in the top right to use it outside the iframe, or use Email/Password sign-in.', { duration: 8000 });
+        } else if (error.code === 'auth/unauthorized-domain') {
+          toast.error('This domain is not authorized for Google Sign-In. Add this URL to "Authorized Domains" in the Firebase Console.', { duration: 6000 });
+        } else {
+          toast.error('Failed to sign in with Google.', {
+            description: error.message
+          });
+        }
       }
     } finally {
       setIsLoading(false);
