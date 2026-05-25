@@ -14,7 +14,17 @@ export function PersonalInfoForm() {
   const { personalInfo } = data;
   const [isGenerating, setIsGenerating] = useState(false);
   const [tone, setTone] = useState("Professional");
+  const [emailError, setEmailError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const validateEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !regex.test(email)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
+  };
 
   const handleGenerateSummary = async () => {
     setIsGenerating(true);
@@ -192,9 +202,15 @@ export function PersonalInfoForm() {
             id="email" 
             type="email"
             value={personalInfo.email} 
-            onChange={(e) => updatePersonalInfo({ email: e.target.value })} 
+            onChange={(e) => {
+              const newEmail = e.target.value;
+              updatePersonalInfo({ email: newEmail });
+              validateEmail(newEmail);
+            }} 
             placeholder="john@example.com"
+            className={emailError ? 'border-red-500 focus-visible:ring-red-500' : ''}
           />
+          {emailError && <p className="text-[11px] font-medium text-red-500 mt-1">{emailError}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
