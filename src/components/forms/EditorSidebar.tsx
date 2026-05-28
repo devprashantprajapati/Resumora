@@ -205,16 +205,16 @@ export function EditorSidebar() {
       <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 bg-zinc-50/30 scroll-smooth relative">
         <div className="absolute inset-0 bg-mesh-pattern opacity-40 pointer-events-none" />
         <div className="max-w-3xl mx-auto relative z-10 pl-1 md:pl-2">
-          <div className="flex items-center gap-6 mb-12">
+          <div className="flex items-start md:items-center gap-4 mb-8">
             <motion.div 
               key={activeSection + 'icon'}
               initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
-              className="p-4 bg-gradient-to-br from-indigo-500 to-violet-600 text-white rounded-[2rem] shadow-2xl shadow-indigo-500/20 ring-4 ring-white"
+              className="p-3 bg-gradient-to-br from-indigo-500 to-violet-600 text-white rounded-2xl shadow-lg shadow-indigo-500/20 shrink-0"
             >
               {(() => {
                 const ActiveIcon = ALL_SECTIONS.find(s => s.id === activeSection)?.icon || User;
-                return <ActiveIcon className="w-7 h-7" />;
+                return <ActiveIcon className="w-6 h-6" />;
               })()}
             </motion.div>
             <div>
@@ -222,7 +222,7 @@ export function EditorSidebar() {
                 key={activeSection + 'title'}
                 initial={{ x: -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                className="text-3xl md:text-4xl font-display font-bold text-zinc-900 tracking-tight"
+                className="text-2xl md:text-3xl font-display font-bold text-zinc-900 tracking-tight"
               >
                 {ALL_SECTIONS.find(s => s.id === activeSection)?.label}
               </motion.h2>
@@ -231,7 +231,7 @@ export function EditorSidebar() {
                 initial={{ x: -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}
-                className="text-sm md:text-base font-medium text-zinc-500 mt-1.5"
+                className="text-sm font-medium text-zinc-500 mt-1"
               >
                 Update your details to refine your professional profile.
               </motion.p>
