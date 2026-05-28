@@ -9,9 +9,16 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, FileText, Target, CheckCircle2, XCircle, Search, Lightbulb, Copy, Check, ChevronDown, CheckSquare, MessageSquare, Wand2, Globe } from 'lucide-react';
 
+const TABS = [
+  { id: 'match', label: 'ATS Match' },
+  { id: 'coverletter', label: 'Cover Letter' },
+  { id: 'interview', label: 'Interview Prep' },
+  { id: 'translate', label: 'Translate' }
+] as const;
+
 export function AIToolsForm() {
   const { data, updateData } = useResumeStore();
-  const [activeTab, setActiveTab] = useState<'match' | 'coverletter' | 'interview' | 'translate'>('match');
+  const [activeTab, setActiveTab] = useState<typeof TABS[number]['id']>('match');
   const [jobDescription, setJobDescription] = useState('');
   const [companyName, setCompanyName] = useState('');
   
@@ -187,52 +194,49 @@ export function AIToolsForm() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex border-b border-zinc-200">
-        <button
-          onClick={() => setActiveTab('match')}
-          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'match' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-zinc-500 hover:text-zinc-700'}`}
-        >
-          ATS Match
-        </button>
-        <button
-          onClick={() => setActiveTab('coverletter')}
-          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'coverletter' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-zinc-500 hover:text-zinc-700'}`}
-        >
-          Cover Letter
-        </button>
-        <button
-          onClick={() => setActiveTab('interview')}
-          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'interview' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-zinc-500 hover:text-zinc-700'}`}
-        >
-          Interview Prep
-        </button>
-        <button
-          onClick={() => setActiveTab('translate')}
-          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'translate' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-zinc-500 hover:text-zinc-700'}`}
-        >
-          Translate
-        </button>
+    <div className="space-y-8">
+      <div className="grid grid-cols-2 gap-1.5 p-1.5 bg-zinc-100/80 backdrop-blur-md rounded-2xl border border-zinc-200/50 shadow-inner">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`relative px-3 py-2.5 text-[14px] font-semibold rounded-xl transition-all whitespace-nowrap outline-none flex items-center justify-center ${
+              activeTab === tab.id ? 'text-zinc-900' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50'
+            }`}
+          >
+            {activeTab === tab.id && (
+              <motion.div
+                layoutId="aiToolsTabIndicator"
+                className="absolute inset-0 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-zinc-900/5"
+                initial={false}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              />
+            )}
+            <span className="relative z-10">{tab.label}</span>
+          </button>
+        ))}
       </div>
 
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label>Job Description</Label>
-          <Textarea 
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-            placeholder="Paste the job description here..."
-            className="min-h-[120px] pro-input bg-white"
-          />
-        </div>
+      <div className="space-y-5">
+        {activeTab !== 'translate' && (
+          <div className="space-y-2">
+            <Label className="text-sm font-semibold text-zinc-700 ml-1">Job Description</Label>
+            <Textarea 
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              placeholder="Paste the job description here..."
+              className="min-h-[140px] pro-input bg-white/60 resize-y"
+            />
+          </div>
+        )}
         {(activeTab === 'coverletter' || activeTab === 'interview') && (
           <div className="space-y-2">
-            <Label>Company Name</Label>
+            <Label className="text-sm font-semibold text-zinc-700 ml-1">Company Name</Label>
             <Input 
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
               placeholder="e.g. Google, Stripe"
-              className="pro-input bg-white"
+              className="pro-input bg-white/60"
             />
           </div>
         )}
@@ -241,12 +245,12 @@ export function AIToolsForm() {
       <div className="mt-8">
         {activeTab === 'match' && (
           <div className="space-y-6">
-            <div className="flex gap-3">
-              <Button onClick={handleAnalyzeMatch} isLoading={isAnalyzing} className="flex-1 bg-white hover:bg-zinc-50 text-zinc-900 border border-zinc-200 rounded-xl h-12 shadow-sm font-medium">
-                <Search className="w-4 h-4 mr-2 text-zinc-500" /> Analyze Match
+            <div className="grid grid-cols-2 gap-3">
+              <Button onClick={handleAnalyzeMatch} isLoading={isAnalyzing} className="w-full bg-white hover:bg-zinc-50 border border-zinc-200/80 text-zinc-800 rounded-xl h-[3.25rem] shadow-sm font-semibold transition-all">
+                <Search className="w-4 h-4 mr-2.5 text-zinc-400" /> Analyze Match
               </Button>
-              <Button onClick={handleTailorResume} isLoading={isTailoring} className="flex-1 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 border-none text-white rounded-xl h-12 shadow-sm font-medium transition-all hover:scale-[1.02]">
-                <Wand2 className="w-4 h-4 mr-2" /> Auto-Tailor Resume
+              <Button onClick={handleTailorResume} isLoading={isTailoring} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-[3.25rem] shadow-sm font-semibold transition-all">
+                <Wand2 className="w-4 h-4 mr-2.5" /> Auto-Tailor
               </Button>
             </div>
             
@@ -307,14 +311,14 @@ export function AIToolsForm() {
 
         {activeTab === 'coverletter' && (
           <div className="space-y-6">
-            <Button onClick={handleGenerateCoverLetter} isLoading={isGeneratingCL} disabled={!companyName.trim() || !jobDescription.trim()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-12 shadow-sm font-medium">
-              <FileText className="w-4 h-4 mr-2" /> Generate Cover Letter
+            <Button onClick={handleGenerateCoverLetter} isLoading={isGeneratingCL} disabled={!companyName.trim() || !jobDescription.trim()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-[3.25rem] shadow-sm font-semibold transition-all">
+              <FileText className="w-4 h-4 mr-2.5" /> Generate Cover Letter
             </Button>
 
             {coverLetter && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-5 bg-white border border-zinc-200 rounded-2xl shadow-sm relative group">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-6 bg-white border border-zinc-200/80 rounded-2xl shadow-sm relative group">
                 <Button variant="outline" size="sm" onClick={copyCoverLetter} className="absolute top-4 right-4 h-8 px-2.5 bg-white shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                  {copiedCL ? <Check className="w-3.5 h-3.5 mr-1 text-green-600" /> : <Copy className="w-3.5 h-3.5 mr-1" />}
+                  {copiedCL ? <Check className="w-3.5 h-3.5 mr-1.5 text-green-600" /> : <Copy className="w-3.5 h-3.5 mr-1.5" />}
                   {copiedCL ? 'Copied' : 'Copy'}
                 </Button>
                 <div className="whitespace-pre-wrap text-sm text-zinc-700 leading-relaxed font-serif pr-16">
@@ -327,15 +331,15 @@ export function AIToolsForm() {
 
         {activeTab === 'interview' && (
           <div className="space-y-6">
-            <Button onClick={handleGenerateInterviewPrep} isLoading={isGeneratingPrep} disabled={!companyName.trim() || !jobDescription.trim()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-12 shadow-sm font-medium">
-              <MessageSquare className="w-4 h-4 mr-2" /> Generate Interview Prep Guide
+            <Button onClick={handleGenerateInterviewPrep} isLoading={isGeneratingPrep} disabled={!companyName.trim() || !jobDescription.trim()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-[3.25rem] shadow-sm font-semibold transition-all">
+              <MessageSquare className="w-4 h-4 mr-2.5" /> Generate Prep Guide
             </Button>
 
             {prepResult && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                 
-                <div className="p-5 bg-white border border-zinc-200 rounded-2xl shadow-sm">
-                  <h4 className="font-semibold text-zinc-900 flex items-center gap-2 mb-4">
+                <div className="p-6 bg-white border border-zinc-200/80 rounded-2xl shadow-sm">
+                  <h4 className="font-semibold text-zinc-900 flex items-center gap-2 mb-5">
                     <Target className="w-4 h-4 text-indigo-500" /> Expected Questions & Strategies
                   </h4>
                   <div className="space-y-6">
@@ -349,7 +353,7 @@ export function AIToolsForm() {
                           </div>
                           <div>
                             <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">How to answer</span>
-                            <p className="text-sm text-zinc-700 mt-0.5">{q.suggestedAnswerStrategy}</p>
+                            <p className="text-sm text-zinc-700 mt-0.5 leading-relaxed">{q.suggestedAnswerStrategy}</p>
                           </div>
                         </div>
                       </div>
@@ -357,7 +361,7 @@ export function AIToolsForm() {
                   </div>
                 </div>
 
-                <div className="p-5 bg-white border border-zinc-200 rounded-2xl shadow-sm">
+                <div className="p-6 bg-white border border-zinc-200/80 rounded-2xl shadow-sm">
                   <h4 className="font-semibold text-zinc-900 flex items-center gap-2 mb-4">
                     <Lightbulb className="w-4 h-4 text-amber-500" /> General Tips
                   </h4>
@@ -377,10 +381,10 @@ export function AIToolsForm() {
 
         {activeTab === 'translate' && (
           <div className="space-y-6">
-            <div className="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 p-6 rounded-2xl">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
-                  <Globe className="w-5 h-5" />
+            <div className="bg-gradient-to-br from-indigo-50 to-white border border-indigo-100/60 p-6 rounded-2xl shadow-[inset_0_2px_10px_rgba(255,255,255,1)]">
+              <div className="flex items-center gap-4 mb-2">
+                <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                  <Globe className="w-6 h-6" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-zinc-900">One-Click Translation</h3>
@@ -389,14 +393,14 @@ export function AIToolsForm() {
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="space-y-2">
-                <Label>Target Language <span className="text-red-500">*</span></Label>
+                <Label className="text-sm font-semibold text-zinc-700 ml-1">Target Language <span className="text-red-500">*</span></Label>
                 <Input 
                   value={targetLanguage}
                   onChange={(e) => setTargetLanguage(e.target.value)}
                   placeholder="e.g. Spanish, German, French..."
-                  className="pro-input bg-white h-12"
+                  className="pro-input bg-white"
                 />
               </div>
               
@@ -404,13 +408,13 @@ export function AIToolsForm() {
                 onClick={handleTranslate} 
                 isLoading={isTranslating} 
                 disabled={!targetLanguage.trim()} 
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-12 shadow-sm font-medium"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl h-[3.25rem] shadow-sm font-semibold transition-all"
               >
-                {!isTranslating && <Wand2 className="w-4 h-4 mr-2" />}
+                {!isTranslating && <Wand2 className="w-4 h-4 mr-2.5" />}
                 Translate Resume
               </Button>
               
-              <p className="text-xs text-zinc-500 mt-2 text-center">
+              <p className="text-xs text-zinc-400 mt-2 text-center font-medium">
                 This will automatically translate all text fields across your entire resume into the specified language.
               </p>
             </div>
