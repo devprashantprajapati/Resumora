@@ -222,7 +222,7 @@ export function EditorSidebar() {
                 key={activeSection + 'title'}
                 initial={{ x: -10, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tighter"
+                className="text-3xl md:text-4xl font-display font-bold text-zinc-900 tracking-tight"
               >
                 {ALL_SECTIONS.find(s => s.id === activeSection)?.label}
               </motion.h2>

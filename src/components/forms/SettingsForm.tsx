@@ -262,48 +262,46 @@ export function SettingsForm() {
 
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <SettingCard title="Body Typography" icon={Type} description="The font used for descriptions and regular text.">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             {FONTS.map((font) => (
               <button
                 key={font.value}
                 onClick={() => updateSettings({ font: font.value })}
-                className={`p-4 rounded-[1.2rem] border-2 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden group ${
+                className={`flex items-center justify-between py-2.5 px-4 rounded-xl border-2 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden group ${
                   settings.font === font.value
-                    ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-md ring-2 ring-indigo-600/10'
+                    ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-sm ring-2 ring-indigo-600/10'
                     : 'border-zinc-200/60 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 text-zinc-700 hover:shadow-sm'
                 }`}
-                style={{ fontFamily: font.value }}
               >
+                <span style={{ fontFamily: font.value }} className="text-[1.05rem] font-semibold block">{font.name}</span>
                 {settings.font === font.value && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-600 bg-indigo-100 p-1.5 rounded-full animate-in zoom-in">
-                    <Check className="w-4 h-4 stroke-[3]" />
+                  <div className="text-indigo-600 bg-indigo-100 p-1 rounded-full animate-in zoom-in flex-shrink-0">
+                    <Check className="w-3.5 h-3.5 stroke-[3]" />
                   </div>
                 )}
-                <span className="text-[1.2rem] font-bold block py-2">{font.name}</span>
               </button>
             ))}
           </div>
         </SettingCard>
 
         <SettingCard title="Heading Typography" icon={Type} description="The font used for your name and section titles.">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             {FONTS.map((font) => (
               <button
                 key={font.value}
                 onClick={() => updateSettings({ headingFont: font.value })}
-                className={`p-4 rounded-[1.2rem] border-2 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden group ${
+                className={`flex items-center justify-between py-2.5 px-4 rounded-xl border-2 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] relative overflow-hidden group ${
                   (settings.headingFont || settings.font) === font.value
-                    ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-md ring-2 ring-indigo-600/10'
+                    ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-sm ring-2 ring-indigo-600/10'
                     : 'border-zinc-200/60 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 text-zinc-700 hover:shadow-sm'
                 }`}
-                style={{ fontFamily: font.value }}
               >
+                <span style={{ fontFamily: font.value }} className="text-[1.15rem] font-bold block tracking-tight">{font.name}</span>
                 {(settings.headingFont || settings.font) === font.value && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-600 bg-indigo-100 p-1.5 rounded-full animate-in zoom-in">
-                    <Check className="w-4 h-4 stroke-[3]" />
+                  <div className="text-indigo-600 bg-indigo-100 p-1 rounded-full animate-in zoom-in flex-shrink-0">
+                    <Check className="w-3.5 h-3.5 stroke-[3]" />
                   </div>
                 )}
-                <span className="text-[1.5rem] font-black block tracking-tight py-2">{font.name}</span>
               </button>
             ))}
           </div>

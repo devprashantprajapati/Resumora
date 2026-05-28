@@ -137,7 +137,7 @@ export function AuthModal() {
 
           {/* Header */}
           <div className="px-8 pt-10 pb-6 text-center">
-            <h2 className="text-3xl font-black tracking-tight text-zinc-900 mb-2">
+            <h2 className="text-3xl font-display font-bold tracking-tight text-zinc-900 mb-2">
               {isLogin ? 'Welcome back' : 'Create account'}
             </h2>
             <p className="text-zinc-500">

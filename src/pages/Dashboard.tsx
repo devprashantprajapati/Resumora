@@ -196,15 +196,15 @@ export function Dashboard() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 sm:px-10 py-12 relative z-10">
 
         {isLoading ? (
-          <div className="flex justify-center items-center py-32 relative z-10 w-full h-[400px] glass-panel rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <div className="flex justify-center items-center py-32 relative z-10 w-full h-[400px] bg-white/70 backdrop-blur-3xl rounded-[2rem] shadow-[0_8px_40px_rgb(0,0,0,0.03)] border border-white">
             <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
           </div>
         ) : !user ? (
-          <div className="text-center py-32 glass-panel rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
+          <div className="text-center py-32 bg-white/70 backdrop-blur-3xl rounded-[2rem] shadow-[0_8px_40px_rgb(0,0,0,0.03)] border border-white relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 pointer-events-none" />
-            <h2 className="text-2xl font-bold text-zinc-900 mb-2 relative z-10 tracking-tight">Sign in to sync your resumes</h2>
-            <p className="text-zinc-500 mb-8 max-w-sm mx-auto relative z-10">Your data is securely stored and accessible from anywhere.</p>
-            <Button onClick={openAuthModal} className="rounded-full bg-zinc-900 hover:bg-zinc-800 text-white px-8 h-12 shadow-[0_4px_16px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-all relative z-10">
+            <h2 className="text-3xl font-display font-bold text-zinc-900 mb-3 relative z-10 tracking-tight">Sign in to sync your resumes</h2>
+            <p className="text-zinc-500 mb-8 max-w-sm mx-auto relative z-10 text-lg">Your data is securely stored and accessible from anywhere.</p>
+            <Button onClick={openAuthModal} className="rounded-full bg-zinc-900 hover:bg-zinc-800 text-white px-8 h-12 shadow-[0_4px_16px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-all relative z-10 text-base font-medium">
               Sign In to Continue
             </Button>
           </div>
@@ -212,15 +212,15 @@ export function Dashboard() {
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col justify-center items-center py-32 glass-panel rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-dashed border-2 relative overflow-hidden"
+            className="flex flex-col justify-center items-center py-32 bg-white/70 backdrop-blur-3xl rounded-[2rem] shadow-[0_8px_40px_rgb(0,0,0,0.03)] border-zinc-200/50 border-dashed border-2 relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 pointer-events-none" />
-            <div className="w-20 h-20 bg-gradient-to-br from-white to-zinc-50 border border-zinc-100/50 rounded-[2rem] flex items-center justify-center mb-6 relative z-10 shadow-lg shadow-indigo-500/5">
-              <FileText className="w-10 h-10 text-indigo-500" />
+            <div className="w-20 h-20 bg-gradient-to-br from-white to-zinc-50 border border-zinc-100/50 rounded-[2rem] flex items-center justify-center mb-6 relative z-10 shadow-[0_8px_24px_rgba(99,102,241,0.08)]">
+              <FileText className="w-8 h-8 text-indigo-500" />
             </div>
-            <h2 className="text-2xl font-bold text-zinc-900 mb-2 relative z-10 tracking-tight">No resumes yet</h2>
-            <p className="text-zinc-500 mb-8 max-w-sm text-center relative z-10">Create your first resume to start matching with your dream jobs.</p>
-            <Button onClick={handleCreateNew} className="rounded-full bg-zinc-900 hover:bg-zinc-800 text-white px-8 h-12 shadow-[0_4px_16px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-all relative z-10">
+            <h2 className="text-3xl font-display font-bold text-zinc-900 mb-3 relative z-10 tracking-tight">No resumes yet</h2>
+            <p className="text-zinc-500 mb-8 max-w-sm text-center relative z-10 text-lg">Create your first resume to start matching with your dream jobs.</p>
+            <Button onClick={handleCreateNew} className="rounded-full bg-zinc-900 hover:bg-zinc-800 text-white px-8 h-12 shadow-[0_4px_16px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-all relative z-10 text-base font-medium">
               <Plus className="w-5 h-5 mr-2" /> Create Resume
             </Button>
           </motion.div>
@@ -307,7 +307,7 @@ export function Dashboard() {
                           onChange={(e) => setRenameValue(e.target.value)}
                           onKeyDown={(e) => handleKeyDown(resume.id, e)}
                           onBlur={() => submitRename(resume.id)}
-                          className="w-full bg-white border-2 border-indigo-500 rounded-lg py-1 px-2 text-lg font-bold text-zinc-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10"
+                          className="w-full bg-white border-2 border-indigo-500 rounded-lg py-1 px-2 text-[1.125rem] font-display font-semibold text-zinc-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/10"
                         />
                         {isRenaming && (
                           <div className="absolute right-2 text-indigo-500">
@@ -317,7 +317,7 @@ export function Dashboard() {
                       </div>
                     </div>
                   ) : (
-                    <h3 className="text-lg font-bold text-zinc-900 mb-1.5 line-clamp-2 group-hover:text-indigo-900 transition-colors">{resume.title || 'Untitled Resume'}</h3>
+                    <h3 className="text-xl font-display font-semibold text-zinc-900 mb-1.5 line-clamp-2 group-hover:text-indigo-900 transition-colors">{resume.title || 'Untitled Resume'}</h3>
                   )}
                   <div className="text-sm text-zinc-500 mb-4 line-clamp-1 font-medium">
                     {resume.data?.personalInfo?.firstName || ''} {resume.data?.personalInfo?.lastName || ''} {resume.data?.personalInfo?.firstName ? '• ' : ''}{resume.data?.personalInfo?.title || 'No Role'}
