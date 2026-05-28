@@ -112,7 +112,7 @@ export function JobSearchGenerator() {
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-zinc-900 tracking-tight">AI Connect Job Search</h2>
-                      <p className="text-sm font-medium text-zinc-500 mt-0.5">Real-time matching powered by Gemini 3.1 Pro</p>
+                      <p className="text-sm font-medium text-zinc-500 mt-0.5">Real-time matching powered by Gemini 3.5 Flash</p>
                     </div>
                   </div>
                   <button

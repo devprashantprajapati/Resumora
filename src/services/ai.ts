@@ -17,7 +17,7 @@ export async function* generateSummaryStream(title: string, experience: string, 
     The summary should be 3-4 sentences long in a ${tone.toLowerCase()} tone, highlighting key achievements, skills, and career goals. It should be impactful and use action verbs. Do not include any introductory text like "Here is a summary", just return the summary text.`;
 
     const response = await ai.models.generateContentStream({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
     });
 
@@ -48,7 +48,7 @@ export async function* enhanceDescriptionStream(description: string, role: strin
     - Do not include any introductory text, just return the enhanced bullet points.`;
 
     const response = await ai.models.generateContentStream({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
     });
 
@@ -73,7 +73,7 @@ export async function* fixGrammarStream(text: string): AsyncGenerator<string, vo
     Return ONLY the corrected text.`;
 
     const response = await ai.models.generateContentStream({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
     });
 
@@ -95,7 +95,7 @@ export async function suggestSkills(title: string): Promise<string[]> {
     Return ONLY a comma-separated list of skills. No introductory text, no bullet points.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
     });
 
@@ -146,7 +146,7 @@ export async function analyzeJobMatch(resumeContent: string, jobDescription: str
     4. 3-4 actionable recommendations to improve the resume for this specific job.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -192,7 +192,7 @@ export async function* generateCoverLetterStream(resumeContent: string, jobDescr
     - Return ONLY the cover letter text.`;
 
     const response = await ai.models.generateContentStream({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
     });
 
@@ -239,7 +239,7 @@ export async function generateInterviewPrep(resumeContent: string, jobDescriptio
     4. 3 general interview tips tailored to this specific company and role.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -297,7 +297,7 @@ export async function* generateInterviewPrepStream(resumeContent: string, jobDes
     4. 3 general interview tips tailored to this specific company and role.`;
 
     const response = await ai.models.generateContentStream({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -358,7 +358,7 @@ export async function tailorResumeData(resumeContent: string, jobDescription: st
     2. "experiences": An array of objects, each containing the "id" (from the original experience) and the "description" (the tailored bullet points, using •).`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -406,7 +406,7 @@ export async function upgradeResumeATS(resumeData: ResumeData): Promise<ResumeDa
     Return the upgraded ATS-friendly JSON object.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-pro-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -438,7 +438,7 @@ export async function translateResumeData(resumeData: ResumeData, targetLanguage
     Return the translated JSON object.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -468,18 +468,16 @@ export interface JobOpportunity {
 export async function* searchJobsStream(resumeContent: string): AsyncGenerator<JobOpportunity, void, unknown> {
   try {
     const prompt = `You are an expert career agent and executive recruiter. 
-    Review the provided Resume Content. Your task is to find 5 highly relevant real-world job opportunities (both private sector and government) available right now.
-    You MUST search the web to find actual, active job listings online that strongly match the candidate's skills and experience.
+    Review the provided Resume Content. Your task is to suggest 5 highly relevant real-world job roles or opportunities at top companies that strongly match the candidate's skills and experience based on your broad industry knowledge.
     
     Resume Content:
     ${resumeContent}
     `;
 
     const response = await ai.models.generateContentStream({
-      model: "gemini-3.1-pro-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        tools: [{ googleSearch: {} }],
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.ARRAY,
@@ -537,8 +535,7 @@ export async function* searchJobsStream(resumeContent: string): AsyncGenerator<J
 export async function searchJobs(resumeContent: string): Promise<JobOpportunity[]> {
   try {
     const prompt = `You are an expert career agent and executive recruiter. 
-    Review the provided Resume Content. Your task is to find 5 highly relevant real-world job opportunities (both private sector and government) available right now.
-    You MUST search the web to find actual, active job listings online that strongly match the candidate's skills and experience.
+    Review the provided Resume Content. Your task is to suggest 5 highly relevant real-world job roles or opportunities at top companies that strongly match the candidate's skills and experience based on your broad industry knowledge.
     
     Resume Content:
     ${resumeContent}
@@ -548,7 +545,7 @@ export async function searchJobs(resumeContent: string): Promise<JobOpportunity[
     - company: Company Name
     - location: Job Location (or specify Remote)
     - description: A brief 2-sentence summary of the role.
-    - applyLink: The actual URL to apply or view the job posting (this must be a real link found from your search)
+    - applyLink: A realistic career page URL for the suggested company (e.g., https://careers.company.com)
     - matchScore: A realistic match score from 0 to 100 based on the resume vs the job.
     - salaryRange: The estimated or actual salary range (e.g. "$120k - $150k" or "Competitive").
     - jobType: "Full-time", "Contract", "Remote", etc.
@@ -557,10 +554,9 @@ export async function searchJobs(resumeContent: string): Promise<JobOpportunity[
     `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-pro-preview",
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        tools: [{ googleSearch: {} }],
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.ARRAY,
@@ -611,7 +607,7 @@ export async function structureResumeData(rawText: string, pdfBase64?: string): 
     }
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3.5-flash",
       contents,
       config: {
         responseMimeType: "application/json",

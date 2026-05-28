@@ -354,7 +354,7 @@ export function Dashboard() {
                 rel="noopener noreferrer" 
                 className="text-zinc-700 font-semibold hover:text-indigo-600 transition-colors md:ml-1"
               >
-                Made by Prashant Prajapati
+                Created by Prashant Prajapati
               </a>
             </div>
           </div>

@@ -279,8 +279,7 @@ export function SettingsForm() {
                     <Check className="w-4 h-4 stroke-[3]" />
                   </div>
                 )}
-                <span className="text-[1.1rem] font-bold block">{font.name}</span>
-                <span className={`block mt-1 text-[13px] tracking-wide ${settings.font === font.value ? 'text-indigo-600/70' : 'text-zinc-500'}`}>The quick brown fox jumps over the lazy dog.</span>
+                <span className="text-[1.2rem] font-bold block py-2">{font.name}</span>
               </button>
             ))}
           </div>
@@ -304,8 +303,7 @@ export function SettingsForm() {
                     <Check className="w-4 h-4 stroke-[3]" />
                   </div>
                 )}
-                <span className="text-[1.3rem] font-black block tracking-tight">{font.name}</span>
-                <span className={`block mt-1 text-[13px] tracking-wide font-medium ${((settings.headingFont || settings.font) === font.value) ? 'text-indigo-600/70' : 'text-zinc-500'}`}>Heading Style Preview</span>
+                <span className="text-[1.5rem] font-black block tracking-tight py-2">{font.name}</span>
               </button>
             ))}
           </div>
