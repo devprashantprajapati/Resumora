@@ -28,8 +28,8 @@ export function PersonalInfoForm() {
 
   const handleGenerateSummary = async () => {
     setIsGenerating(true);
-    const experienceText = data.experience.map(e => `${e.position} at ${e.company}`).join(', ');
-    const skillsText = data.skills.map(s => s.name).join(', ');
+    const experienceText = (data.experience || []).map(e => `${e.position} at ${e.company}`).join(', ');
+    const skillsText = (data.skills || []).map(s => s.name).join(', ');
     
     try {
       updatePersonalInfo({ summary: '' });

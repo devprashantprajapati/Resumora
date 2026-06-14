@@ -208,31 +208,6 @@ export function SettingsForm() {
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <SettingCard title="Template Design" icon={LayoutTemplate} description="Choose a distinctive layout that fits your industry.">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {(['modern', 'minimal', 'corporate', 'creative', 'elegant', 'tech', 'executive', 'premium', 'academic', 'studio'] as const).map((template) => (
-              <button
-                key={template}
-                onClick={() => updateSettings({ template })}
-                className={`relative overflow-hidden px-4 py-8 rounded-[1.5rem] border-2 text-center capitalize transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] group ${
-                  settings.template === template
-                    ? 'border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-lg shadow-indigo-200/50 ring-4 ring-indigo-600/10 scale-[1.02]'
-                    : 'border-zinc-200/80 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 hover:shadow-md hover:-translate-y-0.5 text-zinc-600'
-                }`}
-              >
-                {settings.template === template && (
-                  <div className="absolute top-4 right-4 text-indigo-600 bg-indigo-100 p-1 rounded-full animate-in zoom-in">
-                    <Check className="w-3.5 h-3.5 stroke-[3]" />
-                  </div>
-                )}
-                <span className={`font-bold tracking-tight text-[15px] ${settings.template === template ? 'text-indigo-700' : 'text-zinc-700 group-hover:text-zinc-900'}`}>{template}</span>
-              </button>
-            ))}
-          </div>
-        </SettingCard>
-      </motion.div>
-
-      <motion.div variants={itemVariants}>
         <SettingCard title="Color Identity" icon={Wand2} description="Select a dominant color to highlight key elements and section headers.">
           <div className="flex flex-wrap gap-4 pt-2">
             {COLORS.map((color) => (

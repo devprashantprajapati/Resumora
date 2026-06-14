@@ -42,12 +42,12 @@ export function AIToolsForm() {
 
   const getResumeContent = () => {
     return `
-      Name: ${data.personalInfo.firstName} ${data.personalInfo.lastName}
-      Title: ${data.personalInfo.title}
-      Summary: ${data.personalInfo.summary}
-      Experience: ${data.experience.map(e => `${e.position} at ${e.company} (${e.startDate}-${e.endDate}): ${e.description}`).join('; ')}
-      Education: ${data.education.map(e => `${e.degree} at ${e.school}`).join('; ')}
-      Skills: ${data.skills.map(s => s.name).join(', ')}
+      Name: ${data.personalInfo?.firstName || ''} ${data.personalInfo?.lastName || ''}
+      Title: ${data.personalInfo?.title || ''}
+      Summary: ${data.personalInfo?.summary || ''}
+      Experience: ${(data.experience || []).map(e => `${e.position} at ${e.company} (${e.startDate}-${e.endDate}): ${e.description}`).join('; ')}
+      Education: ${(data.education || []).map(e => `${e.degree} at ${e.school}`).join('; ')}
+      Skills: ${(data.skills || []).map(s => s.name).join(', ')}
     `;
   };
 
@@ -84,8 +84,8 @@ export function AIToolsForm() {
     try {
       const tailoredContent = await tailorResumeData(getResumeContent(), jobDescription);
       
-      const newExperience = data.experience.map(exp => {
-        const matchingTailoredExp = tailoredContent.experiences.find(te => te.id === exp.id);
+      const newExperience = (data.experience || []).map(exp => {
+        const matchingTailoredExp = (tailoredContent.experiences || []).find(te => te.id === exp.id);
         if (matchingTailoredExp) {
           return { ...exp, description: matchingTailoredExp.description };
         }

@@ -23,6 +23,7 @@ import { InterviewPrepGenerator } from './InterviewPrepGenerator';
 import { LinkedInImporter } from './LinkedInImporter';
 import { PublishModal } from './PublishModal';
 import { Logo } from '../Logo';
+import { TemplateSelector } from './TemplateSelector';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { toast } from 'sonner';
 
@@ -313,12 +314,14 @@ export function ResumePreview() {
               <InterviewPrepGenerator />
               <LinkedInImporter />
               <PublishModal />
+              <TemplateSelector />
             </div>
             
             <div className="hidden md:block w-px h-6 md:h-8 bg-zinc-200 mx-0.5 md:mx-2 flex-shrink-0" />
 
             {/* Zoom Controls & Export */}
             <div className="flex items-center justify-center gap-1 md:gap-2 bg-zinc-100/50 p-1 md:p-1.5 rounded-full border border-black/5 shadow-inner w-full md:w-auto">
+
               <ATSChecker />
 
               <div className="w-px h-4 md:h-5 bg-zinc-200 mx-0.5 md:mx-1 flex-shrink-0" />
