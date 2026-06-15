@@ -58,7 +58,7 @@ export function AuthModal() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (emailError || (!isLogin && passwordStrength < 2)) {
+    if (emailError || (!isLogin && passwordStrength < 2) || (!isLogin && !name.trim())) {
       toast.error('Please fix the errors before submitting');
       return;
     }
@@ -258,7 +258,7 @@ export function AuthModal() {
 
               <button
                 type="submit"
-                disabled={isLoading || !!emailError || (!isLogin && passwordStrength < 2)}
+                disabled={isLoading || !!emailError || (!isLogin && passwordStrength < 2) || (!isLogin && !name.trim())}
                 className="w-full flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white py-3 rounded-xl font-semibold transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed mt-6"
               >
                 {isLoading ? (

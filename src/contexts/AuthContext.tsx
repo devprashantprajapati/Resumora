@@ -71,9 +71,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCredential.user, { displayName: name });
-      // Force a refresh of the user object to get the new display name
-      // auth.currentUser will have the updated profile
-      setUser({ ...userCredential.user } as User);
+      // Force a refresh of the user object to get the new display name while preserving getters
+      setUser(auth.currentUser ? { 
+        ...auth.currentUser, 
+        uid: auth.currentUser.uid, 
+        email: auth.currentUser.email, 
+        displayName: name 
+      } as unknown as User : null);
       closeAuthModal();
     } catch (error) {
       console.error('Error signing up with email', error);
