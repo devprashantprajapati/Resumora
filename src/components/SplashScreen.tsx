@@ -5,13 +5,29 @@ import { Logo } from './Logo';
 export const SplashScreen = ({ children }: { children: React.ReactNode }) => {
   const [isVisible, setIsVisible] = useState(true);
 
+  const [loadingText, setLoadingText] = useState('Initializing');
+
   useEffect(() => {
-    // Keep it visible for 2.6 seconds to allow the animation to play out completely
+    // Elegant timing: 3 seconds for a smooth premium feel
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 2600);
+    }, 3600); // 3.6s for more breathing room
 
-    return () => clearTimeout(timer);
+    const textSequence = [
+      { text: 'Initializing', delay: 0 },
+      { text: 'Optimizing Assets', delay: 1000 },
+      { text: 'Preparing Workspace', delay: 2000 },
+      { text: 'Ready', delay: 3000 },
+    ];
+
+    const timeouts = textSequence.map(({ text, delay }) => 
+      setTimeout(() => setLoadingText(text), delay)
+    );
+
+    return () => {
+      clearTimeout(timer);
+      timeouts.forEach(clearTimeout);
+    };
   }, []);
 
   return (
@@ -23,130 +39,156 @@ export const SplashScreen = ({ children }: { children: React.ReactNode }) => {
             initial={{ opacity: 1 }}
             exit={{ 
               opacity: 0,
-              scale: 1.05,
-              transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } 
+              scale: 1.08,
+              filter: "blur(10px)",
+              transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } 
             }}
             className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-zinc-50 pointer-events-auto overflow-hidden"
             style={{ touchAction: 'none' }}
           >
-            {/* Animated Multicolor Background */}
-            <div className="absolute inset-0 overflow-hidden flex items-center justify-center pointer-events-none opacity-50 mix-blend-multiply">
+            {/* Ultra Premium Animated Mesh Background */}
+            <div className="absolute inset-0 overflow-hidden flex items-center justify-center pointer-events-none opacity-60 mix-blend-multiply">
               <motion.div 
                 animate={{ 
-                  x: ["0%", "15%", "-10%", "0%"],
-                  y: ["0%", "-15%", "10%", "0%"],
-                  scale: [1, 1.2, 0.9, 1],
-                  rotate: [0, 45, -20, 0],
-                  backgroundColor: ["#e0e7ff", "#c7d2fe", "#ddd6fe", "#e0e7ff"] // Indigo 100/200 & Violet 200
+                  x: ["0%", "10%", "-5%", "0%"],
+                  y: ["0%", "-10%", "5%", "0%"],
+                  scale: [1, 1.1, 0.9, 1],
+                  rotate: [0, 90, -45, 0],
                 }}
-                transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full blur-[120px]"
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] rounded-full blur-[140px] bg-gradient-to-tr from-indigo-200 via-blue-100 to-purple-100"
               />
               <motion.div 
                 animate={{ 
-                  x: ["0%", "-20%", "15%", "0%"],
-                  y: ["0%", "20%", "-15%", "0%"],
-                  scale: [1, 0.8, 1.1, 1],
-                  rotate: [0, -30, 50, 0],
-                  backgroundColor: ["#ede9fe", "#e0f2fe", "#eecff3", "#ede9fe"] // Violet 100, Sky 100, soft pink
+                  x: ["0%", "-15%", "10%", "0%"],
+                  y: ["0%", "15%", "-10%", "0%"],
+                  scale: [1, 0.85, 1.15, 1],
+                  rotate: [0, -60, 60, 0],
                 }}
-                transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full blur-[100px]"
-              />
-              <motion.div 
-                animate={{ 
-                  x: ["0%", "25%", "-25%", "0%"],
-                  y: ["0%", "10%", "25%", "0%"],
-                  scale: [0.9, 1.1, 1, 0.9],
-                  backgroundColor: ["#dbeafe", "#f3e8ff", "#ccfbf1", "#dbeafe"] // Blue 100, Purple 100, Teal 100
-                }}
-                transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute w-[55vw] h-[55vw] max-w-[650px] max-h-[650px] rounded-full blur-[110px]"
+                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[70vw] h-[70vw] max-w-[700px] max-h-[700px] rounded-full blur-[120px] bg-gradient-to-bl from-violet-100 via-fuchsia-100 to-cyan-100"
               />
             </div>
 
-            {/* Premium Logo Reveal with subtle float */}
+            {/* Subtle Grid Overlay for Tech Vibe */}
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none mix-blend-overlay"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+
+            {/* Exquisite Spotlight */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+
+            {/* Main Content Reveal */}
             <motion.div
-              initial={{ scale: 1, opacity: 0, y: 30, filter: "blur(12px)" }}
+              initial={{ scale: 0.85, opacity: 0, y: 50, filter: "blur(24px)", rotateX: 10 }}
               animate={{ 
-                scale: [1, 1.25, 1.2], 
+                scale: 1, 
                 opacity: 1, 
-                y: [30, -5, 0], 
-                filter: ["blur(12px)", "blur(0px)", "blur(0px)"] 
+                y: 0, 
+                filter: "blur(0px)",
+                rotateX: 0
               }}
               transition={{ 
-                duration: 1.4, 
-                ease: [0.16, 1, 0.3, 1], // Custom spring-like easing
-                delay: 0.2 
+                duration: 1.8, 
+                ease: [0.16, 1, 0.3, 1], // Custom spring-like cinematic easing
+                delay: 0.15 
               }}
-              className="relative z-10 flex items-center justify-center -mt-16"
+              style={{ perspective: 1000 }}
+              className="relative z-10 flex flex-col items-center justify-center -mt-16"
             >
-              {/* Outer glowing ring behind logo */}
+              {/* Ultra-premium glass halo behind logo */}
               <motion.div 
-                initial={{ opacity: 0, scale: 1 }}
-                animate={{ opacity: [0, 0.6, 0], scale: [1, 2.2, 3] }}
-                transition={{ duration: 2.5, delay: 0.4, ease: "easeOut" }}
-                className="absolute inset-0 bg-indigo-500/20 rounded-full blur-xl"
+                initial={{ opacity: 0, scale: 0.7, rotate: -15 }}
+                animate={{ opacity: [0, 1, 0.8], scale: [0.7, 1.3, 1], rotate: 0 }}
+                transition={{ duration: 2.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0 bg-white/20 backdrop-blur-3xl rounded-[3rem] border border-white/40 shadow-[0_30px_60px_-15px_rgba(79,70,229,0.15)] -z-10 w-[140%] h-[160%] left-[-20%] top-[-30%]"
               />
-              <Logo className="scale-[1.3] sm:scale-150 md:scale-[1.75] relative z-20 drop-shadow-[0_20px_40px_rgba(79,70,229,0.25)]" />
+              
+              <div className="relative group overflow-visible">
+                <Logo className="scale-[1.6] sm:scale-[2.2] md:scale-[2.5] relative z-20 drop-shadow-[0_15px_30px_rgba(0,0,0,0.1)]" />
+                
+                {/* Advanced Light Sweep over the logo area */}
+                <motion.div
+                  initial={{ x: "-150%", skewX: -20 }}
+                  animate={{ x: "200%", skewX: -20 }}
+                  transition={{ duration: 2, delay: 0.8, ease: "easeInOut" }}
+                  className="absolute inset-0 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/80 to-transparent mix-blend-overlay pointer-events-none"
+                />
+
+                {/* Micro-sparkle effects */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0, rotate: -90 }}
+                  animate={{ opacity: [0, 1, 0], scale: [0, 1.8, 0], rotate: 90 }}
+                  transition={{ duration: 1.8, delay: 1.4, ease: "easeInOut" }}
+                  className="absolute -top-6 -right-8 w-6 h-6 z-30 pointer-events-none"
+                >
+                  <div className="absolute inset-0 bg-indigo-500 rounded-full blur-[8px] opacity-40" />
+                  <div className="w-full h-full bg-white rounded-full clip-star shadow-[0_0_20px_rgba(255,255,255,1)]" />
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, scale: 0, rotate: 90 }}
+                  animate={{ opacity: [0, 1, 0], scale: [0, 1.2, 0], rotate: -45 }}
+                  transition={{ duration: 1.5, delay: 0.8, ease: "easeInOut" }}
+                  className="absolute -bottom-4 -left-6 w-3 h-3 z-30 pointer-events-none"
+                >
+                  <div className="w-full h-full bg-indigo-400 rounded-full clip-star blur-[1px]" />
+                </motion.div>
+              </div>
             </motion.div>
             
             {/* Loading Indicator Section */}
             <motion.div 
-               initial={{ opacity: 0, y: 15, filter: "blur(8px)" }}
+               initial={{ opacity: 0, y: 30, filter: "blur(12px)" }}
                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-               transition={{ duration: 1.2, delay: 0.8, ease: "easeOut" }}
-               className="absolute bottom-20 flex flex-col items-center w-full px-8"
+               transition={{ duration: 1.6, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+               className="absolute bottom-20 sm:bottom-28 flex flex-col items-center w-full px-8"
             >
-               {/* Animated minimal loading bar */}
-               <div className="relative w-64 sm:w-80 h-[3px] bg-zinc-200/80 rounded-full overflow-hidden shadow-inner">
-                  {/* The progress fill */}
+               {/* Center-expanding microscopic loading line */}
+               <div className="relative w-48 sm:w-72 h-[1px] bg-zinc-200/50 rounded-full overflow-hidden">
+                  {/* Origin-center progress fill */}
                   <motion.div 
-                    initial={{ x: "-100%" }}
-                    animate={{ x: "0%" }}
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={{ scaleX: 1, opacity: 1 }}
                     transition={{ 
-                      duration: 1.8, 
-                      ease: [0.76, 0, 0.24, 1], // premium easeInOut curve
-                      delay: 0.2
-                    }}
-                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-500 via-indigo-400 to-sky-400 rounded-full w-full"
-                  />
-                  {/* Subtle sweep highlight on top of progress */}
-                  <motion.div 
-                    initial={{ x: "-100%", opacity: 0 }}
-                    animate={{ x: "100%", opacity: 1 }}
-                    transition={{ 
-                      duration: 1.5, 
-                      ease: "linear",
+                      duration: 2.2, 
+                      ease: [0.22, 1, 0.36, 1], // Advanced Apple-like ease
                       delay: 0.6
                     }}
-                    className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/60 to-transparent z-10"
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent rounded-full origin-center"
+                  />
+                  {/* High-speed core highlight */}
+                  <motion.div 
+                    initial={{ left: "-20%", opacity: 0 }}
+                    animate={{ left: "120%", opacity: [0, 1, 0] }}
+                    transition={{ 
+                      duration: 1.8, 
+                      ease: [0.65, 0, 0.35, 1],
+                      delay: 0.8
+                    }}
+                    className="absolute inset-y-0 w-16 -ml-8 bg-gradient-to-r from-transparent via-white to-transparent mix-blend-overlay z-10"
                   />
                </div>
                
-               {/* Staggered Loading Text */}
-               <div className="flex items-center gap-1 mt-6 text-[9px] sm:text-[10px] font-black text-indigo-900/50 tracking-[0.35em] uppercase select-none">
-                 <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.4, duration: 0.8 }}
-                 >
-                   Initializing
-                 </motion.span>
-                 <motion.span
-                    animate={{ opacity: [0, 1, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                 >
-                   ...
-                 </motion.span>
+               {/* Premium Sequential Loading Text */}
+               <div className="flex flex-col items-center gap-2 mt-8 overflow-hidden h-[20px] relative w-[200px]">
+                 <AnimatePresence mode="popLayout">
+                   <motion.div
+                     key={loadingText}
+                     initial={{ y: 20, opacity: 0, filter: "blur(4px)" }}
+                     animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                     exit={{ y: -20, opacity: 0, filter: "blur(4px)" }}
+                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                     className="absolute inset-0 flex justify-center text-[9px] sm:text-[10px] font-bold text-zinc-400 tracking-[0.4em] uppercase"
+                   >
+                     {loadingText}
+                   </motion.div>
+                 </AnimatePresence>
                </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Render children right away so they load in DOM, but aren't interacted with if under splash. */}
-      {/* We can enforce no scrolling on the body while the splash is visible */}
       <div 
         className={isVisible ? "h-screen w-screen overflow-hidden fixed inset-0 pointer-events-none" : "w-full h-full"}
       >
