@@ -39,34 +39,44 @@ export const SplashScreen = ({ children }: { children: React.ReactNode }) => {
             initial={{ opacity: 1 }}
             exit={{ 
               opacity: 0,
-              scale: 1.08,
-              filter: "blur(10px)",
-              transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } 
+              scale: 1.15,
+              filter: "blur(25px)",
+              transition: { duration: 1.2, ease: [0.83, 0, 0.39, 1] } 
             }}
             className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-zinc-50 pointer-events-auto overflow-hidden"
             style={{ touchAction: 'none' }}
           >
             {/* Ultra Premium Animated Mesh Background */}
-            <div className="absolute inset-0 overflow-hidden flex items-center justify-center pointer-events-none opacity-60 mix-blend-multiply">
+            <div className="absolute inset-0 overflow-hidden flex items-center justify-center pointer-events-none opacity-[0.8] mix-blend-multiply">
               <motion.div 
                 animate={{ 
-                  x: ["0%", "10%", "-5%", "0%"],
-                  y: ["0%", "-10%", "5%", "0%"],
-                  scale: [1, 1.1, 0.9, 1],
-                  rotate: [0, 90, -45, 0],
+                  x: ["0%", "15%", "-10%", "0%"],
+                  y: ["0%", "-15%", "10%", "0%"],
+                  scale: [1, 1.25, 0.85, 1],
+                  rotate: [0, 120, -60, 0],
                 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] rounded-full blur-[140px] bg-gradient-to-tr from-indigo-200 via-blue-100 to-purple-100"
+                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[90vw] h-[90vw] max-w-[900px] max-h-[900px] rounded-full blur-[140px] bg-gradient-to-tr from-indigo-200/90 via-blue-100/90 to-purple-200/90"
               />
               <motion.div 
                 animate={{ 
-                  x: ["0%", "-15%", "10%", "0%"],
-                  y: ["0%", "15%", "-10%", "0%"],
-                  scale: [1, 0.85, 1.15, 1],
-                  rotate: [0, -60, 60, 0],
+                  x: ["0%", "-20%", "15%", "0%"],
+                  y: ["0%", "20%", "-15%", "0%"],
+                  scale: [1, 0.8, 1.3, 1],
+                  rotate: [0, -90, 80, 0],
                 }}
-                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                className="absolute w-[70vw] h-[70vw] max-w-[700px] max-h-[700px] rounded-full blur-[120px] bg-gradient-to-bl from-violet-100 via-fuchsia-100 to-cyan-100"
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] rounded-full blur-[130px] bg-gradient-to-bl from-violet-200/90 via-fuchsia-100/90 to-cyan-100/90 mix-blend-overlay"
+              />
+               <motion.div 
+                animate={{ 
+                  x: ["-10%", "20%", "-15%", "-10%"],
+                  y: ["10%", "-5%", "15%", "10%"],
+                  scale: [0.9, 1.1, 0.95, 0.9],
+                  rotate: [45, 0, 90, 45],
+                }}
+                transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[70vw] h-[70vw] max-w-[700px] max-h-[700px] rounded-full blur-[120px] bg-gradient-to-br from-blue-200/60 via-teal-100/50 to-indigo-100/60"
               />
             </div>
 
@@ -75,7 +85,19 @@ export const SplashScreen = ({ children }: { children: React.ReactNode }) => {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
 
             {/* Exquisite Spotlight */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: [0.3, 0.6, 0.3], scale: [0.8, 1, 0.8] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/15 blur-[120px] rounded-full pointer-events-none" 
+            />
+            {/* Inner glow for focus */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 2, delay: 0.5 }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-white/30 blur-[80px] rounded-full pointer-events-none mix-blend-overlay"
+            />
 
             {/* Main Content Reveal */}
             <motion.div
@@ -97,11 +119,13 @@ export const SplashScreen = ({ children }: { children: React.ReactNode }) => {
             >
               {/* Ultra-premium glass halo behind logo */}
               <motion.div 
-                initial={{ opacity: 0, scale: 0.7, rotate: -15 }}
-                animate={{ opacity: [0, 1, 0.8], scale: [0.7, 1.3, 1], rotate: 0 }}
-                transition={{ duration: 2.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute inset-0 bg-white/20 backdrop-blur-3xl rounded-[3rem] border border-white/40 shadow-[0_30px_60px_-15px_rgba(79,70,229,0.15)] -z-10 w-[140%] h-[160%] left-[-20%] top-[-30%]"
-              />
+                initial={{ opacity: 0, scale: 0.6, rotate: -20, borderRadius: "40%" }}
+                animate={{ opacity: [0, 1, 0.8], scale: [0.6, 1.4, 1], rotate: 0, borderRadius: "50%" }}
+                transition={{ duration: 3.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0 bg-white/30 backdrop-blur-3xl border border-white/50 shadow-[0_40px_80px_-20px_rgba(79,70,229,0.25)] -z-10 w-[150%] h-[170%] left-[-25%] top-[-35%]"
+              >
+                 <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/60 to-transparent pointer-events-none" />
+              </motion.div>
               
               <div className="relative group overflow-visible">
                 <Logo className="scale-[1.6] sm:scale-[2.2] md:scale-[2.5] relative z-20 drop-shadow-[0_15px_30px_rgba(0,0,0,0.1)]" />
@@ -144,28 +168,30 @@ export const SplashScreen = ({ children }: { children: React.ReactNode }) => {
                className="absolute bottom-20 sm:bottom-28 flex flex-col items-center w-full px-8"
             >
                {/* Center-expanding microscopic loading line */}
-               <div className="relative w-48 sm:w-72 h-[1px] bg-zinc-200/50 rounded-full overflow-hidden">
+               <div className="relative w-56 sm:w-80 h-[2px] bg-zinc-200/50 rounded-full overflow-hidden shadow-inner">
                   {/* Origin-center progress fill */}
                   <motion.div 
-                    initial={{ scaleX: 0, opacity: 0 }}
-                    animate={{ scaleX: 1, opacity: 1 }}
-                    transition={{ 
-                      duration: 2.2, 
-                      ease: [0.22, 1, 0.36, 1], // Advanced Apple-like ease
-                      delay: 0.6
-                    }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent rounded-full origin-center"
+                     initial={{ scaleX: 0, opacity: 0 }}
+                     animate={{ scaleX: 1, opacity: 1 }}
+                     transition={{ 
+                        duration: 2.8, 
+                        ease: [0.25, 1, 0.5, 1], // Advanced Apple-like ease
+                        delay: 0.5
+                     }}
+                     className="absolute inset-0 bg-gradient-to-r from-indigo-300 via-indigo-600 to-indigo-300 rounded-full origin-center shadow-[0_0_10px_rgba(79,70,229,0.4)]"
                   />
                   {/* High-speed core highlight */}
                   <motion.div 
-                    initial={{ left: "-20%", opacity: 0 }}
-                    animate={{ left: "120%", opacity: [0, 1, 0] }}
-                    transition={{ 
-                      duration: 1.8, 
-                      ease: [0.65, 0, 0.35, 1],
-                      delay: 0.8
-                    }}
-                    className="absolute inset-y-0 w-16 -ml-8 bg-gradient-to-r from-transparent via-white to-transparent mix-blend-overlay z-10"
+                     initial={{ left: "-30%", opacity: 0 }}
+                     animate={{ left: "130%", opacity: [0, 1, 0] }}
+                     transition={{ 
+                        duration: 1.5, 
+                        ease: [0.65, 0, 0.35, 1],
+                        delay: 0.8,
+                        repeat: Infinity,
+                        repeatDelay: 0.5
+                     }}
+                     className="absolute inset-y-0 w-24 -ml-12 bg-gradient-to-r from-transparent via-white to-transparent mix-blend-overlay z-10"
                   />
                </div>
                
