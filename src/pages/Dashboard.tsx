@@ -196,8 +196,18 @@ export function Dashboard() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 sm:px-10 py-12 relative z-10">
 
         {isLoading ? (
-          <div className="flex justify-center items-center py-32 relative z-10 w-full h-[400px] bg-white/70 backdrop-blur-3xl rounded-[2rem] shadow-[0_8px_40px_rgb(0,0,0,0.03)] border border-white">
-            <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-white border border-zinc-200/80 rounded-[2rem] p-6 shadow-sm flex flex-col h-[280px] overflow-hidden">
+                <div className="w-14 h-14 bg-zinc-100 rounded-2xl mb-6 animate-pulse" />
+                <div className="w-3/4 h-6 bg-zinc-100 rounded-md mb-3 animate-pulse" />
+                <div className="w-1/2 h-4 bg-zinc-100 rounded-md mb-auto animate-pulse" />
+                <div className="mt-4 pt-4 border-t border-zinc-100 flex justify-between">
+                  <div className="w-20 h-3 bg-zinc-100 rounded animate-pulse" />
+                  <div className="w-10 h-3 bg-zinc-100 rounded animate-pulse" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : !user ? (
           <div className="text-center py-32 bg-white/70 backdrop-blur-3xl rounded-[2rem] shadow-[0_8px_40px_rgb(0,0,0,0.03)] border border-white relative overflow-hidden">

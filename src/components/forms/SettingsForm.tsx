@@ -120,7 +120,7 @@ function QuickToggle({ label, description, checked, onChange }: { label: string,
 }
 
 export function SettingsForm() {
-  const { data, updateSettings, resetData } = useResumeStore();
+  const { data, updateSettings, resetData, updateData } = useResumeStore();
   const { settings } = data;
   const [isConfirmingReset, setIsConfirmingReset] = useState(false);
   const { user, openAuthModal, logout } = useAuth();
@@ -511,7 +511,33 @@ export function SettingsForm() {
         </SettingCard>
       </motion.div>
       
-      <motion.div variants={itemVariants} className="pt-6">
+      <motion.div variants={itemVariants} className="pt-6 pb-2 space-y-4">
+        <div className="p-6 sm:p-8 relative overflow-hidden bg-white/80 border border-indigo-200/60 shadow-[0_8px_30px_rgb(99,102,241,0.04)] rounded-[2rem] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-transparent pointer-events-none" />
+          <div className="relative z-10">
+            <h3 className="text-[1.1rem] font-bold text-indigo-700 flex items-center gap-2 tracking-tight">
+              <Wand2 className="w-5 h-5 flex-shrink-0" />
+              Load Example Data
+            </h3>
+            <p className="text-[13px] font-medium text-indigo-900/60 mt-1 max-w-lg leading-relaxed">
+              Populate the editor with a complete sample resume. This is great for testing different templates without typing.
+            </p>
+          </div>
+          <Button 
+            variant="outline"
+            onClick={() => {
+              import('@/types/resume').then(({ initialResumeData }) => {
+                updateData(initialResumeData);
+                toast.success('Example data loaded successfully!');
+              });
+            }} 
+            className="relative z-10 w-full sm:w-auto transition-all py-3 flex items-center gap-2 px-6 font-bold tracking-wide rounded-xl duration-300 text-indigo-700 bg-white/80 backdrop-blur border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 shadow-sm"
+          >
+            <Sparkles className="w-4 h-4" />
+            Load Example
+          </Button>
+        </div>
+
         <div className="p-6 sm:p-8 relative overflow-hidden bg-white/80 border border-red-200/60 shadow-[0_8px_30px_rgb(220,38,38,0.04)] rounded-[2rem] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 to-transparent pointer-events-none" />
           <div className="relative z-10">

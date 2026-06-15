@@ -36,13 +36,21 @@ export function LinkedInImporter() {
       }
       
       let base64 = '';
-      try {
-        const buffer = await file.arrayBuffer();
-        base64 = btoa(
-          new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
-        );
-      } catch (err) {
-        console.warn('Failed to convert to base64:', err);
+      if (!text || text.length < 50) {
+        try {
+          const buffer = await file.arrayBuffer();
+          const bytes = new Uint8Array(buffer);
+          let binary = '';
+          const len = bytes.byteLength;
+          const chunkSize = 8192;
+          for (let i = 0; i < len; i += chunkSize) {
+            const chunk = bytes.subarray(i, i + chunkSize);
+            binary += String.fromCharCode.apply(null, Array.from(chunk));
+          }
+          base64 = btoa(binary);
+        } catch (err) {
+          console.warn('Failed to convert to base64:', err);
+        }
       }
 
       if (!text && !base64) {
@@ -50,7 +58,8 @@ export function LinkedInImporter() {
       }
       console.log("Extracted PDF Text Length:", text.length, "Base64 Length:", base64.length);
       
-      const structuredData = await structureResumeData(text, base64);
+      const paramBase64 = base64 ? base64 : undefined;
+      const structuredData = await structureResumeData(text, paramBase64);
       console.log("Structured Data Keys:", Object.keys(structuredData));
       
       updateData(structuredData);

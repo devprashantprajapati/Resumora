@@ -1,9 +1,10 @@
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Use CDN for the worker to avoid Vite bundling issues with Web Workers
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
-
 export async function extractTextFromPDF(file: File): Promise<string> {
+  // Use local worker to avoid Cross-Origin 'Failed to fetch' errors
+  const workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
+  pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   let fullText = '';
