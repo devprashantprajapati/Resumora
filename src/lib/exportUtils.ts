@@ -48,16 +48,21 @@ export const exportPDF = async (element: HTMLElement, data: ResumeData) => {
     
     // Use dom-to-image-more with a high scale for crisp, high-quality text
     const scale = 4; // Very high resolution
+    const actualHeight = Math.max(element.clientHeight, element.scrollHeight);
+    const actualWidth = Math.max(element.clientWidth, element.scrollWidth);
+    
+    await new Promise(resolve => setTimeout(resolve, 500)); // allow images/fonts to render
+    
     const imgData = await domtoimage.toPng(clone, {
       quality: 1.0,
       bgcolor: '#ffffff',
-      width: element.clientWidth * scale,
-      height: element.clientHeight * scale,
+      width: actualWidth * scale,
+      height: actualHeight * scale,
       style: {
         transform: `scale(${scale})`,
         transformOrigin: 'top left',
-        width: `${element.clientWidth}px`,
-        height: `${element.clientHeight}px`
+        width: `${actualWidth}px`,
+        height: `${actualHeight}px`
       }
     });
     

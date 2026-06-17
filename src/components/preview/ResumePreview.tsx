@@ -197,7 +197,7 @@ export function ResumePreview() {
                       exit={{ opacity: 0, y: -15, scale: 0.95 }}
                       transition={{ type: "spring", damping: 25, stiffness: 400 }}
                       onPointerDown={(e) => e.stopPropagation()}
-                      className="absolute bottom-[calc(100%+1rem)] left-1/2 -translate-x-1/2 md:translate-x-0 md:-left-4 w-64 bg-white/95 backdrop-blur-2xl border border-white/60 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] overflow-hidden p-2.5 z-50 ring-1 ring-black/5"
+                      className="absolute bottom-[calc(100%+1rem)] left-0 -ml-2 sm:-ml-0 md:-left-2 w-64 bg-white/95 backdrop-blur-2xl border border-white/60 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] overflow-hidden p-2.5 z-50 ring-1 ring-black/5"
                     >
                       <div className="px-4 py-3 mb-1 flex items-center justify-between">
                         <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest">Export As</span>
