@@ -9,6 +9,7 @@ import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import './index.css';
 import { AuthProvider } from './contexts/AuthContext';
 import { SplashScreen } from './components/SplashScreen';
+import { Analytics } from '@vercel/analytics/react';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -25,5 +26,6 @@ createRoot(document.getElementById('root')!).render(
         </BrowserRouter>
       </SplashScreen>
     </AuthProvider>
+    <Analytics />
   </StrictMode>,
 );
