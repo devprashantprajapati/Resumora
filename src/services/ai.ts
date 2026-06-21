@@ -43,7 +43,9 @@ async function rpcCall(method: string, ...args: any[]) {
     try {
       const error = await res.json();
       errorMsg = error.error || errorMsg;
-    } catch (e) {}
+    } catch (e) {
+       // fallback to default error message
+    }
     throw new Error(errorMsg);
   }
   const data = await res.json();
@@ -74,7 +76,7 @@ async function* rpcStream(method: string, ...args: any[]) {
     const parts = buffer.split('\n\n');
     buffer = parts.pop() || ''; // Keep the incomplete part
 
-    for (let part of parts) {
+    for (const part of parts) {
       if (part.startsWith('event: error\ndata: ')) {
         const jsonStr = part.replace('event: error\ndata: ', '');
         try {
@@ -91,7 +93,9 @@ async function* rpcStream(method: string, ...args: any[]) {
           if (parsed.chunk !== undefined) {
              yield parsed.chunk;
           }
-        } catch(e) {}
+        } catch(e) {
+          // ignore invalid json during stream
+        }
       }
     }
   }

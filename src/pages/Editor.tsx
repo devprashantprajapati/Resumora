@@ -5,7 +5,7 @@
 
 import { EditorSidebar } from '../components/forms/EditorSidebar';
 import { ResumePreview } from '../components/preview/ResumePreview';
-import { Eye, Edit2, Sparkles, User as UserIcon, LogOut, GripVertical } from 'lucide-react';
+import { Eye, Edit2, Sparkles, User as UserIcon, LogOut, GripVertical, Loader2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -25,10 +25,11 @@ export function Editor() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [showPreview, setShowPreview] = useState(false);
-  const { user, openAuthModal, logout } = useAuth();
+  const { user, loading: authLoading, openAuthModal, logout } = useAuth();
   const updateData = useResumeStore(state => state.updateData);
   const resetData = useResumeStore(state => state.resetData);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const isInitialLoadRef = useRef(true);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
@@ -42,6 +43,7 @@ export function Editor() {
 
   useEffect(() => {
     const loadUserResume = async () => {
+      if (authLoading) return; // Wait for auth to resolve
       if (user && id) {
         setIsLoading(true);
         try {
@@ -64,7 +66,7 @@ export function Editor() {
     };
 
     loadUserResume();
-  }, [user, id, updateData]);
+  }, [user, id, authLoading, updateData]);
 
   // Auto-sync logic
   useEffect(() => {
@@ -83,6 +85,7 @@ export function Editor() {
 
       draftTimeout = setTimeout(async () => {
         try {
+          setIsSaving(true);
           const title = `${data.personalInfo.firstName || 'My'} Resume`;
           await saveResume(id, title, data);
           setSyncState('saved');
@@ -90,6 +93,8 @@ export function Editor() {
         } catch (error) {
           console.error('Failed to auto-save draft:', error);
           setSyncState('idle');
+        } finally {
+          setIsSaving(false);
         }
       }, 2000);
 
@@ -98,9 +103,12 @@ export function Editor() {
         if (publishTimeout) clearTimeout(publishTimeout);
         publishTimeout = setTimeout(async () => {
           try {
+            setIsSaving(true);
             await publishResume(data.settings.publishedSlug!, data);
           } catch (error) {
             console.error('Failed to auto-sync published resume:', error);
+          } finally {
+            setIsSaving(false);
           }
         }, 2000);
       }
@@ -209,6 +217,22 @@ export function Editor() {
 
       {/* Main Workspace */}
       <main className="flex-1 flex overflow-hidden relative bg-grid-pattern lg:p-6 lg:gap-6 lg:bg-zinc-50/30">
+        <AnimatePresence>
+          {(isLoading || authLoading || isSaving) && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white/50 backdrop-blur-sm"
+            >
+              <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
+              <p className="text-zinc-600 font-medium">
+                {isLoading || authLoading ? 'Loading your resume...' : 'Saving changes...'}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Animated Background Gradients for Desktop */}
         {isDesktop && (
           <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">

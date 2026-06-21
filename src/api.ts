@@ -34,7 +34,9 @@ apiRouter.post('/ai/rpc', async (req, res) => {
       if (parsed?.error?.message) {
         errorMessage = parsed.error.message;
       }
-    } catch (e) {}
+    } catch (e) {
+      // Ignore parse error
+    }
     res.status(500).json({ error: errorMessage });
   }
 });
@@ -70,7 +72,9 @@ apiRouter.post('/ai/rpc-stream', async (req, res) => {
       if (parsed?.error?.message) {
         errorMessage = parsed.error.message;
       }
-    } catch (e) {}
+    } catch (e) {
+      // Ignore parse error
+    }
     res.write(`event: error\ndata: ${JSON.stringify({ message: errorMessage })}\n\n`);
     res.end();
   }

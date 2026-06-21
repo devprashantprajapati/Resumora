@@ -1,6 +1,7 @@
-import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { Dashboard } from './pages/Dashboard';
 import { Editor } from './pages/Editor';
 import { PublicResume } from './pages/PublicResume';
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           </Routes>
         </BrowserRouter>
+        <Analytics />
       </SplashScreen>
     </AuthProvider>
   </StrictMode>,
