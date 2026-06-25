@@ -6,7 +6,15 @@ dotenv.config();
 
 export const apiRouter = express.Router();
 
-apiRouter.use(express.json({ limit: '50mb' }));
+const parseBody = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  // If Vercel already parsed the body, req.body will be an object.
+  if (req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0) {
+    return next();
+  }
+  express.json({ limit: '50mb' })(req, res, next);
+};
+
+apiRouter.use(parseBody);
 
 apiRouter.get('/health', (req, res) => {
   res.json({ 
@@ -17,7 +25,8 @@ apiRouter.get('/health', (req, res) => {
 
 // Dynamic RPC endpoint for standard Promise-returning AI methods
 apiRouter.post('/ai/rpc', async (req, res) => {
-  const { method, args } = req.body;
+  const method = req.body?.method;
+  const args = req.body?.args;
   try {
     const backendMethod = (aiBackend as any)[method];
     if (typeof backendMethod !== 'function') {
@@ -43,7 +52,8 @@ apiRouter.post('/ai/rpc', async (req, res) => {
 
 // SSE endpoint for Streaming AI methods
 apiRouter.post('/ai/rpc-stream', async (req, res) => {
-  const { method, args } = req.body;
+  const method = req.body?.method;
+  const args = req.body?.args;
   
   // Set headers for Server-Sent Events
   res.setHeader('Content-Type', 'text/event-stream');
